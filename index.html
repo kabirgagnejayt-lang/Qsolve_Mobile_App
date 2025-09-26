@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Homework Helper (Cookie Fallback)</title>
+<title>Q Solve — Homework Helper (Cookie-Only)</title>
 
 <style>
   :root {
@@ -126,11 +126,11 @@
       <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
     </div>
   </div>
-  <div class="card"> <h3>Recent Conversations</h3> <div id="recentList"></div> </div>
+  <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
 </template>
 <template id="solvePageTemplate">
   <div class="card"> <h2>Solve a Question</h2> <p class="muted">Upload an image or paste text to begin.</p>
-    <div class="warning-box" style="background-color: rgba(239, 246, 255, 0.9); border: 1px solid #3b82f6;">Note: AI features require a working internet connection and may be blocked by some emulators.</div>
+    <div class="warning-box" style="background-color: rgba(239, 246, 255, 0.9); border: 1px solid #3b82f6;">Note: AI features require a working internet connection.</div>
     <input type="file" id="ocrFile" accept="image/*,application/pdf" style="margin-top:15px;">
     <textarea id="pasteText" rows="4" placeholder="Or paste question text here..." style="margin-top:8px;"></textarea>
     <button class="btn" data-action="run-ocr" style="margin-top:8px;">Extract Questions</button>
@@ -138,9 +138,9 @@
   </div>
 </template>
 <template id="historyPageTemplate">
-  <div class="card"> <h2>Conversation History</h2> <p class="muted">All your saved conversations.</p>
-      <div id="historyWarning"></div>
-      <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px;">
+  <div class="card"> <h2>Conversation History</h2>
+      <div id="historyWarning" class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation to work on this device.</p></div>
+      <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px; margin-top:15px;">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <input type="checkbox" id="showFavoritesToggle" style="width: auto; margin:0;">
         <label for="showFavoritesToggle" class="muted">Show Favorites Only</label>
@@ -191,34 +191,15 @@ window.onerror = function(message, source, lineno) {
     return true;
 };
 
+// --- API Key is now set to your specific key ---
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v10', userKey: 'qsolve_user_v10', history: [],
+  dataKey: 'qsolve_data_v11', userKey: 'qsolve_user_v11', history: [],
   settings: { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true },
 };
 
-var storageType = 'none';
-
-function checkStorage() {
-    try {
-        window.localStorage.setItem('__test', 'test');
-        window.localStorage.removeItem('__test');
-        storageType = 'localStorage';
-        return;
-    } catch (e) {
-        // Local storage failed, try cookies
-    }
-    try {
-        document.cookie = '__test=test; max-age=1';
-        if (document.cookie.indexOf('__test') !== -1) {
-            storageType = 'cookies';
-        }
-    } catch (e) {
-        // Cookies also failed
-    }
-}
-
+// --- Cookie Helper Functions ---
 function setCookie(name, value, days) {
     var expires = "";
     if (days) {
@@ -227,7 +208,7 @@ function setCookie(name, value, days) {
         expires = "; expires=" + date.toUTCString();
     }
     try {
-       document.cookie = name + "=" + (encodeURIComponent(value) || "")  + expires + "; path=/; SameSite=Lax";
+       document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
     } catch (e) { console.error("Cookie setting failed"); }
 }
 
@@ -239,7 +220,7 @@ function getCookie(name) {
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
         if (c.indexOf(nameEQ) == 0) {
            try {
-              return decodeURIComponent(c.substring(nameEQ.length,c.length));
+              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
            } catch(e) { return null; }
         }
     }
@@ -247,41 +228,28 @@ function getCookie(name) {
 }
 
 function eraseCookie(name) {   
-    document.cookie = name+'=; Max-Age=-99999999;';  
+    document.cookie = name+'=; Max-Age=-99999999; path=/;';
 }
 
+// --- Data functions now use Cookies exclusively ---
 function saveData() {
-  if (storageType === 'localStorage') {
-    localStorage.setItem(App.dataKey, JSON.stringify(App.history));
-    localStorage.setItem(App.userKey, JSON.stringify(App.settings));
-  } else if (storageType === 'cookies') {
-    // Save settings and only the LATEST 1 conversation
+    // Save settings and only the LATEST 1 conversation to stay under 4KB limit
     var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
-    setCookie(App.dataKey, JSON.stringify(historyToSave), 365);
-    setCookie(App.userKey, JSON.stringify(App.settings), 365);
-  }
+    setCookie(App.dataKey, historyToSave, 365);
+    setCookie(App.userKey, App.settings, 365);
 }
 
 function loadData() {
-  var loadedHistory = null;
-  var loadedSettings = null;
-
-  if (storageType === 'localStorage') {
-    loadedHistory = localStorage.getItem(App.dataKey);
-    loadedSettings = localStorage.getItem(App.userKey);
-  } else if (storageType === 'cookies') {
-    loadedHistory = getCookie(App.dataKey);
-    loadedSettings = getCookie(App.userKey);
-  }
+  var loadedHistory = getCookie(App.dataKey);
+  var loadedSettings = getCookie(App.userKey);
 
   try {
-    if (loadedHistory) App.history = JSON.parse(loadedHistory);
+    if (loadedHistory) App.history = loadedHistory;
     if (loadedSettings) {
         var defaultSettings = { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true };
-        var parsedSettings = JSON.parse(loadedSettings);
-        for (var key in parsedSettings) {
-            if (Object.prototype.hasOwnProperty.call(parsedSettings, key)) {
-                defaultSettings[key] = parsedSettings[key];
+        for (var key in loadedSettings) {
+            if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
+                defaultSettings[key] = loadedSettings[key];
             }
         }
         App.settings = defaultSettings;
@@ -293,15 +261,12 @@ function loadData() {
 }
 
 function clearData() {
-    if (storageType === 'localStorage') {
-        localStorage.clear();
-    } else if (storageType === 'cookies') {
-        eraseCookie(App.dataKey);
-        eraseCookie(App.userKey);
-        eraseCookie('qsolve_first_time_' + App.dataKey.split('_')[2]);
-    }
+    eraseCookie(App.dataKey);
+    eraseCookie(App.userKey);
+    eraseCookie('qsolve_first_time_' + App.dataKey.split('_')[2]);
 }
 
+// --- Core App Logic (largely unchanged) ---
 function showPage(id) {
   var pages = App.pages;
   for(var i=0; i < pages.length; i++) {
@@ -387,8 +352,6 @@ function getAIResponse(prompt, history) {
   });
 }
 
-// ... (Rest of the functions like runOcr, updateHeaderUI, etc., remain largely the same, just using saveData and loadData)
-
 function runOcr(source) {
   var container = document.getElementById('detectedQuestions');
   if (!container) return;
@@ -434,14 +397,11 @@ function refreshHomePage() {
   if (recentList) {
     recentList.innerHTML = '';
     if (App.history.length === 0) {
-      recentList.innerHTML = '<p class="muted">Saved conversations appear here.</p>'; return;
+      recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
     }
-    var recentItems = App.history.slice(0, 3);
-    for(var i=0; i < recentItems.length; i++) {
-      var item = recentItems[i];
-      var title = escapeHtml(item.title.slice(0, 80));
-      recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
-    }
+    var item = App.history[0]; // Always show the first item
+    var title = escapeHtml(item.title.slice(0, 80));
+    recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
   }
 }
 
@@ -463,14 +423,8 @@ function refreshHistoryList() {
     var historyList = document.getElementById('historyList');
     if (!historyList) return;
     historyList.innerHTML = '';
-
-    if (storageType === 'cookies') {
-        var warningDiv = document.getElementById('historyWarning');
-        if (warningDiv) warningDiv.innerHTML = '<p class="muted warning-box" style="background-color: rgba(255, 240, 210, 0.9);">Note: History is limited to 1 conversation because device storage is restricted.</p>';
-    }
-
     var searchTerm = (document.getElementById('historySearch').value || '').toLowerCase();
-    var showFavorites = document.getElementById('historySearch').checked;
+    var showFavorites = document.getElementById('showFavoritesToggle').checked;
     
     var filteredHistory = [];
     for(var i=0; i < App.history.length; i++) {
@@ -529,26 +483,9 @@ function findClosest(elem, selector) {
 }
 
 function init() {
-  checkStorage();
   loadData();
   applyTheme();
-
-  var firstTime = true;
-  if (storageType !== 'none') {
-    var firstTimeKey = 'qsolve_first_time_' + App.dataKey.split('_')[2];
-    if (storageType === 'localStorage') {
-        firstTime = localStorage.getItem(firstTimeKey) !== 'true';
-    } else {
-        firstTime = getCookie(firstTimeKey) !== 'true';
-    }
-  }
-  
-  if (storageType === 'none') {
-    setTimeout(function() { showToast("Warning: All storage is disabled. Data cannot be saved.", "error"); }, 1500);
-  } else if (storageType === 'cookies') {
-    setTimeout(function() { showToast("Note: Using limited cookie storage. History is not fully saved.", "error"); }, 1500);
-  }
-  
+  var firstTime = getCookie('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
   showPage(firstTime ? 'welcomeScreen' : 'homePage');
 }
 
@@ -564,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     var action = target.getAttribute('data-action');
     
-    // This is a simplified event handler for clarity, expand as needed.
     if (action === 'navigate') {
         showPage(target.getAttribute('data-page'));
     } else if (action === 'accept-welcome') {
@@ -573,26 +509,14 @@ document.addEventListener('DOMContentLoaded', function() {
       App.settings.useDefaultKey = useDefault;
       App.settings.apiKey = useDefault ? '' : document.getElementById('setupApiKey').value.trim();
       saveData();
-      if (storageType === 'localStorage') {
-        localStorage.setItem('qsolve_first_time_' + App.dataKey.split('_')[2], 'true');
-      } else if (storageType === 'cookies') {
-        setCookie('qsolve_first_time_' + App.dataKey.split('_')[2], 'true', 365);
-      }
+      setCookie('qsolve_first_time_' + App.dataKey.split('_')[2], 'true', 365);
       showPage('homePage');
-    } else if (action === 'save-settings') {
-        App.settings.name = document.getElementById('userName').value.trim();
-        App.settings.theme = document.getElementById('themeSelect').value;
-        App.settings.fontSize = document.getElementById('fontSizeRange').value;
-        var useDefault = document.getElementById('settingsUseDefault').checked;
-        App.settings.useDefaultKey = useDefault;
-        App.settings.apiKey = useDefault ? '' : document.getElementById('apiKeyInput').value.trim();
-        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
-    } else if (action === 'reset-app') {
-        clearData();
-        App.history = [];
-        App.settings = { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true };
-        applyTheme(); showPage('welcomeScreen');
-        showToast('App has been reset.');
+    } else if (action === 'run-ocr') {
+      var file = document.getElementById('ocrFile').files[0];
+      var text = document.getElementById('pasteText').value.trim();
+      if (file) runOcr(file);
+      else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
+      else showToast('Please select a file or paste text.', 'error');
     } else if (action === 'start-conversation' || action === 'ask-follow-up') {
         var card = findClosest(target, '.question-card');
         if (!card) return;
@@ -634,6 +558,50 @@ document.addEventListener('DOMContentLoaded', function() {
         var tags = card.querySelector('.tags-input').value.split(',').filter(Boolean).map(function(t) { return t.trim(); });
         App.history.unshift({ id: 'q-' + Date.now(), title: history[0].parts[0].text.slice(0, 100), isFavorited: false, tags: tags, createdAt: new Date().toISOString(), conversation: history });
         saveData(); target.textContent = 'Saved ✓'; target.disabled = true; showToast('Conversation saved!');
+    } else if (action === 'toggle-favorite') {
+        var itemId = target.getAttribute('data-id');
+        for (var i = 0; i < App.history.length; i++) {
+            if (App.history[i].id === itemId) { App.history[i].isFavorited = !App.history[i].isFavorited; break; }
+        }
+        saveData(); refreshHistoryList();
+    } else if (action === 'copy-conversation') {
+        var itemId = target.getAttribute('data-id');
+        for (var i = 0; i < App.history.length; i++) {
+            if (App.history[i].id === itemId) {
+                var textToCopy = App.history[i].conversation.map(function(turn) { return turn.role.toUpperCase() + ': ' + turn.parts[0].text; }).join('\n\n');
+                copyTextToClipboard(textToCopy); break;
+            }
+        }
+    } else if (action === 'save-settings') {
+        App.settings.name = document.getElementById('userName').value.trim();
+        App.settings.theme = document.getElementById('themeSelect').value;
+        App.settings.fontSize = document.getElementById('fontSizeRange').value;
+        var useDefault = document.getElementById('settingsUseDefault').checked;
+        App.settings.useDefaultKey = useDefault;
+        App.settings.apiKey = useDefault ? '' : document.getElementById('apiKeyInput').value.trim();
+        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
+    } else if (action === 'reset-app') {
+        target.textContent = 'Sure? Click again.'; target.style.background = '#f59e0b'; target.setAttribute('data-action', 'reset-app-confirm');
+        setTimeout(function() {
+            if (target.getAttribute('data-action') === 'reset-app-confirm') {
+                target.textContent = 'Reset App'; target.style.background = '#ef4444'; target.setAttribute('data-action', 'reset-app');
+            }
+        }, 4000);
+    } else if (action === 'reset-app-confirm') {
+        clearData();
+        App.history = [];
+        App.settings = { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true };
+        applyTheme(); showPage('welcomeScreen');
+        showToast('App has been reset.');
+    } else if (action === 'export-data') {
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ settings: App.settings, history: App.history }));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "qsolve_backup_" + Date.now() + ".json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        showToast('Data exported!');
     }
   });
 
@@ -641,7 +609,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var target = e.target;
     if (target.id === 'avatarUpload') handleAvatarUpload(e);
     if (target.id === 'importDataInput') {
-      if (storageType === 'none') { showToast("Cannot import: Storage is disabled.", "error"); return; }
       var file = target.files[0]; if (!file) return;
       var reader = new FileReader();
       reader.onload = function(event) {
