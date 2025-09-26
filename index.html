@@ -48,7 +48,7 @@
   .page { display:none; margin-top:14px; }
   .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
   h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
-  h3 { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 0 0 4px 0; }
+  h3 { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 16px 0 4px 0; }
   p { color:var(--muted); line-height:1.5; margin: 4px 0; }
   .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   input,textarea,select,button { font-size:1rem; font-family: inherit; }
@@ -75,6 +75,9 @@
   .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
   .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
   .hidden { display: none !important; }
+  blockquote { border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; font-style: italic; }
+  ul, ol { padding-left: 20px; }
+  li { margin-bottom: 12px; padding-left: 8px; }
 
   /* --- CHAT BUBBLE STYLES --- */
   .ai-answer-container {
@@ -208,36 +211,69 @@
     <button id="resetAppBtn" class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
   </div>
 </template>
+
 <template id="releaseNotesPageTemplate">
-  <div class="card">
-    <h2>Welcome to the Q Solve App!</h2>
-    <p>We've grown! We used to only have a website, but now we're a full app with more features to help you learn.</p>
-  </div>
-  <div class="card">
-    <h2>✨ Key Features</h2>
-    <ul style="list-style-type: '✓'; padding-left: 20px;">
-        <li style="padding-left: 10px; margin-bottom: 12px;">
-            <strong>AI-Powered Question Answering:</strong>
-            Get intelligent answers to your questions, powered by Google's Gemini model.
-        </li>
-        <li style="padding-left: 10px; margin-bottom: 12px;">
-            <strong>Conversational Context:</strong>
-            Ask follow-up questions and the AI will remember what you were talking about.
-        </li>
-        <li style="padding-left: 10px; margin-bottom: 12px;">
-            <strong>Recent Conversation History:</strong>
-            Your most recent conversation is automatically saved for you to review later.
-        </li>
-        <li style="padding-left: 10px; margin-bottom: 12px;">
-            <strong>Personalization:</strong>
-            Set your name and choose between a light or dark theme for a customized experience.
-        </li>
-    </ul>
-    <button class="btn" data-action="continue-from-release" style="margin-top:16px; width:100%; padding:12px;">Continue to App</button>
-  </div>
+    <div class="card">
+        <h2>A Letter to Our Community: The Story of Q Solve and the Dawn of a New Era</h2>
+        <p><strong>Release Date:</strong> September 26, 2025</p>
+        <hr style="margin: 16px 0; border-color: rgba(0,0,0,0.05);">
+        <blockquote>
+            <p>To our incredible Q Solve community,</p>
+            <p>This isn't just a product update; it's the culmination of years of dreaming, building, failing, and learning. It’s the story of an idea that grew with your support, evolving from a simple experiment into something we believe will <strong>fundamentally change the way you learn.</strong></p>
+        </blockquote>
+
+        <h3>The Spark: A Question That Started It All</h3>
+        <p>Before any code was written, Q Solve began with a simple, frustrating question: <em>"Why is learning so often a one-way street?"</em> We dreamed of a world where you could have a genuine conversation with your knowledge—a world where learning was an active, dynamic dialogue. That dream was the spark that would eventually become Q Solve.</p>
+
+        <h3>Our Journey to Today: From Prototype to Powerhouse</h3>
+        <p>Our path has been iterative, and many of you have been with us for different stages of this evolution:</p>
+        <ol>
+            <li><strong>Phase 1: The MIT App Inventor Prototype</strong><br>Our story began with a humble collection of blocks. It was clunky and basic, but feedback from a handful of trusted testers was unanimous: the core idea was powerful.</li>
+            <li><strong>Phase 2: Going Public with Q Solve Web</strong><br>Armed with that validation, we built and launched Q Solve Web. You, our early web users, flooded us with feedback and helped us build the bedrock of the service.</li>
+            <li><strong>Phase 3: The Bridge – Q Solve Web Mobile (Beta)</strong><br>We saw you were learning everywhere. This phase taught us invaluable lessons about the needs of the mobile learner and solidified our conviction that to deliver the seamless experience you deserved, <strong>we had to go native.</strong></li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h2>✨ A Deep Dive into the All-New Q Solve App</h2>
+        <p>Which brings us to today. We have taken everything we've learned and poured it into this brand-new application. It's a complete, ground-up rebuild designed to be the ultimate learning companion.</p>
+        
+        <h3>🧠 AI-Powered Question Answering: Your Personal Genius</h3>
+        <p>At the heart of Q Solve is Google's advanced Gemini model. Ask it to "explain quantum entanglement like I'm ten years old." It’s the patient, brilliant tutor we always wished we had.</p>
+
+        <h3>💬 Conversational Context: The Power of a Real Dialogue</h3>
+        <p>Our AI remembers the context of your conversation, allowing for a natural, flowing dialogue. It’s the difference between shouting questions into a void and collaborating with a partner who is actively listening.</p>
+        
+        <h3>📖 Recent Conversation History: Your Brain's Backup</h3>
+        <p>Your most recent conversation is automatically saved. Revisit a complex explanation or simply pick up your train of thought right where you left off, ensuring no "aha!" moment is ever lost.</p>
+
+        <h3>🎨 Personalization: Making Q Solve Truly Yours</h3>
+        <p>Set your name for a personal greeting and choose your theme. We designed a crisp <strong>Light Theme</strong> for bright environments and a beautiful, eye-saving <strong>Dark Theme</strong> for those late-night study sessions.</p>
+    </div>
+
+    <div class="card">
+        <h2>🚀 The Future: This is Just Day One</h2>
+        <p>As proud as we are, this is not the finish line. This is the starting line for a new era. Here is a glimpse of our roadmap:</p>
+        <ul>
+            <li><strong>Structured Knowledge Libraries:</strong> Save, tag, and organize your most important conversations.</li>
+            <li><strong>Seamless Multi-Device Sync:</strong> Start a conversation on your laptop and continue it on your phone.</li>
+            <li><strong>Proactive Learning Tools:</strong> Create study plans and generate quizzes from your conversations.</li>
+            <li><strong>Deeper Collaboration:</strong> Share and discuss your Q Solve conversations with classmates and friends.</li>
+        </ul>
+
+        <h3>Our Deepest Gratitude</h3>
+        <blockquote>
+            <p>This app is a tool, but you are the architect of your own knowledge. We are simply honored to provide you with a better set of blueprints. To everyone who is just joining us today: Welcome.</p>
+            <p>We can't wait to see what you will learn.</p>
+        </blockquote>
+        <p style="margin-top:16px;">With sincere gratitude,</p>
+        <p><strong>The Q Solve Team</strong></p>
+        
+        <button class="btn" data-action="continue-from-release" style="margin-top:24px; width:100%; padding:12px;">Continue to App</button>
+    </div>
 </template>
 
-<!-- MAIN APP SCRIPT -->
+
 <script>
 (function() {
 'use strict';
@@ -264,7 +300,7 @@ function setCookie(name, value, days) {
         expires = "; expires=" + date.toUTCString();
     }
     try {
-       document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
+        document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
     } catch (e) { console.error("Cookie setting failed"); }
 }
 
@@ -275,9 +311,9 @@ function getCookie(name) {
         var c = ca[i];
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
         if (c.indexOf(nameEQ) == 0) {
-           try {
-             return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
-           } catch(e) { return null; }
+            try {
+              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
+            } catch(e) { return null; }
         }
     }
     return null;
@@ -392,7 +428,7 @@ function cleanHistory(history) {
 
 function getAIResponse(prompt, history) {
   return new Promise(function(resolve) {
-    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + DEFAULT_API_KEY;
+    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + DEFAULT_API_KEY;
     var sanitizedHistory = cleanHistory(history);
     var requestBody = {
       contents: sanitizedHistory.concat([
@@ -503,7 +539,7 @@ function findClosest(elem, selector) {
 function init() {
   loadData();
   applyTheme();
-  
+ 
   var releaseSeen = getCookie('qsolve_release_seen') === 'true';
 
   if (App.isNewUser && !releaseSeen) {
@@ -527,10 +563,10 @@ document.addEventListener('DOMContentLoaded', function() {
         target = target.parentNode;
     }
     if (!target || !target.getAttribute('data-action')) return;
-    
+   
     var action = target.getAttribute('data-action');
     var card = findClosest(target, '.card');
-    
+   
     if (action === 'navigate') {
         showPage(target.getAttribute('data-page'));
     } else if (action === 'accept-welcome') {
@@ -545,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     } else if (action === 'continue-from-release') {
         setCookie('qsolve_release_seen', 'true', 365);
-        
+       
         // **THE FIX IS HERE.**
         // After clicking continue, we decide where to go based on user status.
         if (App.isNewUser) {
@@ -577,13 +613,13 @@ document.addEventListener('DOMContentLoaded', function() {
             followUpInput.value = '';
         }
         answerContainer.style.display = 'flex'; target.textContent = 'Thinking...'; target.disabled = true;
-        
+       
         getAIResponse(prompt, existingHistory).then(function(aiResponse) {
             existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
             existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
             card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
             answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
-            
+           
             App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
             saveData();
 
@@ -628,4 +664,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
