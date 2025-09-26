@@ -1,569 +1,486 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Mobile App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper Availability Profile (HAP)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+            --border-color: #e2e8f0; --input-bg: #f1f5f9;
+            --radius: 12px; --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
 
-<style>
-  :root {
-    --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
-    --bg: #f0f9ff; --card: #ffffff; --text: #082f49; --muted: #64748b;
-    --success: #22c55e; --danger: #ef4444; --warning: #f97316;
-    --radius: 12px; --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  body.dark {
-    --primary: #38bdf8; --primary-light: #0c4a6e; --primary-dark: #7dd3fc;
-    --bg: #020617; --card: #0f172a; --text: #e2e8f0; --muted: #94a3b8;
-  }
-  html { font-size: 16px; }
-  body {
-    margin:0; padding:0 0 90px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  header {
-    padding: 10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
-    background:var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-    position: fixed; bottom: 0; left: 0; right: 0;
-    z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
-  }
-  .brand { display:flex; align-items:center; gap:10px; min-width: 0; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
-  .brand-text { display: flex; flex-direction: column; min-width: 0; }
-  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
-  .logo {
-    width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
-    align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
-  }
-  .title { font-weight:600; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .header-avatar {
-    width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
-    flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold;
-  }
-  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
-  nav button.active { background:var(--primary-light); color:var(--primary-dark); }
-  .container { max-width:1100px; margin:18px auto; padding:0 14px; }
-  .page { display:none; margin-top:14px; }
-  .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
-  h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
-  h3 { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 0 0 4px 0; }
-  p { color:var(--muted); line-height:1.5; margin: 4px 0; }
-  a { color: var(--primary); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  input,textarea,select,button { font-size:1rem; font-family: inherit; }
-  input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
-  input:disabled { background: #e2e8f0; cursor: not-allowed; }
-  .btn { background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight: 600; transition: background-color 0.2s; }
-  .btn:hover { opacity: 0.9; }
-  .btn.secondary { background:var(--primary-light); color:var(--primary-dark); }
-  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem;}
-  .footer { text-align:center; font-size:0.9rem; color:var(--muted); padding:16px 0; }
-  .footer-links { display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
-  #toast {
-    position:fixed; bottom: 100px; left:50%; transform:translateX(-50%);
-    background: #0f172a; color:white; padding:12px 20px; border-radius:8px;
-    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease; text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  }
-  #toast.show { visibility:visible; opacity:1; }
-  #toast.error { background-color: var(--danger); }
-  .info-box { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin: 16px 0; }
-  .feature-disabled { opacity: 0.6; cursor: not-allowed; }
-  .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
-  .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
-  .hidden { display: none !important; }
-  blockquote { border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; font-style: italic; }
-  ul, ol { padding-left: 20px; }
-  li { margin-bottom: 12px; padding-left: 8px; }
-  .ai-answer-container { display: flex; flex-direction: column; gap: 8px; }
-  .chat-bubble { padding: 10px 14px; border-radius: 16px; max-width: 85%; line-height: 1.5; word-wrap: break-word; }
-  .chat-bubble.user { background-color: var(--primary); color: white; border-bottom-right-radius: 4px; margin-left: auto; }
-  .chat-bubble.model { background-color: var(--primary-light); color: var(--primary-dark); border-bottom-left-radius: 4px; margin-right: auto; }
+        body.dark {
+            --primary: #38bdf8; --primary-light: #1e293b; --primary-dark: #7dd3fc;
+            --bg: #020617; --card: #0f172a; --text: #e2e8f0; --muted: #94a3b8;
+            --border-color: #334155; --input-bg: #1e293b;
+        }
 
-  @media (max-width: 420px) {
-    .title { display: none; }
-  }
-</style>
+        html { font-size: 16px; }
+        
+        body {
+            margin: 0; padding: 20px 0 100px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg); color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        /* --- Navigation Header (Bottom Bar) --- */
+        header {
+            padding: 10px 14px; display: flex; gap: 12px; align-items: center; justify-content: center;
+            background: var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+            position: fixed; bottom: 0; left: 0; right: 0;
+            z-index: 100; border-top: 1px solid var(--border-color);
+        }
+        nav { display: flex; gap: 8px; align-items: center; width: 100%; max-width: 400px; justify-content: space-around; }
+        .nav-btn {
+            background: transparent; border: none; padding: 8px 10px; border-radius: 8px;
+            cursor: pointer; color: var(--muted); font-weight: 500; font-size: 0.9rem;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn.active { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-btn:hover { color: var(--primary-dark); }
+        .nav-btn svg { width: 24px; height: 24px; }
+
+        /* --- Core Layout & Components --- */
+        .container { max-width: 700px; margin: 0 auto; padding: 0 14px; }
+        .page { display: none; }
+        .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
+        
+        h1 { font-size: 2rem; font-weight: 700; margin: 0 0 8px 0; text-align: center; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+        p { color: var(--muted); line-height: 1.6; margin: 4px 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--muted); }
+
+        input, select, button { font-size: 1rem; font-family: inherit; }
+        input, select {
+            width: 100%; box-sizing: border-box; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text);
+        }
+        input:focus, select:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
+
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 12px 18px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; transition: background-color 0.2s;
+            width: 100%; text-align: center; display: block;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn.secondary { background: var(--primary-light); color: var(--primary-dark); }
+        .form-group { margin-bottom: 20px; }
+
+        /* --- Page Specific Styles --- */
+        /* Login Page */
+        #loginPage .card { margin-top: 40px; }
+        .auth-tabs { display: flex; margin-bottom: 25px; border-radius: 10px; background: var(--input-bg); padding: 5px; }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; border-radius: 8px; font-weight: 500; transition: background-color 0.3s ease; }
+        .tab.active { background-color: var(--primary); color: #fff; }
+        #error-message { color: #ef4444; text-align: center; min-height: 24px; font-weight: bold; margin-top: 15px; }
+        
+        /* Profile Page */
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .profile-emoji { font-size: 6rem; line-height: 1; margin: 16px 0; }
+        .profile-name { font-size: 2.25rem; font-weight: 700; color: var(--text); margin: 0; }
+        .profile-message { font-size: 1.2rem; color: var(--muted); min-height: 28px; }
+        .profile-timer { font-size: 2.5rem; color: var(--primary); font-weight: 700; margin-top: 24px; min-height: 40px; }
+        .profile-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 30px; }
+        .custom-link {
+            display: inline-flex; align-items: center; gap: 8px; background: var(--primary-light);
+            padding: 10px 15px; border-radius: 8px; text-decoration: none; color: var(--primary-dark);
+            font-weight: 500; transition: all 0.2s ease;
+        }
+        .custom-link:hover { background-color: var(--primary); color: #fff; transform: translateY(-2px); }
+        .custom-link svg { width: 18px; height: 18px; }
+
+        /* Settings Page */
+        .link-group { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 15px; align-items: center; }
+        @media (max-width: 500px) { .link-group { grid-template-columns: 1fr; } }
+
+        /* --- Utilities --- */
+        .hidden { display: none !important; }
+        #toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: #0f172a; color: white; padding: 12px 20px; border-radius: 8px;
+            z-index: 3000; visibility: hidden; opacity: 0; transition: all 0.4s ease;
+            text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        #toast.show { visibility: visible; opacity: 1; }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <div id="headerLogo" class="logo">QS</div>
-    <div id="headerPfp" class="header-avatar hidden"></div>
-    <div class="brand-text">
-        <div class="title">Q Solve</div>
-        <div class="muted" id="greetingSmall">Welcome</div>
-    </div>
-  </div>
-  <nav id="mainNav">
-    <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
-    <button class="nav-btn" data-action="navigate" data-page="solvePage">Solve</button>
-    <button class="nav-btn" data-action="navigate" data-page="historyPage">History</button>
-    <button class="nav-btn" data-action="navigate" data-page="settingsPage">Settings</button>
-  </nav>
-</header>
+    <header id="mainHeader" class="hidden">
+        <nav>
+            <button class="nav-btn" data-page="profilePage">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 0 1-1.498.07 7.502 7.502 0 0 0-15 0 .75.75 0 0 1-1.498-.07A9.005 9.005 0 0 1 9 12.55a5.5 5.5 0 0 1 3-10.05ZM12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"></path></svg>
+                <span>Profile</span>
+            </button>
+            <button class="nav-btn" data-page="settingsPage">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.64 3.023a.75.75 0 0 1 .72 0l1.517.65a.75.75 0 0 0 .841-.252l1.11-1.48A.75.75 0 0 1 17 2.25a.75.75 0 0 1 .633.368l1.11 1.48a.75.75 0 0 0 .84.253l1.518-.65a.75.75 0 0 1 .72 0l1.016.436a.75.75 0 0 1 .45 1.033l-.74 1.385a.75.75 0 0 0 .14.925l1.28.96a.75.75 0 0 1 0 1.302l-1.28.96a.75.75 0 0 0-.14.925l.74 1.385a.75.75 0 0 1-.45 1.033l-1.017.436a.75.75 0 0 1-.72 0l-1.517-.65a.75.75 0 0 0-.84.252l-1.11 1.48A.75.75 0 0 1 17 21.75a.75.75 0 0 1-.633-.368l-1.11-1.48a.75.75 0 0 0-.84-.253l-1.518.65a.75.75 0 0 1-.72 0l-1.016-.436a.75.75 0 0 1-.45-1.033l.74-1.385a.75.75 0 0 0-.14-.925l-1.28-.96a.75.75 0 0 1 0-1.302l1.28-.96a.75.75 0 0 0 .14-.925l-.74-1.385a.75.75 0 0 1 .45-1.033l1.017-.436ZM12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"></path></svg>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </header>
 
-<div class="container">
-  <div id="welcomeScreen" class="page card"></div>
-  <div id="homePage" class="page"></div>
-  <div id="solvePage" class="page"></div>
-  <div id="historyPage" class="page"></div>
-  <div id="settingsPage" class="page"></div>
-  <div id="releaseNotesPage" class="page"></div>
-  <div class="footer card">
-      <div>Q Solve by Kabir Gagneja. Local data stored on this device.</div>
-      <div class="footer-links">
-        <a href="https://whatsapp.com/channel/0029VbB4DCr9Gv7Qj7NgCX2t" target="_blank">WhatsApp</a>
-        <a href="https://www.youtube.com/@KabirInvents" target="_blank">YouTube</a>
-        <a href="https://play.google.com/store/apps/developer?id=Kabir+Gagneja+Invents" target="_blank">Play Store</a>
-        <a href="https://kabirgagnejayt-lang.github.io/Qsolve_Mobile_App/" target="_blank">Website</a>
-    </div>
-  </div>
-</div>
+    <div class="container">
 
-<div id="toast"></div>
-
-<template id="welcomeScreenTemplate">
-  <h2>Welcome to Q Solve</h2> <p>Your personal homework helper, redesigned.</p>
-  <div style="margin-top:20px;"> <label>Please enter your name to begin:</label> <input id="setupName" placeholder="e.g., Kabir" style="margin-top: 4px;"/> </div>
-  <div class="info-box"> <p><strong>Note:</strong> This app uses cookies to save your settings. By continuing, you agree to their use.</p> </div>
-  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Get Started</button>
-</template>
-<template id="homePageTemplate">
-  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p>Ready to solve some problems?</p>
-    <div style="display:flex; gap:8px; margin-top:16px;">
-      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
-      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
-    </div>
-  </div>
-  <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
-  <div class="card">
-    <h3>What's New</h3>
-    <p>Welcome to the official app release! We've grown from just a website.</p>
-    <button class="btn secondary" data-action="navigate" data-page="releaseNotesPage" style="margin-top:12px;">View Release Notes</button>
-  </div>
-</template>
-<template id="solvePageTemplate">
-  <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
-    <div class="info-box"> <p>AI features require a working internet connection to contact Google's servers.</p> </div>
-    <div class="feature-disabled" style="margin-top:15px;">
-        <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
-        <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
-    </div>
-    <div style="margin-top: 15px;">
-        <label for="pasteText">Or paste your question here:</label>
-        <textarea id="pasteText" rows="4" placeholder="e.g., What is the powerhouse of the cell?" style="margin-top: 4px;"></textarea>
-    </div>
-    <button class="btn" data-action="run-ocr" style="margin-top:12px;">Extract & Solve</button>
-    <div id="detectedQuestions" style="margin-top:16px;"></div>
-  </div>
-</template>
-<template id="historyPageTemplate">
-  <div class="card"> <h2>Conversation History</h2>
-      <div class="info-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation because of device constraints.</p></div>
-      <div id="historyList" style="margin-top:16px;"></div>
-  </div>
-</template>
-<template id="settingsPageTemplate">
-  <div class="card"> <h2>Profile Settings</h2>
-      <div style="display:flex; gap:16px; align-items:center; margin-top: 12px;">
-        <div id="avatarPreview" class="avatar-preview">K</div>
-        <div style="flex:1;">
-            <label for="userName">Your Name</label>
-            <input type="text" id="userName" placeholder="Your name" style="margin-top:4px;">
-            <div class="feature-disabled" style="margin-top: 12px;">
-                <label>Profile Picture <span class="coming-soon-tag">Coming Soon</span></label>
+        <!-- Login/Signup Page -->
+        <div id="loginPage" class="page">
+            <div class="card">
+                <h1>Hyper Availability</h1>
+                <p style="text-align: center; margin-bottom: 24px;">Your real-time public status page.</p>
+                <div class="auth-tabs">
+                    <div class="tab active" data-tab="login">Login</div>
+                    <div class="tab" data-tab="signup">Sign Up</div>
+                </div>
+                
+                <form id="login-form">
+                    <div class="form-group"><input type="email" id="login-email" placeholder="Email" required></div>
+                    <div class="form-group"><input type="password" id="login-password" placeholder="Password" required></div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+                
+                <form id="signup-form" class="hidden">
+                    <div class="form-group"><input type="text" id="signup-name" placeholder="Display Name" required></div>
+                    <div class="form-group"><input type="email" id="signup-email" placeholder="Email" required></div>
+                    <div class="form-group"><input type="password" id="signup-password" placeholder="Password" required></div>
+                    <button type="submit" class="btn">Create Account</button>
+                </form>
+                <p id="error-message"></p>
             </div>
         </div>
-      </div>
-  </div>
-  <div class="card"> <h2>Preferences</h2>
-      <label for="themeSelect">Theme</label>
-      <select id="themeSelect" style="margin-top:4px;"> <option value="default">Light (Default)</option> <option value="dark">Dark</option> </select>
-  </div>
-  <div class="card" style="text-align:center; margin-top: 16px;">
-    <button class="btn" data-action="save-settings">Save All Settings</button>
-    <button id="resetAppBtn" class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
-  </div>
-</template>
-<template id="releaseNotesPageTemplate">
-    <div class="card">
-        <h2>A Letter to Our Community</h2>
-        <p><strong>Release Date:</strong> September 26, 2025</p>
-        <hr style="margin: 16px 0; border-color: rgba(0,0,0,0.05);">
-        <blockquote>
-            <p>To our incredible Q Solve community,</p>
-            <p>This isn't just a product update; it's the culmination of years of dreaming, building, failing, and learning, evolving from a simple experiment into something we believe will <strong>fundamentally change the way you learn.</strong></p>
-        </blockquote>
-        <h3>Our Journey to Today</h3>
-        <p>From a clunky prototype to a public web app, your feedback has been crucial. You showed us the need for a mobile-first experience, which led us to this complete, ground-up rebuild designed to be the ultimate learning companion.</p>
+
+        <!-- Public Profile & User's Main Profile Page -->
+        <div id="profilePage" class="page">
+            <div class="card profile-header">
+                <div class="profile-emoji" id="profile-emoji">❓</div>
+                <h1 class="profile-name" id="profile-name">Loading...</h1>
+                <p class="profile-message" id="profile-message">Fetching status...</p>
+                <div class="profile-timer" id="profile-timer"></div>
+            </div>
+            <div class="card">
+                <h2>Links</h2>
+                <div class="profile-links" id="profile-links"><p class="muted">No links provided.</p></div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page">
+            <div class="card">
+                <h2>Profile Settings</h2>
+                <div class="form-group">
+                    <label for="display-name">Display Name</label>
+                    <input type="text" id="display-name">
+                </div>
+                <div class="form-group">
+                    <label for="themeSelect">Theme</label>
+                    <select id="themeSelect">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Update Status</h2>
+                <div class="form-group">
+                    <label for="status-emoji">Current Status</label>
+                    <select id="status-emoji">
+                        <option value="🟢">🟢 Available</option>
+                        <option value="🧠">🧠 Deep Work</option>
+                        <option value="🚗">🚗 Commuting</option>
+                        <option value="☕">☕ On a Break</option>
+                        <option value="🔴">🔴 Do Not Disturb</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status-message">Message</label>
+                    <input type="text" id="status-message" placeholder="e.g., Drafting 2026 Strategy">
+                </div>
+                <div class="form-group">
+                    <label for="status-duration">Duration (minutes)</label>
+                    <input type="number" id="status-duration" placeholder="e.g., 180 (0 for none)">
+                </div>
+            </div>
+            <div class="card">
+                <h2>Custom Links</h2>
+                <div id="custom-links-container"></div>
+            </div>
+            <div class="card">
+                <button id="save-settings-btn" class="btn">Save & Update Status</button>
+                <button id="logout-btn" class="btn secondary" style="margin-top: 12px;">Logout</button>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <h2>✨ What's New in This Version</h2>
-        <h3>🧠 AI-Powered Question Answering</h3>
-        <p>At the heart of Q Solve is Google's advanced Gemini model. Ask it to "explain quantum entanglement like I'm ten years old." It’s the patient, brilliant tutor we always wished we had.</p>
-        <h3>💬 Conversational Context</h3>
-        <p>Our AI remembers the context of your conversation, allowing for a natural, flowing dialogue. It’s the difference between shouting questions into a void and collaborating with a partner who is actively listening.</p>
-        <h3>📖 Enhanced Conversation History</h3>
-        <p>Your conversations are now saved locally. You can search your history, tag important chats, and mark your favorites for quick access.</p>
-        <h3>🎨 Full Personalization</h3>
-        <p>Set your name and avatar, and choose your theme. We designed a crisp <strong>Light Blue Theme</strong> and a beautiful, eye-saving <strong>Dark Theme</strong> for those late-night study sessions.</p>
-    </div>
-    <div class="card">
-        <h2>🚀 The Future & My Other Projects</h2>
-        <p>This is just the starting line. While we build new features, feel free to check out my other work:</p>
-        <ul>
-            <li><a href="https://whatsapp.com/channel/0029VbB4DCr9Gv7Qj7NgCX2t" target="_blank"><strong>WhatsApp Channel</strong></a> - Get updates and join the community.</li>
-            <li><a href="https://www.youtube.com/@KabirInvents" target="_blank"><strong>YouTube (@KabirInvents)</strong></a> - Watch tutorials and project showcases.</li>
-            <li><a href="https://play.google.com/store/apps/developer?id=Kabir+Gagneja+Invents" target="_blank"><strong>Google Play Store</strong></a> - Discover all my published apps.</li>
-            <li><a href="https://kabirgagnejayt-lang.github.io/Qsolve/" target="_blank"><strong>Q Solve Main Website</strong></a> - The official web portal for this app.</li>
-            <li><a href="https://kabirgagnejayt-lang.github.io/Qsolve_Mobile_App/" target="_blank"><strong>Q Solve Mobile App Site</strong></a> - The landing page for the mobile experience.</li>
-             <li><a href="https://play.google.com/store/apps/details?id=appinventor.ai_kabirgagnejayt.GradeWithAI" target="_blank"><strong>GradeWithAI App</strong></a> - Another one of my helpful tools for students.</li>
-        </ul>
-        <p style="margin-top:16px;">With sincere gratitude,</p>
-        <p><strong>The Q Solve Team</strong></p>
-        <button class="btn" data-action="continue-from-release" style="margin-top:24px; width:100%; padding:12px;">Continue to App</button>
-    </div>
-</template>
-
-<script>
-(function() {
-'use strict';
-
-const DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
-const App = {
-  pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage', 'releaseNotesPage'],
-  dataKey: 'qsolve_data', 
-  userKey: 'qsolve_user', 
-  releaseKey: 'qsolve_release_seen',
-  history: [],
-  settings: { name: 'Student', theme: 'default' },
-  isNewUser: true 
-};
-
-function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    try {
-        document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
-    } catch (e) { console.error("Cookie setting failed"); }
-}
-
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) {
-            try {
-              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
-            } catch(e) { return null; }
-        }
-    }
-    return null;
-}
-
-function eraseCookie(name) {   
-    document.cookie = name+'=; Max-Age=-99999999; path=/;';
-}
-
-function saveData() {
-    var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
-    setCookie(App.dataKey, historyToSave, 365);
-    setCookie(App.userKey, App.settings, 365);
-}
-
-function loadData() {
-  var loadedHistory = getCookie(App.dataKey);
-  var loadedSettings = getCookie(App.userKey);
-  try {
-    if (loadedHistory) App.history = loadedHistory;
-    if (loadedSettings && loadedSettings.name && loadedSettings.name !== 'Student') {
-        App.isNewUser = false;
-        var defaultSettings = { name: 'Student', theme: 'default' };
-        Object.assign(defaultSettings, loadedSettings);
-        App.settings = defaultSettings;
-    }
-  } catch (e) {
-    showToast("Error loading saved data.", "error"); App.history = [];
-  }
-}
-
-function clearData() {
-    eraseCookie(App.dataKey);
-    eraseCookie(App.userKey);
-    eraseCookie(App.releaseKey);
-}
-
-function showPage(id) {
-  App.pages.forEach(pId => {
-    const el = document.getElementById(pId);
-    if (el) el.style.display = 'none';
-  });
-  const page = document.getElementById(id);
-  if (!page) return;
-  const template = document.getElementById(id + "Template");
-  if (template) page.innerHTML = template.innerHTML;
-  page.style.display = 'block';
-  const header = document.querySelector('header');
-  if (header) {
-      header.style.display = (id === 'welcomeScreen' || id === 'releaseNotesPage') ? 'none' : 'flex';
-  }
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-  const activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
-  if (activeBtn) activeBtn.classList.add('active');
-  if (id !== 'welcomeScreen' && id !== 'releaseNotesPage') updateHeaderUI();
-  if (id === 'settingsPage') updateSettingsPageUI();
-  if (id === 'historyPage') refreshHistoryList();
-  if (id === 'homePage') refreshHomePage();
-}
-
-function applyTheme() {
-  document.body.className = App.settings.theme === 'dark' ? 'dark' : '';
-}
-
-function showToast(message, type) {
-  var toast = document.getElementById('toast');
-  if (!toast) { alert(message); return; }
-  toast.textContent = message;
-  toast.className = 'show';
-  if (type === 'error') toast.classList.add('error');
-  setTimeout(function() { toast.className = toast.className.replace('show', ''); }, 5000);
-}
-
-function escapeHtml(s) {
-  if (s === null || s === undefined) return '';
-  var el = document.createElement('div');
-  el.textContent = s;
-  return el.innerHTML;
-}
-
-function formatAIResponse(text) {
-  let formatted = escapeHtml(text)
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-    .replace(/`(.*?)`/g, '<code>$1</code>')
-    .replace(/\n/g, '<br>');
-  return formatted;
-}
-
-function getAIResponse(prompt, history) {
-  return new Promise(function(resolve) {
-    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + DEFAULT_API_KEY;
-    var requestBody = {
-      contents: history.concat([
-        { "role": "user", "parts": [ { "text": prompt } ] }
-      ])
-    };
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    })
-    .then(response => {
-      if (!response.ok) return response.json().then(err => { throw new Error(err.error.message); });
-      return response.json();
-    })
-    .then(data => {
-      if (data.candidates && data.candidates[0]?.content?.parts[0]) {
-        resolve(data.candidates[0].content.parts[0].text);
-      } else {
-        var reason = data.promptFeedback?.blockReason;
-        resolve(reason ? "Response blocked: " + reason : "AI returned an empty response.");
-      }
-    })
-    .catch(error => {
-      showToast('AI Error: ' + error.message, 'error');
-      resolve('AI Error: Could not get a response.');
-    });
-  });
-}
-
-function updateHeaderUI() {
-  var name = App.settings.name || 'User';
-  document.getElementById('greetingSmall').innerText = 'Hi, ' + name;
-  var headerPfp = document.getElementById('headerPfp');
-  var headerLogo = document.getElementById('headerLogo');
-  if(headerPfp && headerLogo){
-      headerPfp.textContent = name.charAt(0).toUpperCase();
-      headerLogo.classList.add('hidden');
-      headerPfp.classList.remove('hidden');
-  }
-}
-
-function updateSettingsPageUI() {
-  document.getElementById('userName').value = App.settings.name || '';
-  document.getElementById('avatarPreview').textContent = (App.settings.name || 'U').charAt(0).toUpperCase();
-  document.getElementById('themeSelect').value = App.settings.theme;
-}
-
-function refreshHomePage() {
-  document.getElementById('userNameDisplay').textContent = App.settings.name || 'Student';
-  var recentList = document.getElementById('recentList');
-  recentList.innerHTML = '';
-  if (App.history.length === 0) {
-    recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
-  }
-  var item = App.history[0];
-  var title = "<strong>Q:</strong> " + escapeHtml(item.title.slice(0, 80)) + "...";
-  recentList.innerHTML += '<div class="card" style="padding: 12px 16px;"><p>' + title + '</p></div>';
-}
-
-function renderDetectedQuestions(questions) {
-  var container = document.getElementById('detectedQuestions');
-  container.innerHTML = '<h3>Detected Questions</h3>';
-  questions.forEach(q => {
-    container.innerHTML += `<div class="card" data-conversation-history='[]'>
-      <p><strong>Q:</strong> ${escapeHtml(q)}</p>
-      <div class="ai-answer-container" style="display: none; margin-top: 12px;"></div>
-      <div style="margin-top:12px;"><button class="btn" data-action="start-conversation">Solve with AI</button></div>
-      <div class="conversation-controls" style="display:none; margin-top:10px;">
-        <textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea>
-        <button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button>
-      </div>
-    </div>`;
-  });
-}
-
-function refreshHistoryList() {
-    var historyList = document.getElementById('historyList');
-    if (!historyList) return;
-    if (App.history.length === 0) {
-        historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
-    }
-    var item = App.history[0];
-    var conversationHtml = item.conversation.map(function(turn) {
-        var text = (turn.parts && turn.parts[0] && turn.parts[0].text) ? turn.parts[0].text : '[empty]';
-        return `<div class="chat-bubble ${turn.role === 'user' ? 'user' : 'model'}">${formatAIResponse(text)}</div>`;
-    }).join('');
-    historyList.innerHTML = `<div><h3>${escapeHtml(item.title)}</h3><div class="ai-answer-container" style="margin-top:12px;">${conversationHtml}</div></div>`;
-}
-
-function findClosest(elem, selector) {
-    while (elem && elem !== document.body) {
-        if (elem.matches(selector)) return elem;
-        elem = elem.parentNode;
-    }
-    return null;
-}
-
-function init() {
-  loadData();
-  applyTheme();
-  const releaseSeen = getCookie(App.releaseKey) === 'true';
-
-  if (App.isNewUser && !releaseSeen) showPage('releaseNotesPage');
-  else if (App.isNewUser) showPage('welcomeScreen');
-  else showPage('homePage');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  init();
-  document.body.addEventListener('click', function(e) {
-    var target = e.target.closest('[data-action]');
-    if (!target) return;
     
-    var action = target.getAttribute('data-action');
-    var card = findClosest(target, '.card');
-    
-    if (action === 'navigate') showPage(target.getAttribute('data-page'));
-    
-    if (action === 'accept-welcome') {
-      var setupName = document.getElementById('setupName').value.trim();
-      if (!setupName) { showToast('Please enter your name.', 'error'); return; }
-      App.settings.name = setupName;
-      saveData();
-      showPage('homePage');
-    }
+    <div id="toast"></div>
 
-    if (action === 'continue-from-release') {
-        setCookie(App.releaseKey, 'true', 365);
-        if (App.isNewUser) showPage('welcomeScreen');
-        else showPage('homePage');
-    }
+    <script>
+        'use strict';
+        const DATABASE_URL = "https://happp-96438-default-rtdb.firebaseio.com/";
+        let countdownInterval;
 
-    if (action === 'run-ocr') {
-      var text = document.getElementById('pasteText').value.trim();
-      if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
-      else showToast('Please paste a question first.', 'error');
-    }
-
-    if (action === 'start-conversation' || action === 'ask-follow-up') {
-        if (!card) return;
-        var answerContainer = card.querySelector('.ai-answer-container');
-        var questionTextElem = card.querySelector('p');
-        var followUpInput = card.querySelector('.follow-up-input');
-        var prompt;
-        var existingHistory = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
-        if (action === 'start-conversation') {
-            prompt = questionTextElem.textContent.replace('Q: ','');
-            answerContainer.innerHTML = `<div class="chat-bubble user">${formatAIResponse(prompt)}</div>`;
-        } else {
-            prompt = followUpInput.value.trim();
-            if (!prompt) return;
-            answerContainer.innerHTML += `<div class="chat-bubble user">${formatAIResponse(prompt)}</div>`;
-            followUpInput.value = '';
-        }
-        answerContainer.style.display = 'flex'; target.textContent = 'Thinking...'; target.disabled = true;
-        
-        getAIResponse(prompt, existingHistory).then(function(aiResponse) {
-            existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
-            existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
-            card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
-            answerContainer.innerHTML += `<div class="chat-bubble model">${formatAIResponse(aiResponse)}</div>`;
-            
-            App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
-            saveData();
-
-            if (action === 'start-conversation') {
-                target.style.display = 'none';
-                card.querySelector('.conversation-controls').style.display = 'block';
+        const App = {
+            pages: ['loginPage', 'profilePage', 'settingsPage'],
+            elements: {},
+            currentUser: null,
+            svg: {
+                link: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.25 8.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z"></path><path fill-rule="evenodd" d="M8.25 3a.75.75 0 0 0-.75.75v1.64c0 .412.338.75.75.75h1.5A.75.75 0 0 0 10.5 5.4V3.75A.75.75 0 0 0 9.75 3h-1.5Zm-2.854 2.895a.75.75 0 0 0-1.06 1.06l4.242 4.243a.75.75 0 0 0 1.06-1.06L5.396 5.895ZM14.25 3a.75.75 0 0 0-.75.75v1.64c0 .412.338.75.75.75h1.5a.75.75 0 0 0 .75-.75V3.75a.75.75 0 0 0-.75-.75h-1.5Zm3.308 3.55a.75.75 0 0 0-1.06-1.06l-4.243 4.242a.75.75 0 1 0 1.06 1.06l4.243-4.242ZM18 9.75a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75Zm-5.308 4.955a.75.75 0 0 0-1.06 1.06l4.242 4.243a.75.75 0 0 0 1.06-1.06l-4.242-4.243ZM6 9.75a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 6 9.75ZM8.25 15a.75.75 0 0 0-.75.75v1.64c0 .412.338.75.75.75h1.5a.75.75 0 0 0 .75-.75v-1.64a.75.75 0 0 0-.75-.75h-1.5Zm6 0a.75.75 0 0 0-.75.75v1.64c0 .412.338.75.75.75h1.5a.75.75 0 0 0 .75-.75v-1.64a.75.75 0 0 0-.75-.75h-1.5ZM2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Z" clip-rule="evenodd"></path></svg>`
             }
-            target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
-            target.disabled = false;
-        });
-    }
-    
-    if (action === 'save-settings') {
-        App.settings.name = document.getElementById('userName').value.trim();
-        App.settings.theme = document.getElementById('themeSelect').value;
-        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
-    }
-    
-    if (action === 'reset-app') {
-        var resetButton = document.getElementById('resetAppBtn');
-        if (resetButton.getAttribute('data-confirming') === 'true') {
-            clearData();
-            window.location.reload();
-        } else {
-            resetButton.setAttribute('data-confirming', 'true');
-            resetButton.textContent = 'Click again to confirm';
-            setTimeout(() => {
-                if (resetButton.getAttribute('data-confirming')) {
-                    resetButton.removeAttribute('data-confirming');
-                    resetButton.textContent = 'Reset App';
-                }
-            }, 4000);
+        };
+        
+        // --- Utilities ---
+        function emailToId(email) { return btoa(email.toLowerCase()).replace(/=/g, ''); }
+        function showToast(message) {
+            const toast = App.elements.toast;
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
-    }
-  });
-});
-})();
-</script>
 
+        // --- Navigation & Page Handling ---
+        function showPage(pageId) {
+            App.pages.forEach(pId => App.elements[pId].classList.add('hidden'));
+            App.elements[pageId].classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.page === pageId);
+            });
+            window.scrollTo(0, 0);
+        }
+        
+        function applyTheme(theme) {
+            document.body.className = theme === 'dark' ? 'dark' : '';
+            App.elements.themeSelect.value = theme;
+        }
+
+        // --- Core Application Logic ---
+        function handlePageLoad() {
+            // Cache all elements
+            App.pages.forEach(pId => App.elements[pId] = document.getElementById(pId));
+            App.elements.mainHeader = document.getElementById('mainHeader');
+            App.elements.themeSelect = document.getElementById('themeSelect');
+            App.elements.toast = document.getElementById('toast');
+            
+            // Handle URL params for public profiles
+            const params = new URLSearchParams(window.location.search);
+            const userIdFromUrl = params.get('user');
+
+            if (userIdFromUrl) {
+                App.elements.mainHeader.classList.add('hidden');
+                showPage('profilePage');
+                displayPublicProfile(userIdFromUrl);
+            } else {
+                const user = JSON.parse(sessionStorage.getItem('hapUser'));
+                if (user) {
+                    App.currentUser = user;
+                    App.elements.mainHeader.classList.remove('hidden');
+                    setupUserSession();
+                } else {
+                    App.elements.mainHeader.classList.add('hidden');
+                    showPage('loginPage');
+                }
+            }
+            addEventListeners();
+        }
+
+        async function setupUserSession() {
+            // Fetch latest user data
+            const response = await fetch(`${DATABASE_URL}/users/${App.currentUser.userId}.json`);
+            const data = await response.json() || {};
+            applyTheme(data.theme || 'light');
+            showPage('profilePage');
+            renderProfile(data);
+            populateSettings(data);
+        }
+
+        // --- Data Rendering ---
+        function renderProfile(data) {
+            document.getElementById('profile-name').textContent = data.displayName || 'Unnamed User';
+            document.getElementById('profile-emoji').textContent = data.status || '❓';
+            document.getElementById('profile-message').textContent = data.message || 'No message set.';
+            updateTimer(data.endTime, document.getElementById('profile-timer'));
+            renderCustomLinks(data.links, document.getElementById('profile-links'));
+        }
+
+        function populateSettings(data) {
+            document.getElementById('display-name').value = data.displayName || App.currentUser.displayName;
+            document.getElementById('themeSelect').value = data.theme || 'light';
+            document.getElementById('status-emoji').value = data.status || '🟢';
+            document.getElementById('status-message').value = data.message || '';
+            const duration = data.endTime ? (new Date(data.endTime).getTime() - Date.now()) / 60000 : 0;
+            document.getElementById('status-duration').value = duration > 0 ? Math.round(duration) : '';
+            
+            const linksContainer = document.getElementById('custom-links-container');
+            linksContainer.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const link = data.links ? data.links[i] : null;
+                linksContainer.innerHTML += `
+                    <div class="link-group">
+                        <input type="text" id="link-label-${i}" placeholder="Label ${i + 1}" value="${link ? link.label : ''}">
+                        <input type="url" id="link-url-${i}" placeholder="https://..." value="${link ? link.url : ''}">
+                    </div>`;
+            }
+        }
+        
+        function renderCustomLinks(links, container) {
+            container.innerHTML = '';
+            if (!links || links.length === 0) {
+                container.innerHTML = '<p class="muted">No links provided.</p>';
+                return;
+            }
+            links.forEach(link => {
+                container.innerHTML += `
+                    <a href="${link.url}" target="_blank" class="custom-link">
+                        ${App.svg.link} <span>${link.label}</span>
+                    </a>`;
+            });
+        }
+
+        function displayPublicProfile(userId) {
+            const fetchAndUpdate = () => {
+                fetch(`${DATABASE_URL}/users/${userId}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data) renderProfile(data);
+                        else document.getElementById('profile-name').textContent = 'User Not Found';
+                    });
+            };
+            fetchAndUpdate();
+            setInterval(fetchAndUpdate, 15000);
+        }
+        
+        function updateTimer(endTimeString, timerEl) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (!endTimeString) { timerEl.textContent = ''; return; }
+            const endTime = new Date(endTimeString).getTime();
+            countdownInterval = setInterval(() => {
+                const distance = endTime - Date.now();
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    timerEl.textContent = "Time's up!";
+                    return;
+                }
+                const h = Math.floor(distance / 36e5);
+                const m = Math.floor((distance % 36e5) / 6e4);
+                const s = Math.floor((distance % 6e4) / 1000);
+                timerEl.textContent = h > 0 ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // --- Event Listeners ---
+        function addEventListeners() {
+            document.querySelector('.auth-tabs').addEventListener('click', e => {
+                if (e.target.classList.contains('tab')) {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const isLogin = e.target.dataset.tab === 'login';
+                    document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+                    document.getElementById('signup-form').classList.toggle('hidden', isLogin);
+                }
+            });
+            
+            App.elements.mainHeader.addEventListener('click', e => {
+                const navBtn = e.target.closest('.nav-btn');
+                if (navBtn) showPage(navBtn.dataset.page);
+            });
+
+            document.getElementById('signup-form').addEventListener('submit', handleSignup);
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            document.getElementById('save-settings-btn').addEventListener('click', handleSaveSettings);
+        }
+        
+        // --- Event Handlers ---
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const displayName = document.getElementById('signup-name').value.trim();
+            const errorMessage = document.getElementById('error-message');
+            
+            if (!email || !password || !displayName) {
+                errorMessage.textContent = 'All fields are required.'; return;
+            }
+
+            const userId = emailToId(email);
+            const response = await fetch(`${DATABASE_URL}/logins/${userId}.json`);
+            if (await response.json()) {
+                errorMessage.textContent = 'An account with this email already exists.'; return;
+            }
+
+            await fetch(`${DATABASE_URL}/logins/${userId}.json`, { method: 'PUT', body: JSON.stringify({ email, password, displayName }) });
+            
+            App.currentUser = { email, displayName, userId };
+            sessionStorage.setItem('hapUser', JSON.stringify(App.currentUser));
+            App.elements.mainHeader.classList.remove('hidden');
+            setupUserSession();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorMessage = document.getElementById('error-message');
+            if (!email || !password) {
+                errorMessage.textContent = 'Email and password cannot be empty.'; return;
+            }
+
+            const userId = emailToId(email);
+            const response = await fetch(`${DATABASE_URL}/logins/${userId}.json`);
+            const data = await response.json();
+
+            if (data && data.password === password) {
+                App.currentUser = { email, displayName: data.displayName, userId };
+                sessionStorage.setItem('hapUser', JSON.stringify(App.currentUser));
+                App.elements.mainHeader.classList.remove('hidden');
+                setupUserSession();
+            } else {
+                errorMessage.textContent = 'Invalid email or password.';
+            }
+        }
+        
+        function handleLogout() {
+            sessionStorage.removeItem('hapUser');
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+        
+        async function handleSaveSettings() {
+            if (!App.currentUser) return;
+            
+            const customLinks = [];
+            for (let i = 0; i < 5; i++) {
+                const label = document.getElementById(`link-label-${i}`).value.trim();
+                const url = document.getElementById(`link-url-${i}`).value.trim();
+                if (label && url) customLinks.push({ label, url });
+            }
+
+            const duration = parseInt(document.getElementById('status-duration').value, 10);
+            
+            const dataToSave = {
+                displayName: document.getElementById('display-name').value.trim(),
+                theme: document.getElementById('themeSelect').value,
+                status: document.getElementById('status-emoji').value,
+                message: document.getElementById('status-message').value,
+                updatedAt: new Date().toISOString(),
+                links: customLinks,
+                endTime: duration > 0 ? new Date(Date.now() + duration * 60 * 1000).toISOString() : null
+            };
+            
+            await fetch(`${DATABASE_URL}/users/${App.currentUser.userId}.json`, { method: 'PUT', body: JSON.stringify(dataToSave) });
+            applyTheme(dataToSave.theme);
+            showToast('Settings Saved & Status Updated!');
+            showPage('profilePage');
+            renderProfile(dataToSave);
+        }
+        
+        document.addEventListener('DOMContentLoaded', handlePageLoad);
+    </script>
 </body>
 </html>
 
