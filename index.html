@@ -298,8 +298,9 @@ function loadData() {
   var loadedSettings = getCookie(App.userKey);
   try {
     if (loadedHistory) App.history = loadedHistory;
+    // Check for a real, saved user profile. This is the source of truth.
     if (loadedSettings && loadedSettings.name && loadedSettings.name !== 'Student') {
-        App.isNewUser = false; // They have a real name, so they are not new.
+        App.isNewUser = false; 
         var defaultSettings = { name: 'Student', theme: 'default' };
         for (var key in loadedSettings) {
             if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
@@ -507,13 +508,10 @@ function init() {
   var releaseSeen = getCookie('qsolve_release_seen') === 'true';
 
   if (App.isNewUser && !releaseSeen) {
-    // Brand new user flow: show release notes first.
     showPage('releaseNotesPage');
   } else if (App.isNewUser) {
-    // New user who has seen notes: show signup.
     showPage('welcomeScreen');
   } else {
-    // Returning user flow: straight to home.
     showPage('homePage');
   }
 }
@@ -540,19 +538,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       App.settings.name = setupName;
-      saveData();
+      // **FIX 1:** Save data immediately on account creation.
+      saveData(); 
       showPage('homePage');
 
     } else if (action === 'continue-from-release') {
         setCookie('qsolve_release_seen', 'true', 365);
-        
-        // **THE FIX IS HERE.**
-        // After clicking continue, we decide where to go based on user status.
         if (App.isNewUser) {
-          // If they are new, they need to sign up.
           showPage('welcomeScreen');
         } else {
-          // If they are NOT new, they just wanted to see the notes. Send them back home.
           showPage('homePage');
         }
 
@@ -604,11 +598,12 @@ document.addEventListener('DOMContentLoaded', function() {
             clearData();
             App.history = [];
             App.settings = { name: 'Student', theme:'default' };
-            App.isNewUser = true; // After reset, they are a new user.
+            App.isNewUser = true;
             resetButton.removeAttribute('data-confirming');
             resetButton.textContent = 'Reset App';
             applyTheme(); 
-            showPage('welcomeScreen');
+            // **FIX 2:** A full reset should behave like a brand new user.
+            showPage('releaseNotesPage');
             showToast('App has been reset.');
         } else {
             resetButton.setAttribute('data-confirming', 'true');
