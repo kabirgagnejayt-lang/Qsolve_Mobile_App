@@ -499,14 +499,18 @@ function findClosest(elem, selector) {
 }
 
 function init() {
+  // Load any existing data first. This is crucial.
   loadData();
   applyTheme();
+  
   var version = App.dataKey.split('_')[2];
   var releaseSeen = getCookie('qsolve_seen_' + version + '_release') === 'true';
 
+  // If they haven't seen this version's release notes, show them.
   if (!releaseSeen) {
     showPage('releaseNotesPage');
   } else {
+    // Otherwise, proceed with the normal flow.
     var firstTime = getCookie('qsolve_first_time_' + version) !== 'true';
     showPage(firstTime ? 'welcomeScreen' : 'homePage');
   }
@@ -605,8 +609,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var version = App.dataKey.split('_')[2];
         setCookie('qsolve_seen_' + version + '_release', 'true', 365);
         
-        // ** THE FIX IS HERE **
-        // Check if the user has a saved name that isn't the default.
+        // This is the key logic:
+        // Check if the user has a real name saved, not the default one.
         var isReturningUser = App.settings.name && App.settings.name !== 'Student';
         
         showPage(isReturningUser ? 'homePage' : 'welcomeScreen');
@@ -618,6 +622,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
 
 
