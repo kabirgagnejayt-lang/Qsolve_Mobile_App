@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Q Solve — Homework Helper (Compatible)</title>
+
+<style>
+  :root {
+    --primary: #4f46e5; --bg: #f8fafc; --card: #fff; --text: #111827; --muted: #6b7280;
+    --accent-grad: linear-gradient(90deg,#7c3aed,#4f46e5); --radius: 12px;
+    --shadow: 0 6px 20px rgba(15,23,42,0.08); --font-size-base: 16px;
+  }
+  body.dark {
+    --bg: #0f1724; --card: #111827; --text: #e6eef8; --muted: #94a3b8; --primary: #60a5fa;
+  }
+  html { font-size: var(--font-size-base); }
+  body {
+    margin:0; padding:0; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+  }
+  header {
+    padding:14px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between;
+    background:var(--card); box-shadow:var(--shadow); position:sticky; top:0; z-index:50;
+  }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .logo {
+    width:44px; height:44px; border-radius:10px; background:var(--accent-grad); display:flex;
+    align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
+  }
+  .title { font-weight:700; font-size:1rem; }
+  .header-avatar {
+    width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+  nav { display:flex; gap:8px; align-items:center; }
+  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); }
+  nav button.active { background:rgba(79,70,229,0.12); color:var(--primary); }
+  .container { max-width:1100px; margin:18px auto; padding:0 14px; }
+  .page { display:none; margin-top:14px; }
+  .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; margin-bottom:14px; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .col { flex:1; min-width:260px; }
+  h1,h2,h3,h4 { margin:8px 0; color:var(--text); }
+  p { color:var(--muted); line-height:1.45; }
+  .muted { color:var(--muted); font-size:0.95rem; }
+  input,textarea,select,button { font-size:0.95rem; }
+  input,select,textarea { width:100%; box-sizing:border-box; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; color:var(--text); }
+  .btn { background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+  .btn.secondary { background:transparent; color:var(--muted); border:1px solid rgba(0,0,0,0.06); }
+  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,0,0,0.06); }
+  .footer { text-align:center; font-size:0.9rem; color:var(--muted); padding:16px 0; }
+  .hidden { display:none !important; }
+  #toast {
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background: #333; color:white; padding:10px 20px; border-radius:8px;
+    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease;
+  }
+  #toast.show { visibility:visible; opacity:1; }
+  #toast.error { background-color: #d9534f; }
+  .warning-box {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.6);
+    border-radius: 8px; padding: 12px; margin-top: 15px;
+  }
+  .warning-box p { margin: 5px 0; }
+  .question-card { margin-top: 10px; padding:10px; border-radius:10px; background:rgba(255,255,255,0.6); border:1px solid rgba(0,0,0,0.03); }
+  .ai-answer-container {
+    margin-top: 12px; padding: 10px; border-radius: 8px;
+    background-color: rgba(79,70,229,0.05); border-left: 3px solid var(--primary);
+  }
+  .chat-bubble { padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 90%; word-wrap: break-word; }
+  .chat-bubble.user { background: #eef2ff; color: #4338ca; margin-left: auto; }
+  .chat-bubble.model { background: rgba(79,70,229,0.05); }
+  .tag { background: rgba(0,0,0,0.05); color: var(--muted); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; display: inline-block; margin-right: 5px; }
+  .favorite-btn { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; opacity: 0.6; }
+  .favorite-btn.favorited { opacity: 1; color: #facc15; }
+
+  /* Media Query for Mobile Optimization */
+  @media (max-width: 768px) {
+    header { flex-wrap: wrap; gap: 16px; }
+    nav { width: 100%; order: 3; overflow-x: auto; padding-bottom: 5px; }
+    .brand { width: 100%; }
+    .btn[data-action="share"] { display: none; }
+    .row { flex-direction: column; gap: 0; }
+    .container { margin: 12px auto; padding: 0 10px; }
+    h2 { font-size: 1.5rem; }
+    .btn, input, select, textarea { padding-top: 12px; padding-bottom: 12px; }
+    #toast { bottom: 80px; width: 90%; box-sizing: border-box; }
+  }
+</style>
+
+<!-- External libraries loaded for compatibility -->
+<script src="https://cdn.jsdelivr.net/npm/@google/generative-ai/dist/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div id="headerLogo" class="logo">QS</div>
+    <img id="headerPfp" alt="avatar" class="header-avatar hidden">
+    <div>
+      <div class="title">Q Solve — Homework Helper</div>
+      <div class="muted" id="greetingSmall">Welcome</div>
+    </div>
+  </div>
+  <nav id="mainNav">
+    <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
+    <button class="nav-btn" data-action="navigate" data-page="solvePage">Solve</button>
+    <button class="nav-btn" data-action="navigate" data-page="historyPage">History</button>
+    <button class="nav-btn" data-action="navigate" data-page="settingsPage">Settings</button>
+  </nav>
+  <button class="btn small" data-action="share">Share</button>
+</header>
+
+<div class="container">
+  <div id="welcomeScreen" class="page card"></div>
+  <div id="homePage" class="page"></div>
+  <div id="solvePage" class="page"></div>
+  <div id="historyPage" class="page"></div>
+  <div id="settingsPage" class="page"></div>
+  <div class="footer card">Q Solve. Local data stored on this device.</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- All HTML templates used by the script -->
+<template id="welcomeScreenTemplate">
+  <h2>Welcome to Q Solve</h2>
+  <p class="muted">Your personal homework helper. To get started, please set your name and choose an API key option.</p>
+  <div style="margin-top:20px;">
+    <label>Your Name</label>
+    <input id="setupName" placeholder="e.g., Alex" />
+  </div>
+  
+  <div class="warning-box">
+    <p><strong>AI Features</strong></p>
+    <div id="setupApiKeyOptions" style="margin-top:8px;">
+        <input type="radio" id="setupUseDefault" name="apiKeyChoiceSetup" value="default" checked>
+        <label for="setupUseDefault" class="muted">Use the default shared API key</label>
+        <br>
+        <input type="radio" id="setupUseCustom" name="apiKeyChoiceSetup" value="custom" style="margin-top:5px;">
+        <label for="setupUseCustom" class="muted">Use my own Gemini API key</label>
+    </div>
+    <div id="setupCustomApiKeyContainer" style="display:none; margin-top:10px;">
+        <p class="muted" style="margin-bottom:5px;">Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+        <input type="password" id="setupApiKey" placeholder="Paste your key here">
+    </div>
+  </div>
+
+  <button class="btn" data-action="accept-welcome" style="margin-top:15px;">Start Solving</button>
+</template>
+
+<template id="homePageTemplate">
+  <div class="card">
+    <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2>
+    <p class="muted">Ready to solve some problems? Get started below.</p>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
+      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Recent Conversations</h3>
+    <div id="recentList"></div>
+  </div>
+</template>
+
+<template id="solvePageTemplate">
+  <div class="card">
+    <h2>Solve a Question</h2>
+    <p class="muted">Upload an image of a worksheet or paste text directly to begin.</p>
+    <input type="file" id="ocrFile" accept="image/*,application/pdf">
+    <textarea id="pasteText" rows="4" placeholder="Or paste question text here..." style="margin-top:8px;"></textarea>
+    <button class="btn" data-action="run-ocr" style="margin-top:8px;">Extract Questions</button>
+    <div id="detectedQuestions" style="margin-top:12px;"></div>
+  </div>
+</template>
+
+<template id="historyPageTemplate">
+  <div class="card">
+      <h2>Conversation History</h2>
+      <p class="muted">All your saved conversations and their AI-generated answers.</p>
+      <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="checkbox" id="showFavoritesToggle" style="width: auto; margin:0;">
+        <label for="showFavoritesToggle" class="muted">Show Favorites Only</label>
+      </div>
+      <div id="historyList" style="margin-top:12px;"></div>
+  </div>
+</template>
+
+<template id="settingsPageTemplate">
+  <div class="row">
+    <div class="col card">
+      <h2>Profile</h2>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <img src="" alt="avatar" id="avatarPreview" class="avatar-preview">
+        <div style="flex:1;">
+          <input type="text" id="userName" placeholder="Your name">
+          <input type="file" id="avatarUpload" accept="image/*" style="margin-top:8px;">
+        </div>
+      </div>
+    </div>
+    <div class="col card">
+      <h2>AI Settings</h2>
+      <div id="settingsApiKeyOptions">
+          <input type="radio" id="settingsUseDefault" name="apiKeyChoiceSettings" value="default">
+          <label for="settingsUseDefault">Use the default shared API key</label>
+          <br>
+          <input type="radio" id="settingsUseCustom" name="apiKeyChoiceSettings" value="custom" style="margin-top:5px;">
+          <label for="settingsUseCustom">Use my own Gemini API key</label>
+      </div>
+      <div id="settingsCustomApiKeyContainer" style="display:none; margin-top:10px;">
+          <p class="muted" style="margin-bottom:5px;">Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+          <input type="password" id="apiKeyInput" placeholder="Paste your key here">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col card">
+      <h2>Preferences</h2>
+      <label>Theme</label>
+      <select id="themeSelect">
+        <option value="default">Purple (Default)</option>
+        <option value="dark">Dark</option>
+      </select>
+      <label style="margin-top:8px;">Font size</label>
+      <input id="fontSizeRange" type="range" min="12" max="20" step="1">
+    </div>
+    <div class="col card">
+      <h2>Data Management</h2>
+      <p class="muted">Backup or restore your data, or reset the app completely.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn small" data-action="export-data">Export Data</button>
+        <input type="file" id="importDataInput" accept=".json" class="hidden">
+        <label for="importDataInput" class="btn small secondary">Import Data</label>
+        <button class="btn small" data-action="reset-app" style="background:#ef4444;">Reset App</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="text-align:center;">
+      <button class="btn" data-action="save-settings">Save All Settings</button>
+  </div>
+</template>
+
+<script>
+// NOTE: This script has been converted to ES5 for compatibility with older Android WebViews.
+// Features like `const`, `let`, arrow functions, and `async/await` have been removed.
+
+'use strict';
+
+/* -------------------------------------------
+ App State and Core Functions
+------------------------------------------- */
+var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
+
+var App = {
+  pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
+  dataKey: 'qsolve_data_v5',
+  userKey: 'qsolve_user_v5',
+  history: [],
+  settings: { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true },
+};
+
+function saveAll() {
+  localStorage.setItem(App.dataKey, JSON.stringify(App.history));
+  localStorage.setItem(App.userKey, JSON.stringify(App.settings));
+}
+
+function loadAll() {
+  var h = localStorage.getItem(App.dataKey);
+  var u = localStorage.getItem(App.userKey);
+  App.history = h ? JSON.parse(h) : [];
+  App.settings = u ? Object.assign(App.settings, JSON.parse(u)) : App.settings;
+  applyTheme();
+}
+
+function showPage(id) {
+  App.pages.forEach(function(p) {
+    var el = document.getElementById(p);
+    if (el) el.style.display = 'none';
+  });
+  var page = document.getElementById(id);
+  if (!page) return;
+
+  var template = document.getElementById(id + "Template");
+  if (template) {
+    page.innerHTML = template.innerHTML;
+  }
+  page.style.display = 'block';
+
+  document.querySelectorAll('.nav-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+
+  updateHeaderUI();
+  if (id === 'settingsPage') updateSettingsPageUI();
+  if (id === 'historyPage') refreshHistoryList();
+  if (id === 'homePage') refreshHomePage();
+}
+
+function applyTheme() {
+  document.documentElement.style.fontSize = App.settings.fontSize + 'px';
+  document.body.classList.toggle('dark', App.settings.theme === 'dark');
+}
+
+function showToast(message, type) {
+  if (type === undefined) type = 'info';
+  var toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'show';
+  if (type === 'error') toast.classList.add('error');
+  setTimeout(function() {
+    toast.className = toast.className.replace('show', '');
+  }, 3000);
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  var el = document.createElement('div');
+  el.innerText = s;
+  return el.innerHTML;
+}
+
+function formatAIResponse(text) {
+  return escapeHtml(text)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+/* -------------------------------------------
+ AI and OCR Functions (Using Promises .then/.catch)
+------------------------------------------- */
+function getAIResponse(prompt, history) {
+  return new Promise(function(resolve) {
+    var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
+
+    if (!apiKey) {
+      showToast('API Key is not set. Please add one in Settings.', 'error');
+      resolve("Error: API Key is required.");
+      return;
+    }
+    try {
+      // Use self.GoogleGenerativeAI as it's loaded in the global scope
+      var genAI = new self.GoogleGenerativeAI(apiKey);
+      var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      var chat = model.startChat({ history: history });
+      
+      chat.sendMessage(prompt)
+        .then(function(result) {
+          return result.response;
+        })
+        .then(function(response) {
+            resolve(response.text());
+        })
+        .catch(function(error) {
+          console.error("Gemini API Error:", error);
+          showToast('AI Error. Check console.', 'error');
+          resolve('AI Error: Could not get a response.');
+        });
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      showToast('AI Error: ' + error.message, 'error');
+      resolve('AI Error: Could not get a response.');
+    }
+  });
+}
+
+function runOcr(source) {
+  var container = document.getElementById('detectedQuestions');
+  if (!container) return;
+  container.innerHTML = '<p class="muted">Recognizing text... please wait.</p>';
+  Tesseract.recognize(source, 'eng')
+    .then(function(result) {
+      var text = result.data.text;
+      var questionRegex = /(?=\n\s*\d+[.)])/;
+      var questions = text.split(questionRegex).map(function(s) {
+        return s.trim();
+      }).filter(Boolean);
+
+      if (questions.length <= 1 && text.includes('\n\n')) {
+        questions = text.split(/\n\s*\n+/).map(function(s) {
+          return s.trim();
+        }).filter(Boolean);
+      }
+      renderDetectedQuestions(questions, text);
+    })
+    .catch(function(err) {
+      container.innerHTML = '<p class="muted" style="color:red">OCR Error: ' + err.message + '</p>';
+    });
+}
+
+
+/* -------------------------------------------
+ UI Rendering and Update Functions
+------------------------------------------- */
+function updateHeaderUI() {
+  document.getElementById('greetingSmall').innerText = App.settings.name ? 'Hi, ' + App.settings.name : 'Welcome';
+  
+  var headerPfp = document.getElementById('headerPfp');
+  var headerLogo = document.getElementById('headerLogo');
+  if (App.settings.avatar) {
+    headerPfp.src = App.settings.avatar;
+    headerPfp.classList.remove('hidden');
+    headerLogo.classList.add('hidden');
+  } else {
+    headerPfp.classList.add('hidden');
+    headerLogo.classList.remove('hidden');
+  }
+}
+
+function updateSettingsPageUI() {
+  document.getElementById('userName').value = App.settings.name || '';
+  document.getElementById('avatarPreview').src = App.settings.avatar || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  document.getElementById('themeSelect').value = App.settings.theme;
+  document.getElementById('fontSizeRange').value = App.settings.fontSize;
+  
+  document.getElementById('apiKeyInput').value = App.settings.apiKey || '';
+  var useCustom = !App.settings.useDefaultKey;
+  document.getElementById('settingsUseDefault').checked = !useCustom;
+  document.getElementById('settingsUseCustom').checked = useCustom;
+  document.getElementById('settingsCustomApiKeyContainer').style.display = useCustom ? 'block' : 'none';
+}
+
+function refreshHomePage() {
+  var userNameDisplay = document.getElementById('userNameDisplay');
+  if (userNameDisplay) userNameDisplay.textContent = App.settings.name || 'Student';
+
+  var recentList = document.getElementById('recentList');
+  if (recentList) {
+    recentList.innerHTML = '';
+    if (App.history.length === 0) {
+      recentList.innerHTML = '<p class="muted">Your saved conversations will appear here.</p>';
+      return;
+    }
+    App.history.slice(0, 3).forEach(function(item) {
+      var title = escapeHtml(item.title.slice(0, 80));
+      recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
+    });
+  }
+}
+
+function renderDetectedQuestions(questions, fullText) {
+  var container = document.getElementById('detectedQuestions');
+  container.innerHTML = '<h3>Detected Questions</h3>';
+  if (questions.length === 0 && fullText) {
+    questions = [fullText];
+  }
+  questions.forEach(function(qText) {
+    var questionHtml = escapeHtml(qText);
+    container.innerHTML += 
+      '<div class="question-card">' +
+        '<p class="question-text">' + questionHtml + '</p>' +
+        '<div class="ai-answer-container" style="display: none;"></div>' +
+        '<div style="display:flex; gap: 8px; align-items:center; margin-top:10px;">' +
+          '<select class="ai-personality-select" style="flex-grow:0; width: auto;">' +
+            '<option value="">Default Answer</option>' +
+            '<option value="\\n\\nPlease explain this simply, like I\'m 10 years old.">Explain Simply</option>' +
+            '<option value="\\n\\nPlease summarize the key points in a bulleted list.">Summarize</option>' +
+            '<option value="\\n\\nPlease provide a detailed, step-by-step guide.">Step-by-Step</option>' +
+          '</select>' +
+          '<button class="btn" data-action="start-conversation">Find Answer</button>' +
+        '</div>' +
+        '<div class="conversation-controls" style="display:none; margin-top:10px;">' +
+          '<textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up question..."></textarea>' +
+          '<button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button>' +
+        '</div>' +
+        '<div class="save-controls" style="display:none; margin-top:12px;">' +
+          '<input type="text" class="tags-input" placeholder="Add tags, comma separated...">' +
+          '<button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save to History</button>' +
+        '</div>' +
+      '</div>';
+  });
+}
+
+function refreshHistoryList() {
+    var historyList = document.getElementById('historyList');
+    if (!historyList) return;
+    historyList.innerHTML = '';
+    var searchTerm = (document.getElementById('historySearch') ? document.getElementById('historySearch').value : '').toLowerCase();
+    var showFavorites = document.getElementById('showFavoritesToggle') ? document.getElementById('showFavoritesToggle').checked : false;
+
+    var filteredHistory = App.history.filter(function(item) {
+        if (showFavorites && !item.isFavorited) return false;
+        
+        var conversationText = item.conversation.map(function(turn) { return turn.parts[0].text; }).join(' ').toLowerCase();
+        var tagsText = (item.tags || []).join(' ').toLowerCase();
+        
+        return conversationText.includes(searchTerm) || tagsText.includes(searchTerm);
+    });
+
+    if (filteredHistory.length === 0) {
+        historyList.innerHTML = '<p class="muted">No conversations found.</p>';
+        return;
+    }
+    filteredHistory.forEach(function(item) {
+        var tagsHtml = (item.tags || []).map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('');
+        var conversationHtml = item.conversation.map(function(turn) {
+            var bubbleClass = turn.role === 'user' ? 'user' : 'model';
+            return '<div class="chat-bubble ' + bubbleClass + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
+        }).join('');
+        
+        historyList.innerHTML += 
+            '<div class="question-card">' +
+                '<div style="display:flex; justify-content:space-between; align-items:start;">' +
+                    '<h4>' + escapeHtml(item.title) + '</h4>' +
+                    '<button class="favorite-btn ' + (item.isFavorited ? 'favorited' : '') + '" data-action="toggle-favorite" data-id="' + item.id + '">★</button>' +
+                '</div>' +
+                '<div>' + tagsHtml + '</div>' +
+                '<div class="ai-answer-container" style="display:block; margin-top:12px;">' + conversationHtml + '</div>' +
+                '<div style="margin-top:10px;">' +
+                    '<button class="btn small secondary" data-action="copy-conversation" data-id="' + item.id + '">Copy</button>' +
+                '</div>' +
+            '</div>';
+    });
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+
+function handleAvatarUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    App.settings.avatar = e.target.result;
+    saveAll();
+    updateHeaderUI();
+    updateSettingsPageUI();
+  };
+  reader.readAsDataURL(file);
+}
+
+// Function to copy text using a fallback for older browsers
+function copyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = 0;
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        var successful = document.execCommand('copy');
+        if (successful) {
+            showToast('Conversation copied!');
+        } else {
+            showToast('Failed to copy.', 'error');
+        }
+    } catch (err) {
+        showToast('Failed to copy.', 'error');
+    }
+    document.body.removeChild(textArea);
+}
+
+/* -------------------------------------------
+ Initialization and Event Handling
+------------------------------------------- */
+function init() {
+  loadAll();
+  
+  document.body.addEventListener('click', function(e) {
+    var target = e.target.closest('[data-action]');
+    if (!target) return;
+    var action = target.dataset.action;
+    var card = target.closest('.question-card');
+    
+    if (action === 'navigate') showPage(target.dataset.page);
+    
+    if (action === 'accept-welcome') {
+      App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
+      var useDefault = document.getElementById('setupUseDefault').checked;
+      App.settings.useDefaultKey = useDefault;
+      if (!useDefault) {
+        App.settings.apiKey = document.getElementById('setupApiKey').value.trim();
+      } else {
+        App.settings.apiKey = '';
+      }
+      saveAll();
+      localStorage.setItem('qsolve_first_time_' + App.dataKey.split('_')[2], 'true');
+      showPage('homePage');
+    }
+
+    if (action === 'run-ocr') {
+      var file = document.getElementById('ocrFile') ? document.getElementById('ocrFile').files[0] : null;
+      var text = document.getElementById('pasteText') ? document.getElementById('pasteText').value.trim() : null;
+      if (file) runOcr(file);
+      else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
+      else showToast('Please select a file or paste text.', 'error');
+    }
+    
+    if (action === 'start-conversation' || action === 'ask-follow-up') {
+      if (!card) return;
+      var answerContainer = card.querySelector('.ai-answer-container');
+      var questionTextElem = card.querySelector('.question-text');
+      var followUpInput = card.querySelector('.follow-up-input');
+      
+      var prompt;
+      var existingHistory = JSON.parse(card.dataset.conversationHistory || '[]');
+
+      if (action === 'start-conversation') {
+        var personalitySelect = card.querySelector('.ai-personality-select');
+        prompt = questionTextElem.innerText + (personalitySelect.value || '');
+        answerContainer.innerHTML = '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+      } else {
+        prompt = followUpInput.value.trim();
+        if (!prompt) return;
+        answerContainer.innerHTML += '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+        followUpInput.value = '';
+      }
+      
+      answerContainer.style.display = 'block';
+      target.textContent = 'Thinking...';
+      target.disabled = true;
+
+      // Using .then() for async operation
+      getAIResponse(prompt, existingHistory).then(function(aiResponse) {
+        existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
+        existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
+        card.dataset.conversationHistory = JSON.stringify(existingHistory);
+
+        answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
+        if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([answerContainer]);
+
+        if (action === 'start-conversation') {
+          target.parentElement.style.display = 'none';
+          card.querySelector('.conversation-controls').style.display = 'block';
+          card.querySelector('.save-controls').style.display = 'block';
+        }
+        target.textContent = action === 'start-conversation' ? 'Find Answer' : 'Send';
+        target.disabled = false;
+      });
+    }
+    
+    if (action === 'save-conversation') {
+      if (!card) return;
+      var history = JSON.parse(card.dataset.conversationHistory || '[]');
+      if (history.length === 0) return;
+
+      var tagsInput = card.querySelector('.tags-input');
+      var tags = tagsInput.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+
+      var historyItem = {
+        id: 'q-' + Date.now(),
+        title: history[0].parts[0].text.slice(0, 100),
+        isFavorited: false,
+        tags: tags,
+        createdAt: new Date().toISOString(),
+        conversation: history
+      };
+
+      App.history.unshift(historyItem);
+      saveAll();
+      
+      target.textContent = 'Saved ✓';
+      target.disabled = true;
+      showToast('Conversation saved to history!');
+    }
+
+    if (action === 'toggle-favorite') {
+      var itemId = target.dataset.id;
+      var item = App.history.find(function(i) { return i.id === itemId; });
+      if (item) {
+        item.isFavorited = !item.isFavorited;
+        saveAll();
+        refreshHistoryList();
+      }
+    }
+
+    if (action === 'copy-conversation') {
+      var itemId = target.dataset.id;
+      var item = App.history.find(function(i) { return i.id === itemId; });
+      if (item) {
+        var textToCopy = item.conversation.map(function(turn) {
+          return turn.role.toUpperCase() + ': ' + turn.parts[0].text;
+        }).join('\n\n');
+        copyTextToClipboard(textToCopy);
+      }
+    }
+    
+    if (action === 'save-settings') {
+      App.settings.name = document.getElementById('userName').value.trim();
+      var useDefault = document.getElementById('settingsUseDefault').checked;
+      App.settings.useDefaultKey = useDefault;
+      if (!useDefault) {
+        App.settings.apiKey = document.getElementById('apiKeyInput').value.trim();
+      } else {
+        App.settings.apiKey = '';
+      }
+      saveAll();
+      updateHeaderUI();
+      showToast("Settings saved!");
+    }
+    
+    // Replaced confirm() with a two-step button confirmation
+    if (action === 'reset-app') {
+      target.textContent = 'Are you sure? Click again.';
+      target.style.background = '#f59e0b'; // amber-500
+      target.dataset.action = 'reset-app-confirm';
+      // Revert after a few seconds if not clicked
+      setTimeout(function() {
+        if (target.dataset.action === 'reset-app-confirm') {
+          target.textContent = 'Reset App';
+          target.style.background = '#ef4444'; // red-500
+          target.dataset.action = 'reset-app';
+        }
+      }, 4000);
+    } else if (action === 'reset-app-confirm') {
+      localStorage.clear();
+      App.history = [];
+      App.settings = { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true };
+      applyTheme();
+      updateHeaderUI(); 
+      showPage('welcomeScreen');
+      showToast('App has been reset.');
+    }
+
+    if (action === 'export-data') {
+      var data = {
+        settings: App.settings,
+        history: App.history
+      };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'qsolve_backup_' + Date.now() + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data exported!');
+    }
+
+    if (action === 'share') {
+      if (navigator.share) {
+        navigator.share({ title: 'Q Solve', text: 'Check out this homework helper!', url: window.location.href });
+      } else {
+        showToast('Web Share not supported on this browser.');
+      }
+    }
+  });
+  
+  document.body.addEventListener('change', function(e) {
+    var target = e.target;
+    if (target.id === 'avatarUpload') handleAvatarUpload(e);
+    if (target.id === 'importDataInput') {
+      var file = target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          var data = JSON.parse(event.target.result);
+          if (data.settings && data.history) {
+            App.settings = data.settings;
+            App.history = data.history;
+            saveAll();
+            loadAll(); 
+            showPage('settingsPage');
+            showToast('Data imported successfully!');
+          } else {
+            showToast('Invalid backup file format.', 'error');
+          }
+        } catch (err) {
+          showToast('Failed to parse backup file.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+    if (target.id === 'themeSelect') {
+      App.settings.theme = target.value;
+      applyTheme();
+      saveAll();
+    }
+    
+    if (target.name === 'apiKeyChoiceSetup' || target.name === 'apiKeyChoiceSettings') {
+      var isSetup = target.name === 'apiKeyChoiceSetup';
+      var containerId = isSetup ? 'setupCustomApiKeyContainer' : 'settingsCustomApiKeyContainer';
+      var container = document.getElementById(containerId);
+      if (container) {
+        container.style.display = target.value === 'custom' ? 'block' : 'none';
+      }
+    }
+  });
+
+  document.body.addEventListener('input', function(e) {
+      if (e.target.id === 'fontSizeRange') {
+        App.settings.fontSize = e.target.value;
+        document.documentElement.style.fontSize = App.settings.fontSize + 'px';
+        saveAll();
+      }
+      if (e.target.id === 'historySearch' || e.target.id === 'showFavoritesToggle') {
+        refreshHistoryList();
+      }
+  });
+
+  var firstTime = localStorage.getItem('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
+  showPage(firstTime ? 'welcomeScreen' : 'homePage');
+}
+
+// Start the application
+init();
+</script>
+
+</body>
+</html>
