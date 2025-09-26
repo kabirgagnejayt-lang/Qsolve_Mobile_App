@@ -6,76 +6,76 @@
 <title>Q Solve — Direct API Version</title>
 
 <style>
-  :root {
-    --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
-    --bg: #f0f9ff; --card: #ffffff; --text: #082f49; --muted: #64748b;
-    --success: #22c55e; --danger: #ef4444; --warning: #f97316;
-    --radius: 12px; --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  body.dark {
-    --primary: #38bdf8; --primary-light: #0c4a6e; --primary-dark: #7dd3fc;
-    --bg: #020617; --card: #0f172a; --text: #e2e8f0; --muted: #94a3b8;
-  }
-  html { font-size: 16px; }
-  body {
-    margin:0; padding:0 0 90px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  header {
-    padding: 10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
-    background:var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-    position: fixed; bottom: 0; left: 0; right: 0;
-    z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
-  }
-  .brand { display:flex; align-items:center; gap:10px; min-width: 0; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
-  .brand-text { display: flex; flex-direction: column; min-width: 0; }
-  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
-  .logo {
-    width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
-    align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
-  }
-  .title { font-weight:600; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .header-avatar {
-    width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
-    flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold;
-  }
-  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
-  nav button.active { background:var(--primary-light); color:var(--primary-dark); }
-  .container { max-width:1100px; margin:18px auto; padding:0 14px; }
-  .page { display:none; margin-top:14px; }
-  .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
-  h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
-  p { color:var(--muted); line-height:1.5; margin: 4px 0; }
-  .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  input,textarea,select,button { font-size:1rem; font-family: inherit; }
-  input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
-  input:disabled { background: #e2e8f0; cursor: not-allowed; }
-  .btn { background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight: 600; }
-  .btn.secondary { background:var(--primary-light); color:var(--primary-dark); }
-  .btn:disabled { background: #94a3b8; cursor: not-allowed; }
-  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem;}
-  .footer { text-align:center; font-size:0.8rem; color:var(--muted); padding:16px 0; background: transparent; box-shadow: none;}
-  #toast {
-    position:fixed; bottom: 100px; left:50%; transform:translateX(-50%);
-    background: #0f172a; color:white; padding:12px 20px; border-radius:8px;
-    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease; text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  }
-  #toast.show { visibility:visible; opacity:1; }
-  #toast.error { background-color: var(--danger); }
-  .warning-box { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin: 16px 0; }
-  .info-box { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin: 16px 0; }
-  .feature-disabled { opacity: 0.6; cursor: not-allowed; }
-  .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
-  .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
+  :root {
+    --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
+    --bg: #f0f9ff; --card: #ffffff; --text: #082f49; --muted: #64748b;
+    --success: #22c55e; --danger: #ef4444; --warning: #f97316;
+    --radius: 12px; --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  body.dark {
+    --primary: #38bdf8; --primary-light: #0c4a6e; --primary-dark: #7dd3fc;
+    --bg: #020617; --card: #0f172a; --text: #e2e8f0; --muted: #94a3b8;
+  }
+  html { font-size: 16px; }
+  body {
+    margin:0; padding:0 0 90px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  header {
+    padding: 10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
+    background:var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
+  }
+  .brand { display:flex; align-items:center; gap:10px; min-width: 0; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
+  .brand-text { display: flex; flex-direction: column; min-width: 0; }
+  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
+  .logo {
+    width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
+    align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
+  }
+  .title { font-weight:600; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-avatar {
+    width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
+    flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center; font-weight: bold;
+  }
+  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
+  nav button.active { background:var(--primary-light); color:var(--primary-dark); }
+  .container { max-width:1100px; margin:18px auto; padding:0 14px; }
+  .page { display:none; margin-top:14px; }
+  .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
+  h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
+  p { color:var(--muted); line-height:1.5; margin: 4px 0; }
+  .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  input,textarea,select,button { font-size:1rem; font-family: inherit; }
+  input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
+  input:disabled { background: #e2e8f0; cursor: not-allowed; }
+  .btn { background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight: 600; }
+  .btn.secondary { background:var(--primary-light); color:var(--primary-dark); }
+  .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem;}
+  .footer { text-align:center; font-size:0.8rem; color:var(--muted); padding:16px 0; background: transparent; box-shadow: none;}
+  #toast {
+    position:fixed; bottom: 100px; left:50%; transform:translateX(-50%);
+    background: #0f172a; color:white; padding:12px 20px; border-radius:8px;
+    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease; text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  #toast.show { visibility:visible; opacity:1; }
+  #toast.error { background-color: var(--danger); }
+  .warning-box { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin: 16px 0; }
+  .info-box { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin: 16px 0; }
+  .feature-disabled { opacity: 0.6; cursor: not-allowed; }
+  .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
+  .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
 
-  @media (max-width: 420px) {
-    .title { display: none; }
-  }
+  @media (max-width: 420px) {
+    .title { display: none; }
+  }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -85,94 +85,94 @@
 <body>
 
 <header>
-  <div class="brand">
-    <div id="headerLogo" class="logo">QS</div>
-    <div id="headerPfp" class="header-avatar hidden"></div>
-    <div class="brand-text">
-        <div class="title">Q Solve</div>
-        <div class="muted" id="greetingSmall">Welcome</div>
-    </div>
-  </div>
-  <nav id="mainNav">
-    <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
-    <button class="nav-btn" data-action="navigate" data-page="solvePage">Solve</button>
-    <button class="nav-btn" data-action="navigate" data-page="historyPage">History</button>
-    <button class="nav-btn" data-action="navigate" data-page="settingsPage">Settings</button>
-  </nav>
+  <div class="brand">
+    <div id="headerLogo" class="logo">QS</div>
+    <div id="headerPfp" class="header-avatar hidden"></div>
+    <div class="brand-text">
+        <div class="title">Q Solve</div>
+        <div class="muted" id="greetingSmall">Welcome</div>
+    </div>
+  </div>
+  <nav id="mainNav">
+    <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
+    <button class="nav-btn" data-action="navigate" data-page="solvePage">Solve</button>
+    <button class="nav-btn" data-action="navigate" data-page="historyPage">History</button>
+    <button class="nav-btn" data-action="navigate" data-page="settingsPage">Settings</button>
+  </nav>
 </header>
 
 <div class="container">
-  <div id="welcomeScreen" class="page card"></div> <div id="homePage" class="page"></div> <div id="solvePage" class="page"></div>
-  <div id="historyPage" class="page"></div> <div id="settingsPage" class="page"></div>
-  <div class="footer">
-      <div>Made by Kabir Gagneja © 2025</div>
-      <div>@Kabir Gagneja Invents</div>
-  </div>
+  <div id="welcomeScreen" class="page card"></div> <div id="homePage" class="page"></div> <div id="solvePage" class="page"></div>
+  <div id="historyPage" class="page"></div> <div id="settingsPage" class="page"></div>
+  <div class="footer">
+      <div>Made by Kabir Gagneja © 2025</div>
+      <div>@Kabir Gagneja Invents</div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <template id="welcomeScreenTemplate">
-  <h2>Welcome to Q Solve</h2> <p>Your personal homework helper, redesigned.</p>
-  <div style="margin-top:20px;"> <label>Please enter your name to begin:</label> <input id="setupName" placeholder="e.g., Kabir" style="margin-top: 4px;"/> </div>
-  <div class="info-box"> <p><strong>Note:</strong> This app uses cookies to save your settings. By continuing, you agree to their use.</p> </div>
-  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Get Started</button>
+  <h2>Welcome to Q Solve</h2> <p>Your personal homework helper, redesigned.</p>
+  <div style="margin-top:20px;"> <label>Please enter your name to begin:</label> <input id="setupName" placeholder="e.g., Kabir" style="margin-top: 4px;"/> </div>
+  <div class="info-box"> <p><strong>Note:</strong> This app uses cookies to save your settings. By continuing, you agree to their use.</p> </div>
+  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Get Started</button>
 </template>
 <template id="homePageTemplate">
-  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p>Ready to solve some problems?</p>
-    <div style="display:flex; gap:8px; margin-top:16px;">
-      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
-      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
-    </div>
-  </div>
-  <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
+  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p>Ready to solve some problems?</p>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
+      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
+    </div>
+  </div>
+  <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
 </template>
 <template id="solvePageTemplate">
-  <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
-    <div class="info-box"> <p>AI features require a working internet connection to contact Google's servers.</p> </div>
-    <div class="feature-disabled" style="margin-top:15px;">
-        <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
-        <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
-    </div>
-    <div style="margin-top: 15px;">
-        <label for="pasteText">Or paste your question here:</label>
-        <textarea id="pasteText" rows="4" placeholder="e.g., What is the powerhouse of the cell?" style="margin-top: 4px;"></textarea>
-    </div>
-    <button class="btn" data-action="run-ocr" style="margin-top:12px;">Extract & Solve</button>
-    <div id="detectedQuestions" style="margin-top:16px;"></div>
-  </div>
+  <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
+    <div class="info-box"> <p>AI features require a working internet connection to contact Google's servers.</p> </div>
+    <div class="feature-disabled" style="margin-top:15px;">
+        <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
+        <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
+    </div>
+    <div style="margin-top: 15px;">
+        <label for="pasteText">Or paste your question here:</label>
+        <textarea id="pasteText" rows="4" placeholder="e.g., What is the powerhouse of the cell?" style="margin-top: 4px;"></textarea>
+    </div>
+    <button class="btn" data-action="run-ocr" style="margin-top:12px;">Extract & Solve</button>
+    <div id="detectedQuestions" style="margin-top:16px;"></div>
+  </div>
 </template>
 <template id="historyPageTemplate">
-  <div class="card"> <h2>Conversation History</h2>
-      <div class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation because of device constraints.</p></div>
-      <div id="historyList" style="margin-top:16px;"></div>
-  </div>
+  <div class="card"> <h2>Conversation History</h2>
+      <div class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation because of device constraints.</p></div>
+      <div id="historyList" style="margin-top:16px;"></div>
+  </div>
 </template>
 <template id="settingsPageTemplate">
-  <div class="row">
-    <div class="col card"> <h2>Profile Settings</h2>
-      <div style="display:flex; gap:16px; align-items:center; margin-top: 12px;">
-        <div id="avatarPreview" class="avatar-preview">K</div>
-        <div style="flex:1;">
-            <label for="userName">Your Name</label>
-            <input type="text" id="userName" placeholder="Your name" style="margin-top:4px;">
-            <div class="feature-disabled" style="margin-top: 12px;">
-                <label>Profile Picture <span class="coming-soon-tag">Coming Soon</span></label>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col card"> <h2>Preferences</h2>
-        <label for="themeSelect">Theme</label>
-        <select id="themeSelect" style="margin-top:4px;"> <option value="default">Light (Default)</option> <option value="dark">Dark</option> </select>
-    </div>
-  </div>
-  <div class="card" style="text-align:center; margin-top: 16px;">
-    <button class="btn" data-action="save-settings">Save All Settings</button>
-    <button class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
-  </div>
+  <div class="row">
+    <div class="col card"> <h2>Profile Settings</h2>
+      <div style="display:flex; gap:16px; align-items:center; margin-top: 12px;">
+        <div id="avatarPreview" class="avatar-preview">K</div>
+        <div style="flex:1;">
+            <label for="userName">Your Name</label>
+            <input type="text" id="userName" placeholder="Your name" style="margin-top:4px;">
+            <div class="feature-disabled" style="margin-top: 12px;">
+                <label>Profile Picture <span class="coming-soon-tag">Coming Soon</span></label>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col card"> <h2>Preferences</h2>
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" style="margin-top:4px;"> <option value="default">Light (Default)</option> <option value="dark">Dark</option> </select>
+    </div>
+  </div>
+  <div class="card" style="text-align:center; margin-top: 16px;">
+    <button class="btn" data-action="save-settings">Save All Settings</button>
+    <button class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
+  </div>
 </template>
 
 <!-- MAIN APP SCRIPT -->
@@ -180,348 +180,349 @@
 (function() {
 'use strict';
 window.onerror = function(message, source, lineno) {
-    alert('Critical Error at line ' + lineno + ': ' + message);
-    return true;
+    alert('Critical Error at line ' + lineno + ': ' + message);
+    return true;
 };
 
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
-  pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v17', userKey: 'qsolve_user_v17', history: [],
-  settings: { name: 'Student', theme: 'default' },
+  pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
+  dataKey: 'qsolve_data_v17', userKey: 'qsolve_user_v17', history: [],
+  settings: { name: 'Student', theme: 'default' },
 };
 
 function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    try {
-       document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
-    } catch (e) { console.error("Cookie setting failed"); }
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    try {
+       document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
+    } catch (e) { console.error("Cookie setting failed"); }
 }
 
 function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) {
-           try {
-              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
-           } catch(e) { return null; }
-        }
-    }
-    return null;
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) {
+           try {
+              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
+           } catch(e) { return null; }
+        }
+    }
+    return null;
 }
 
-function eraseCookie(name) {   
-    document.cookie = name+'=; Max-Age=-99999999; path=/;';
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999; path=/;';
 }
 
 function saveData() {
-    var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
-    setCookie(App.dataKey, historyToSave, 365);
-    setCookie(App.userKey, App.settings, 365);
+    var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
+    setCookie(App.dataKey, historyToSave, 365);
+    setCookie(App.userKey, App.settings, 365);
 }
 
 function loadData() {
-  var loadedHistory = getCookie(App.dataKey);
-  var loadedSettings = getCookie(App.userKey);
-  try {
-    if (loadedHistory) App.history = loadedHistory;
-    if (loadedSettings) {
-        var defaultSettings = { name: 'Student', theme: 'default' };
-        for (var key in loadedSettings) {
-            if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
-                defaultSettings[key] = loadedSettings[key];
-            }
-        }
-        App.settings = defaultSettings;
-    }
-  } catch (e) {
-    showToast("Error loading saved data.", "error"); App.history = [];
-  }
+  var loadedHistory = getCookie(App.dataKey);
+  var loadedSettings = getCookie(App.userKey);
+  try {
+    if (loadedHistory) App.history = loadedHistory;
+    if (loadedSettings) {
+        var defaultSettings = { name: 'Student', theme: 'default' };
+        for (var key in loadedSettings) {
+            if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
+                defaultSettings[key] = loadedSettings[key];
+            }
+        }
+        App.settings = defaultSettings;
+    }
+  } catch (e) {
+    showToast("Error loading saved data.", "error"); App.history = [];
+  }
 }
 
 function clearData() {
-    eraseCookie(App.dataKey); eraseCookie(App.userKey);
-    eraseCookie('qsolve_first_time_' + App.dataKey.split('_')[2]);
+    eraseCookie(App.dataKey); eraseCookie(App.userKey);
+    eraseCookie('qsolve_first_time_' + App.dataKey.split('_')[2]);
 }
 
 function showPage(id) {
-  for(var i=0; i < App.pages.length; i++) {
-    var el = document.getElementById(App.pages[i]);
-    if (el) el.style.display = 'none';
-  }
-  var page = document.getElementById(id);
-  if (!page) return;
-  var template = document.getElementById(id + "Template");
-  if (template) page.innerHTML = template.innerHTML;
-  page.style.display = 'block';
-  var header = document.querySelector('header');
-  if (header) {
-      header.style.display = (id === 'welcomeScreen') ? 'none' : 'flex';
-  }
-  var navBtns = document.querySelectorAll('.nav-btn');
-  for(var j=0; j < navBtns.length; j++) {
-    navBtns[j].classList.remove('active');
-  }
-  var activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
-  if (activeBtn) activeBtn.classList.add('active');
-  if (id !== 'welcomeScreen') updateHeaderUI();
-  if (id === 'settingsPage') updateSettingsPageUI();
-  if (id === 'historyPage') refreshHistoryList();
-  if (id === 'homePage') refreshHomePage();
+  for(var i=0; i < App.pages.length; i++) {
+    var el = document.getElementById(App.pages[i]);
+    if (el) el.style.display = 'none';
+  }
+  var page = document.getElementById(id);
+  if (!page) return;
+  var template = document.getElementById(id + "Template");
+  if (template) page.innerHTML = template.innerHTML;
+  page.style.display = 'block';
+  var header = document.querySelector('header');
+  if (header) {
+      header.style.display = (id === 'welcomeScreen') ? 'none' : 'flex';
+  }
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for(var j=0; j < navBtns.length; j++) {
+    navBtns[j].classList.remove('active');
+  }
+  var activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  if (id !== 'welcomeScreen') updateHeaderUI();
+  if (id === 'settingsPage') updateSettingsPageUI();
+  if (id === 'historyPage') refreshHistoryList();
+  if (id === 'homePage') refreshHomePage();
 }
 
 function applyTheme() {
-  document.body.className = App.settings.theme === 'dark' ? 'dark' : '';
+  document.body.className = App.settings.theme === 'dark' ? 'dark' : '';
 }
 
 function showToast(message, type) {
-  var toast = document.getElementById('toast');
-  if (!toast) { alert(message); return; }
-  toast.textContent = message;
-  toast.className = 'show';
-  if (type === 'error') toast.classList.add('error');
-  setTimeout(function() { toast.className = toast.className.replace('show', ''); }, 5000);
+  var toast = document.getElementById('toast');
+  if (!toast) { alert(message); return; }
+  toast.textContent = message;
+  toast.className = 'show';
+  if (type === 'error') toast.classList.add('error');
+  setTimeout(function() { toast.className = toast.className.replace('show', ''); }, 5000);
 }
 
 function escapeHtml(s) {
-  if (s === null || s === undefined) return '';
-  var el = document.createElement('div');
-  el.textContent = s;
-  return el.innerHTML;
+  if (s === null || s === undefined) return '';
+  var el = document.createElement('div');
+  el.textContent = s;
+  return el.innerHTML;
 }
 
 function formatAIResponse(text) {
-  return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
+  return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
 }
 
 function cleanHistory(history) {
-    var sanitizedHistory = [];
-    if (Object.prototype.toString.call(history) !== '[object Array]') {
-        return [];
-    }
-    for (var i = 0; i < history.length; i++) {
-        var turn = history[i];
-        if (turn && turn.role && turn.parts && typeof turn.parts.length !== 'undefined') {
-            sanitizedHistory.push(turn);
-        }
-    }
-    return sanitizedHistory;
+    var sanitizedHistory = [];
+    if (Object.prototype.toString.call(history) !== '[object Array]') {
+        return [];
+    }
+    for (var i = 0; i < history.length; i++) {
+        var turn = history[i];
+        if (turn && turn.role && turn.parts && typeof turn.parts.length !== 'undefined') {
+            sanitizedHistory.push(turn);
+        }
+    }
+    return sanitizedHistory;
 }
 
 // --- NEW: Direct API call using fetch ---
 function getAIResponse(prompt, history) {
-  return new Promise(function(resolve) {
-    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + DEFAULT_API_KEY;
-    
-    var sanitizedHistory = cleanHistory(history);
-    var requestBody = {
-      contents: sanitizedHistory.concat([
-        {
-          "parts": [
-            { "text": prompt }
-          ]
-        }
-      ])
-    };
+  return new Promise(function(resolve) {
+    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + DEFAULT_API_KEY;
+    
+    var sanitizedHistory = cleanHistory(history);
+    var requestBody = {
+      contents: sanitizedHistory.concat([
+        {
+          "parts": [
+            { "text": prompt }
+          ]
+        }
+      ])
+    };
 
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    })
-    .then(function(response) {
-      if (!response.ok) {
-        // Try to get more detailed error from the API response body
-        return response.json().then(function(errorBody) {
-          var message = (errorBody.error && errorBody.error.message) ? errorBody.error.message : 'HTTP error! status: ' + response.status;
-          throw new Error(message);
-        }).catch(function() {
-          throw new Error('HTTP error! status: ' + response.status);
-        });
-      }
-      return response.json();
-    })
-    .then(function(data) {
-      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-        resolve(data.candidates[0].content.parts[0].text);
-      } else {
-        // Handle cases where the response is successful but empty, e.g., safety block
-        if(data.promptFeedback && data.promptFeedback.blockReason){
-             resolve("Response blocked due to: " + data.promptFeedback.blockReason);
-        } else {
-             resolve("AI returned an empty response.");
-        }
-      }
-    })
-    .catch(function(error) {
-      showToast('AI Error: ' + error.message, 'error');
-      resolve('AI Error: Could not get a response.');
-    });
-  });
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(function(response) {
+      if (!response.ok) {
+        // Try to get more detailed error from the API response body
+        return response.json().then(function(errorBody) {
+          var message = (errorBody.error && errorBody.error.message) ? errorBody.error.message : 'HTTP error! status: ' + response.status;
+          throw new Error(message);
+        }).catch(function() {
+          throw new Error('HTTP error! status: ' + response.status);
+        });
+      }
+      return response.json();
+    })
+    .then(function(data) {
+      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+        resolve(data.candidates[0].content.parts[0].text);
+      } else {
+        // Handle cases where the response is successful but empty, e.g., safety block
+        if(data.promptFeedback && data.promptFeedback.blockReason){
+             resolve("Response blocked due to: " + data.promptFeedback.blockReason);
+        } else {
+             resolve("AI returned an empty response.");
+        }
+      }
+    })
+    .catch(function(error) {
+      showToast('AI Error: ' + error.message, 'error');
+      resolve('AI Error: Could not get a response.');
+    });
+  });
 }
 
 function updateHeaderUI() {
-  var name = App.settings.name || 'User';
-  var greeting = document.getElementById('greetingSmall');
-  if(greeting) greeting.innerText = 'Hi, ' + name;
-  var headerPfp = document.getElementById('headerPfp');
-  var headerLogo = document.getElementById('headerLogo');
-  if(headerPfp && headerLogo){
-      headerPfp.textContent = name.charAt(0).toUpperCase();
-      headerLogo.classList.add('hidden');
-      headerPfp.classList.remove('hidden');
-  }
+  var name = App.settings.name || 'User';
+  var greeting = document.getElementById('greetingSmall');
+  if(greeting) greeting.innerText = 'Hi, ' + name;
+  var headerPfp = document.getElementById('headerPfp');
+  var headerLogo = document.getElementById('headerLogo');
+  if(headerPfp && headerLogo){
+      headerPfp.textContent = name.charAt(0).toUpperCase();
+      headerLogo.classList.add('hidden');
+      headerPfp.classList.remove('hidden');
+  }
 }
 
 function updateSettingsPageUI() {
-  document.getElementById('userName').value = App.settings.name || '';
-  var name = App.settings.name || 'U';
-  document.getElementById('avatarPreview').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('themeSelect').value = App.settings.theme;
+  document.getElementById('userName').value = App.settings.name || '';
+  var name = App.settings.name || 'U';
+  document.getElementById('avatarPreview').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('themeSelect').value = App.settings.theme;
 }
 
 function refreshHomePage() {
-  var userNameDisplay = document.getElementById('userNameDisplay');
-  if (userNameDisplay) userNameDisplay.textContent = App.settings.name || 'Student';
-  var recentList = document.getElementById('recentList');
-  if (recentList) {
-    recentList.innerHTML = '';
-    if (App.history.length === 0) {
-      recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
-    }
-    var item = App.history[0];
-    var title = escapeHtml(item.title.slice(0, 80));
-    recentList.innerHTML += '<div class="card">' + title + '...</div>';
-  }
+  var userNameDisplay = document.getElementById('userNameDisplay');
+  if (userNameDisplay) userNameDisplay.textContent = App.settings.name || 'Student';
+  var recentList = document.getElementById('recentList');
+  if (recentList) {
+    recentList.innerHTML = '';
+    if (App.history.length === 0) {
+      recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
+    }
+    var item = App.history[0];
+    var title = escapeHtml(item.title.slice(0, 80));
+    recentList.innerHTML += '<div class="card">' + title + '...</div>';
+  }
 }
 
 function renderDetectedQuestions(questions) {
-  var container = document.getElementById('detectedQuestions');
-  if (!container) return;
-  container.innerHTML = '';
-  var html = '';
-  for(var i=0; i<questions.length; i++) {
-    var questionHtml = escapeHtml(questions[i]);
-    html += '<div class="card" data-conversation-history="[]"><p><strong>Q:</strong> ' + questionHtml + '</p><div class="ai-answer-container" style="display: none; margin-top: 12px;"></div><div style="margin-top:12px;"><button class="btn" data-action="start-conversation">Solve with AI</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div></div>';
-  }
-  container.innerHTML += html;
+  var container = document.getElementById('detectedQuestions');
+  if (!container) return;
+  container.innerHTML = '';
+  var html = '';
+  for(var i=0; i<questions.length; i++) {
+    var questionHtml = escapeHtml(questions[i]);
+    html += '<div class="card" data-conversation-history="[]"><p><strong>Q:</strong> ' + questionHtml + '</p><div class="ai-answer-container" style="display: none; margin-top: 12px;"></div><div style="margin-top:12px;"><button class="btn" data-action="start-conversation">Solve with AI</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div></div>';
+  }
+  container.innerHTML += html;
 }
 
 function refreshHistoryList() {
-    var historyList = document.getElementById('historyList');
-    if (!historyList) return;
-    if (App.history.length === 0) {
-        historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
-    }
-    var html = '';
-    var item = App.history[0];
-    var conversationHtml = item.conversation.map(function(turn) {
-        return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
-    }).join('');
-    html += '<div><h4>' + escapeHtml(item.title) + '</h4>' + conversationHtml + '</div>';
-    historyList.innerHTML = html;
+    var historyList = document.getElementById('historyList');
+    if (!historyList) return;
+    if (App.history.length === 0) {
+        historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
+    }
+    var html = '';
+    var item = App.history[0];
+    var conversationHtml = item.conversation.map(function(turn) {
+        return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
+    }).join('');
+    html += '<div><h4>' + escapeHtml(item.title) + '</h4>' + conversationHtml + '</div>';
+    historyList.innerHTML = html;
 }
 
 function findClosest(elem, selector) {
-    var current = elem;
-    while (current && current !== document.body) {
-        if (typeof current.matches === 'function' && current.matches(selector)) { return current; }
-        current = current.parentNode;
-    }
-    return null;
+    var current = elem;
+    while (current && current !== document.body) {
+        if (typeof current.matches === 'function' && current.matches(selector)) { return current; }
+        current = current.parentNode;
+    }
+    return null;
 }
 
 function init() {
-  loadData();
-  applyTheme();
-  var firstTime = getCookie('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
-  showPage(firstTime ? 'welcomeScreen' : 'homePage');
+  loadData();
+  applyTheme();
+  var firstTime = getCookie('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
+  showPage(firstTime ? 'welcomeScreen' : 'homePage');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  init();
-  document.body.addEventListener('click', function(e) {
-    var target = e.target;
-    while (target && target !== document.body) {
-        if (target.getAttribute('data-action')) break;
-        target = target.parentNode;
-    }
-    if (!target || !target.getAttribute('data-action')) return;
-    
-    var action = target.getAttribute('data-action');
-    var card = findClosest(target, '.card');
-    
-    if (action === 'navigate') {
-        showPage(target.getAttribute('data-page'));
-    } else if (action === 'accept-welcome') {
-      App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
-      saveData();
-      setCookie('qsolve_first_time_' + App.dataKey.split('_')[2], 'true', 365);
-      showPage('homePage');
-    } else if (action === 'run-ocr') {
-      var text = document.getElementById('pasteText').value.trim();
-      if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
-      else showToast('Please paste a question first.', 'error');
-    } else if (action === 'start-conversation' || action === 'ask-follow-up') {
-        if (!card) return;
-        var answerContainer = card.querySelector('.ai-answer-container');
-        var questionTextElem = card.querySelector('p');
-        var followUpInput = card.querySelector('.follow-up-input');
-        var prompt;
-        var existingHistory = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
-        if (action === 'start-conversation') {
-            prompt = questionTextElem.textContent.replace('Q: ','');
-            answerContainer.innerHTML = '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
-        } else {
-            prompt = followUpInput.value.trim();
-            if (!prompt) return;
-            answerContainer.innerHTML += '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
-            followUpInput.value = '';
-        }
-        answerContainer.style.display = 'block'; target.textContent = 'Thinking...'; target.disabled = true;
-        getAIResponse(prompt, existingHistory).then(function(aiResponse) {
-            existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
-            existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
-            card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
-            answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
-            
-            App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
-            saveData();
+  init();
+  document.body.addEventListener('click', function(e) {
+    var target = e.target;
+    while (target && target !== document.body) {
+        if (target.getAttribute('data-action')) break;
+        target = target.parentNode;
+    }
+    if (!target || !target.getAttribute('data-action')) return;
+    
+    var action = target.getAttribute('data-action');
+    var card = findClosest(target, '.card');
+    
+    if (action === 'navigate') {
+        showPage(target.getAttribute('data-page'));
+    } else if (action === 'accept-welcome') {
+      App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
+      saveData();
+      setCookie('qsolve_first_time_' + App.dataKey.split('_')[2], 'true', 365);
+      showPage('homePage');
+    } else if (action === 'run-ocr') {
+      var text = document.getElementById('pasteText').value.trim();
+      if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
+      else showToast('Please paste a question first.', 'error');
+    } else if (action === 'start-conversation' || action === 'ask-follow-up') {
+        if (!card) return;
+        var answerContainer = card.querySelector('.ai-answer-container');
+        var questionTextElem = card.querySelector('p');
+        var followUpInput = card.querySelector('.follow-up-input');
+        var prompt;
+        var existingHistory = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
+        if (action === 'start-conversation') {
+            prompt = questionTextElem.textContent.replace('Q: ','');
+            answerContainer.innerHTML = '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+        } else {
+            prompt = followUpInput.value.trim();
+            if (!prompt) return;
+            answerContainer.innerHTML += '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+            followUpInput.value = '';
+        }
+        answerContainer.style.display = 'block'; target.textContent = 'Thinking...'; target.disabled = true;
+        getAIResponse(prompt, existingHistory).then(function(aiResponse) {
+            existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
+            existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
+            card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
+            answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
+            
+            App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
+            saveData();
 
-            if (action === 'start-conversation') {
-                target.style.display = 'none';
-                card.querySelector('.conversation-controls').style.display = 'block';
-            }
-            target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
-            target.disabled = false;
-        });
-    } else if (action === 'save-settings') {
-        App.settings.name = document.getElementById('userName').value.trim();
-        App.settings.theme = document.getElementById('themeSelect').value;
-        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
-    } else if (action === 'reset-app') {
-        if (confirm("This will erase all your settings. Are you sure?")) {
-            clearData();
-            App.history = [];
-            App.settings = { name: 'Student', theme:'default' };
-            applyTheme(); showPage('welcomeScreen');
-            showToast('App has been reset.');
-        }
-    }
-  });
+            if (action === 'start-conversation') {
+                target.style.display = 'none';
+                card.querySelector('.conversation-controls').style.display = 'block';
+            }
+            target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
+            target.disabled = false;
+        });
+    } else if (action === 'save-settings') {
+        App.settings.name = document.getElementById('userName').value.trim();
+        App.settings.theme = document.getElementById('themeSelect').value;
+        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
+    } else if (action === 'reset-app') {
+        if (confirm("This will erase all your settings. Are you sure?")) {
+            clearData();
+            App.history = [];
+            App.settings = { name: 'Student', theme:'default' };
+            applyTheme(); showPage('welcomeScreen');
+            showToast('App has been reset.');
+        }
+    }
+  });
 });
 })();
 </script>
 
 </body>
 </html>
+
