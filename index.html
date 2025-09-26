@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Universal Cookie Version</title>
+<title>Q Solve — Homework Helper (Mobile App)</title>
 
 <style>
+  /* STYLES FROM THE "MOBILE VERSION" */
   :root {
     --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
     --bg: #f0f9ff; --card: #ffffff; --text: #082f49; --muted: #64748b;
@@ -18,100 +19,83 @@
   }
   html { font-size: 16px; }
   body {
-    margin:0; padding:0 0 90px 0;
+    margin:0; padding:0 0 90px 0; /* MODIFIED: Added bottom padding for fixed nav */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
     transition: background-color 0.3s, color 0.3s;
   }
-  header {
+  /* HEADER STYLES MODIFIED FOR BOTTOM NAVIGATION */
+   header {
     padding: 10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
     background:var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-    position: fixed; bottom: 0; left: 0; right: 0;
+    position: fixed; bottom: 0; left: 0; right: 0; /* MODIFIED: Fixed to bottom */
     z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
   }
   .brand { display:flex; align-items:center; gap:10px; min-width: 0; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
-  .brand-text { display: flex; flex-direction: column; min-width: 0; }
-  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
   .logo {
     width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
     align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
   }
   .title { font-weight:600; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .header-avatar {
-    width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
-    flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold;
+    width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex-shrink: 0;
   }
+  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
   nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
-  nav button.active { background:var(--primary-light); color:var(--primary-dark); }
+  nav button.active { background:var(--primary-light); color:var(--primary-dark); font-weight:600; }
+  .brand-text { display: flex; flex-direction: column; min-width: 0; }
+
+  /* GENERAL LAYOUT & COMPONENT STYLES */
   .container { max-width:1100px; margin:18px auto; padding:0 14px; }
   .page { display:none; margin-top:14px; }
   .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
-  h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
-  h3 { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 16px 0 4px 0; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .col { flex:1; min-width:260px; }
+  h1,h2,h3,h4 { margin:8px 0; color:var(--text); }
+  h2 { font-size: 1.75rem; font-weight: 700; }
+  h3 { font-size: 1.25rem; font-weight: 600; }
   p { color:var(--muted); line-height:1.5; margin: 4px 0; }
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
   .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   input,textarea,select,button { font-size:1rem; font-family: inherit; }
   input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
-  input:disabled { background: #e2e8f0; cursor: not-allowed; }
   .btn { background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight: 600; transition: background-color 0.2s; }
   .btn:hover { opacity: 0.9; }
   .btn.secondary { background:var(--primary-light); color:var(--primary-dark); }
-  .btn:disabled { background: #94a3b8; cursor: not-allowed; }
-  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); color: var(--primary-dark);
-    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem;}
-  .footer { text-align:center; font-size:0.8rem; color:var(--muted); padding:16px 0; background: transparent; box-shadow: none;}
+  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); }
+  .footer { text-align:center; font-size:0.9rem; color:var(--muted); padding:16px 0; }
+  .footer-links { display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .hidden { display:none !important; }
+  blockquote { border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; font-style: italic; }
+  ul, ol { padding-left: 20px; }
+  li { margin-bottom: 12px; padding-left: 8px; }
   #toast {
     position:fixed; bottom: 100px; left:50%; transform:translateX(-50%);
     background: #0f172a; color:white; padding:12px 20px; border-radius:8px;
-    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease; text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease;
   }
   #toast.show { visibility:visible; opacity:1; }
   #toast.error { background-color: var(--danger); }
   .warning-box { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin: 16px 0; }
   .info-box { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin: 16px 0; }
-  .feature-disabled { opacity: 0.6; cursor: not-allowed; }
-  .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
-  .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
-  .hidden { display: none !important; }
-  blockquote { border-left: 4px solid var(--primary); padding-left: 16px; margin: 16px 0; font-style: italic; }
-  ul, ol { padding-left: 20px; }
-  li { margin-bottom: 12px; padding-left: 8px; }
-
-  /* --- CHAT BUBBLE STYLES --- */
-  .ai-answer-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .chat-bubble {
-    padding: 10px 14px;
-    border-radius: 16px;
-    max-width: 85%;
-    line-height: 1.5;
-    word-wrap: break-word;
-  }
-  .chat-bubble.user {
-    background-color: var(--primary);
-    color: white;
-    border-bottom-right-radius: 4px;
-    margin-left: auto; /* Aligns to the right */
-  }
-  .chat-bubble.model {
-    background-color: var(--primary-light);
-    color: var(--primary-dark);
-    border-bottom-left-radius: 4px;
-    margin-right: auto; /* Aligns to the left */
-  }
+  .question-card { margin-top: 10px; padding:12px; border-radius:10px; border:1px solid #e2e8f0; }
+  body.dark .question-card { border:1px solid #1e293b; }
+  .ai-answer-container { margin-top: 12px; }
+  .chat-bubble { padding: 10px 14px; border-radius: 16px; margin-bottom: 8px; max-width: 90%; word-wrap: break-word; line-height: 1.5; }
+  .chat-bubble.user { background-color: var(--primary); color: white; border-bottom-right-radius: 4px; margin-left: auto; }
+  .chat-bubble.model { background-color: var(--primary-light); color: var(--primary-dark); border-bottom-left-radius: 4px; margin-right: auto; }
+  .tag { background: var(--primary-light); color: var(--primary-dark); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; display: inline-block; margin-right: 5px; }
+  .favorite-btn { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; opacity: 0.6; }
+  .favorite-btn.favorited { opacity: 1; color: #facc15; }
 
   @media (max-width: 420px) {
-    .title { display: none; }
+    .title, .btn[data-action="share"] { display: none; }
   }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -119,10 +103,10 @@
 <header>
   <div class="brand">
     <div id="headerLogo" class="logo">QS</div>
-    <div id="headerPfp" class="header-avatar hidden"></div>
+    <img id="headerPfp" alt="avatar" class="header-avatar hidden">
     <div class="brand-text">
-        <div class="title">Q Solve</div>
-        <div class="muted" id="greetingSmall">Welcome</div>
+      <div class="title">Q Solve</div>
+      <div class="muted" id="greetingSmall">Welcome</div>
     </div>
   </div>
   <nav id="mainNav">
@@ -131,6 +115,7 @@
     <button class="nav-btn" data-action="navigate" data-page="historyPage">History</button>
     <button class="nav-btn" data-action="navigate" data-page="settingsPage">Settings</button>
   </nav>
+  <button class="btn small" data-action="share">Share</button>
 </header>
 
 <div class="container">
@@ -141,240 +126,69 @@
   <div id="settingsPage" class="page"></div>
   <div id="releaseNotesPage" class="page"></div>
   <div class="footer card">
-      <div>Made by Kabir Gagneja © 2025</div>
-      <div>@Kabir Gagneja Invents</div>
+    <div>Q Solve by Kabir Gagneja. Local data stored on this device.</div>
+    <div class="footer-links">
+        <a href="https://whatsapp.com/channel/0029VbB4DCr9Gv7Qj7NgCX2t" target="_blank">WhatsApp</a>
+        <a href="https://www.youtube.com/@KabirInvents" target="_blank">YouTube</a>
+        <a href="https://play.google.com/store/apps/developer?id=Kabir+Gagneja+Invents" target="_blank">Play Store</a>
+        <a href="https://kabirgagnejayt-lang.github.io/Qsolve_Mobile_App/" target="_blank">Website</a>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
-<template id="welcomeScreenTemplate">
-  <h2>Welcome to Q Solve</h2> <p>Your personal homework helper, redesigned.</p>
-  <div style="margin-top:20px;"> <label>Please enter your name to begin:</label> <input id="setupName" placeholder="e.g., Kabir" style="margin-top: 4px;"/> </div>
-  <div class="info-box"> <p><strong>Note:</strong> This app uses cookies to save your settings. By continuing, you agree to their use.</p> </div>
-  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Get Started</button>
-</template>
-<template id="homePageTemplate">
-  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p>Ready to solve some problems?</p>
-    <div style="display:flex; gap:8px; margin-top:16px;">
-      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
-      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
-    </div>
-  </div>
-  <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
-  <div class="card">
-    <h3>What's New</h3>
-    <p>Welcome to the official app release! We've grown from just a website.</p>
-    <button class="btn secondary" data-action="navigate" data-page="releaseNotesPage" style="margin-top:12px;">View Release Notes</button>
-  </div>
-</template>
-<template id="solvePageTemplate">
-  <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
-    <div class="info-box"> <p>AI features require a working internet connection to contact Google's servers.</p> </div>
-    <div class="feature-disabled" style="margin-top:15px;">
-        <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
-        <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
-    </div>
-    <div style="margin-top: 15px;">
-        <label for="pasteText">Or paste your question here:</label>
-        <textarea id="pasteText" rows="4" placeholder="e.g., What is the powerhouse of the cell?" style="margin-top: 4px;"></textarea>
-    </div>
-    <button class="btn" data-action="run-ocr" style="margin-top:12px;">Extract & Solve</button>
-    <div id="detectedQuestions" style="margin-top:16px;"></div>
-  </div>
-</template>
-<template id="historyPageTemplate">
-  <div class="card"> <h2>Conversation History</h2>
-      <div class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation because of device constraints.</p></div>
-      <div id="historyList" style="margin-top:16px;"></div>
-  </div>
-</template>
-<template id="settingsPageTemplate">
-  <div class="card"> <h2>Profile Settings</h2>
-      <div style="display:flex; gap:16px; align-items:center; margin-top: 12px;">
-        <div id="avatarPreview" class="avatar-preview">K</div>
-        <div style="flex:1;">
-            <label for="userName">Your Name</label>
-            <input type="text" id="userName" placeholder="Your name" style="margin-top:4px;">
-            <div class="feature-disabled" style="margin-top: 12px;">
-                <label>Profile Picture <span class="coming-soon-tag">Coming Soon</span></label>
-            </div>
-        </div>
-      </div>
-  </div>
-  <div class="card"> <h2>Preferences</h2>
-      <label for="themeSelect">Theme</label>
-      <select id="themeSelect" style="margin-top:4px;"> <option value="default">Light (Default)</option> <option value="dark">Dark</option> </select>
-  </div>
-  <div class="card" style="text-align:center; margin-top: 16px;">
-    <button class="btn" data-action="save-settings">Save All Settings</button>
-    <button id="resetAppBtn" class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
-  </div>
-</template>
+<script type="module">
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-<template id="releaseNotesPageTemplate">
-    <div class="card">
-        <h2>A Letter to Our Community: The Story of Q Solve and the Dawn of a New Era</h2>
-        <p><strong>Release Date:</strong> September 26, 2025</p>
-        <hr style="margin: 16px 0; border-color: rgba(0,0,0,0.05);">
-        <blockquote>
-            <p>To our incredible Q Solve community,</p>
-            <p>This isn't just a product update; it's the culmination of years of dreaming, building, failing, and learning. It’s the story of an idea that grew with your support, evolving from a simple experiment into something we believe will <strong>fundamentally change the way you learn.</strong></p>
-        </blockquote>
+/* -------------------------------------------
+ App State and Core Functions
+------------------------------------------- */
+const DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 
-        <h3>The Spark: A Question That Started It All</h3>
-        <p>Before any code was written, Q Solve began with a simple, frustrating question: <em>"Why is learning so often a one-way street?"</em> We dreamed of a world where you could have a genuine conversation with your knowledge—a world where learning was an active, dynamic dialogue. That dream was the spark that would eventually become Q Solve.</p>
-
-        <h3>Our Journey to Today: From Prototype to Powerhouse</h3>
-        <p>Our path has been iterative, and many of you have been with us for different stages of this evolution:</p>
-        <ol>
-            <li><strong>Phase 1: The MIT App Inventor Prototype</strong><br>Our story began with a humble collection of blocks. It was clunky and basic, but feedback from a handful of trusted testers was unanimous: the core idea was powerful.</li>
-            <li><strong>Phase 2: Going Public with Q Solve Web</strong><br>Armed with that validation, we built and launched Q Solve Web. You, our early web users, flooded us with feedback and helped us build the bedrock of the service.</li>
-            <li><strong>Phase 3: The Bridge – Q Solve Web Mobile (Beta)</strong><br>We saw you were learning everywhere. This phase taught us invaluable lessons about the needs of the mobile learner and solidified our conviction that to deliver the seamless experience you deserved, <strong>we had to go native.</strong></li>
-        </ol>
-    </div>
-
-    <div class="card">
-        <h2>✨ A Deep Dive into the All-New Q Solve App</h2>
-        <p>Which brings us to today. We have taken everything we've learned and poured it into this brand-new application. It's a complete, ground-up rebuild designed to be the ultimate learning companion.</p>
-        
-        <h3>🧠 AI-Powered Question Answering: Your Personal Genius</h3>
-        <p>At the heart of Q Solve is Google's advanced Gemini model. Ask it to "explain quantum entanglement like I'm ten years old." It’s the patient, brilliant tutor we always wished we had.</p>
-
-        <h3>💬 Conversational Context: The Power of a Real Dialogue</h3>
-        <p>Our AI remembers the context of your conversation, allowing for a natural, flowing dialogue. It’s the difference between shouting questions into a void and collaborating with a partner who is actively listening.</p>
-        
-        <h3>📖 Recent Conversation History: Your Brain's Backup</h3>
-        <p>Your most recent conversation is automatically saved. Revisit a complex explanation or simply pick up your train of thought right where you left off, ensuring no "aha!" moment is ever lost.</p>
-
-        <h3>🎨 Personalization: Making Q Solve Truly Yours</h3>
-        <p>Set your name for a personal greeting and choose your theme. We designed a crisp <strong>Light Theme</strong> for bright environments and a beautiful, eye-saving <strong>Dark Theme</strong> for those late-night study sessions.</p>
-    </div>
-
-    <div class="card">
-        <h2>🚀 The Future: This is Just Day One</h2>
-        <p>As proud as we are, this is not the finish line. This is the starting line for a new era. Here is a glimpse of our roadmap:</p>
-        <ul>
-            <li><strong>Structured Knowledge Libraries:</strong> Save, tag, and organize your most important conversations.</li>
-            <li><strong>Seamless Multi-Device Sync:</strong> Start a conversation on your laptop and continue it on your phone.</li>
-            <li><strong>Proactive Learning Tools:</strong> Create study plans and generate quizzes from your conversations.</li>
-            <li><strong>Deeper Collaboration:</strong> Share and discuss your Q Solve conversations with classmates and friends.</li>
-        </ul>
-
-        <h3>Our Deepest Gratitude</h3>
-        <blockquote>
-            <p>This app is a tool, but you are the architect of your own knowledge. We are simply honored to provide you with a better set of blueprints. To everyone who is just joining us today: Welcome.</p>
-            <p>We can't wait to see what you will learn.</p>
-        </blockquote>
-        <p style="margin-top:16px;">With sincere gratitude,</p>
-        <p><strong>The Q Solve Team</strong></p>
-        
-        <button class="btn" data-action="continue-from-release" style="margin-top:24px; width:100%; padding:12px;">Continue to App</button>
-    </div>
-</template>
-
-
-<script>
-(function() {
-'use strict';
-window.onerror = function(message, source, lineno) {
-    alert('Critical Error at line ' + lineno + ': ' + message);
-    return true;
-};
-
-var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
-var App = {
-  pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage', 'releaseNotesPage'],
-  dataKey: 'qsolve_data', 
-  userKey: 'qsolve_user', 
+const App = {
+  pages: ['welcomeScreen', 'homePage','solvePage','historyPage','settingsPage', 'releaseNotesPage'],
+  dataKey: 'qsolve_data_v7_mobile', // Incremented version
+  userKey: 'qsolve_user_v7_mobile',
+  releaseKey: 'qsolve_release_seen_v7_mobile',
   history: [],
-  settings: { name: 'Student', theme: 'default' },
-  isNewUser: true 
+  settings: { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true },
 };
 
-function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    try {
-        document.cookie = name + "=" + (encodeURIComponent(JSON.stringify(value)) || "")  + expires + "; path=/; SameSite=Lax";
-    } catch (e) { console.error("Cookie setting failed"); }
+function saveAll() {
+  localStorage.setItem(App.dataKey, JSON.stringify(App.history));
+  localStorage.setItem(App.userKey, JSON.stringify(App.settings));
 }
 
-function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) {
-            try {
-              return JSON.parse(decodeURIComponent(c.substring(nameEQ.length,c.length)));
-            } catch(e) { return null; }
-        }
-    }
-    return null;
-}
-
-function eraseCookie(name) {   
-    document.cookie = name+'=; Max-Age=-99999999; path=/;';
-}
-
-function saveData() {
-    var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
-    setCookie(App.dataKey, historyToSave, 365);
-    setCookie(App.userKey, App.settings, 365);
-}
-
-function loadData() {
-  var loadedHistory = getCookie(App.dataKey);
-  var loadedSettings = getCookie(App.userKey);
-  try {
-    if (loadedHistory) App.history = loadedHistory;
-    if (loadedSettings && loadedSettings.name && loadedSettings.name !== 'Student') {
-        App.isNewUser = false; // They have a real name, so they are not new.
-        var defaultSettings = { name: 'Student', theme: 'default' };
-        for (var key in loadedSettings) {
-            if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
-                defaultSettings[key] = loadedSettings[key];
-            }
-        }
-        App.settings = defaultSettings;
-    }
-  } catch (e) {
-    showToast("Error loading saved data.", "error"); App.history = [];
-  }
-}
-
-function clearData() {
-    eraseCookie(App.dataKey);
-    eraseCookie(App.userKey);
-    eraseCookie('qsolve_release_seen');
+function loadAll() {
+  const h = localStorage.getItem(App.dataKey);
+  const u = localStorage.getItem(App.userKey);
+  App.history = h ? JSON.parse(h) : [];
+  App.settings = u ? Object.assign(App.settings, JSON.parse(u)) : App.settings;
+  applyTheme();
 }
 
 function showPage(id) {
-  for(var i=0; i < App.pages.length; i++) {
-    var el = document.getElementById(App.pages[i]);
-    if (el) el.style.display = 'none';
+  App.pages.forEach(p => {
+    const el = document.getElementById(p);
+    if(el) el.style.display='none';
+  });
+  const page = document.getElementById(id);
+  if(!page) return;
+  
+  const template = document.getElementById(id + "Template");
+  if (template) {
+    page.innerHTML = template.innerHTML;
   }
-  var page = document.getElementById(id);
-  if (!page) return;
-  var template = document.getElementById(id + "Template");
-  if (template) page.innerHTML = template.innerHTML;
-  page.style.display = 'block';
-  var header = document.querySelector('header');
-  if (header) {
-      header.style.display = (id === 'welcomeScreen' || id === 'releaseNotesPage') ? 'none' : 'flex';
-  }
-  var navBtns = document.querySelectorAll('.nav-btn');
-  for(var j=0; j < navBtns.length; j++) {
-    navBtns[j].classList.remove('active');
-  }
-  var activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
+  page.style.display='block';
+
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.querySelector(`.nav-btn[data-page="${id}"]`);
   if (activeBtn) activeBtn.classList.add('active');
+  
+  const header = document.querySelector('header');
+  header.style.display = (id === 'welcomeScreen' || id === 'releaseNotesPage') ? 'none' : 'flex';
+
   if (id !== 'welcomeScreen' && id !== 'releaseNotesPage') updateHeaderUI();
   if (id === 'settingsPage') updateSettingsPageUI();
   if (id === 'historyPage') refreshHistoryList();
@@ -382,285 +196,621 @@ function showPage(id) {
 }
 
 function applyTheme() {
-  document.body.className = App.settings.theme === 'dark' ? 'dark' : '';
+  document.documentElement.style.fontSize = App.settings.fontSize + 'px';
+  document.body.classList.toggle('dark', App.settings.theme === 'dark');
 }
 
-function showToast(message, type) {
-  var toast = document.getElementById('toast');
-  if (!toast) { alert(message); return; }
-  toast.textContent = message;
-  toast.className = 'show';
-  if (type === 'error') toast.classList.add('error');
-  setTimeout(function() { toast.className = toast.className.replace('show', ''); }, 5000);
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'show';
+    if (type === 'error') toast.classList.add('error');
+    setTimeout(() => toast.className = toast.className.replace('show', ''), 3000);
 }
 
 function escapeHtml(s) {
-  if (s === null || s === undefined) return '';
-  var el = document.createElement('div');
-  el.textContent = s;
+  if(!s) return '';
+  const el = document.createElement('div');
+  el.innerText = s;
   return el.innerHTML;
 }
 
 function formatAIResponse(text) {
-  let escaped = escapeHtml(text);
-  let formatted = escaped
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-    .replace(/`(.*?)`/g, '<code>$1</code>')
-    .replace(/\n/g, '<br>');
-  return formatted;
+    return escapeHtml(text)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
 }
 
-function cleanHistory(history) {
-    var sanitizedHistory = [];
-    if (Object.prototype.toString.call(history) !== '[object Array]') {
-        return [];
-    }
-    for (var i = 0; i < history.length; i++) {
-        var turn = history[i];
-        if (turn && turn.role && turn.parts && typeof turn.parts.length !== 'undefined') {
-            sanitizedHistory.push(turn);
-        }
-    }
-    return sanitizedHistory;
-}
+/* -------------------------------------------
+ AI and OCR Functions
+------------------------------------------- */
+async function getAIResponse(prompt, history) {
+  const apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
 
-function getAIResponse(prompt, history) {
-  return new Promise(function(resolve) {
-    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + DEFAULT_API_KEY;
-    var sanitizedHistory = cleanHistory(history);
-    var requestBody = {
-      contents: sanitizedHistory.concat([
-        { "role": "user", "parts": [ { "text": prompt } ] }
-      ])
-    };
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    })
-    .then(function(response) {
-      if (!response.ok) {
-        return response.json().then(function(errorBody) {
-          var message = (errorBody.error && errorBody.error.message) ? errorBody.error.message : 'HTTP error! status: ' + response.status;
-          throw new Error(message);
-        });
-      }
-      return response.json();
-    })
-    .then(function(data) {
-      if (data.candidates && data.candidates[0]?.content?.parts[0]) {
-        resolve(data.candidates[0].content.parts[0].text);
-      } else {
-        var reason = data.promptFeedback?.blockReason;
-        resolve(reason ? "Response blocked due to: " + reason : "AI returned an empty response.");
-      }
-    })
-    .catch(function(error) {
-      showToast('AI Error: ' + error.message, 'error');
-      resolve('AI Error: Could not get a response.');
-    });
-  });
-}
-
-function updateHeaderUI() {
-  var name = App.settings.name || 'User';
-  var greeting = document.getElementById('greetingSmall');
-  if(greeting) greeting.innerText = 'Hi, ' + name;
-  var headerPfp = document.getElementById('headerPfp');
-  var headerLogo = document.getElementById('headerLogo');
-  if(headerPfp && headerLogo){
-      headerPfp.textContent = name.charAt(0).toUpperCase();
-      headerLogo.classList.add('hidden');
-      headerPfp.classList.remove('hidden');
+  if (!apiKey) {
+    showToast('API Key is not set. Please add one in Settings.', 'error');
+    return "Error: API Key is required.";
   }
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessage(prompt);
+    return (await result.response).text();
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    showToast(`AI Error: ${error.message}. Check console.`, 'error');
+    return `AI Error: Could not get a response. Is your key correct?`;
+  }
+}
+
+async function runOcr(source) {
+  const container = document.getElementById('detectedQuestions');
+  if (!container) return;
+  container.innerHTML = `<p class="muted">Recognizing text... please wait.</p>`;
+  try {
+    const { data: { text } } = await Tesseract.recognize(source, 'eng');
+    const questionRegex = /(?=\n\s*\d+[.)])/;
+    let questions = text.split(questionRegex).map(s => s.trim()).filter(Boolean);
+
+    if (questions.length <= 1 && text.includes('\n\n')) {
+        questions = text.split(/\n\s*\n+/).map(s => s.trim()).filter(Boolean);
+    }
+    renderDetectedQuestions(questions, text);
+  } catch (err) {
+    container.innerHTML = `<p class="muted" style="color:red">OCR Error: ${err.message}</p>`;
+  }
+}
+
+/* -------------------------------------------
+ UI Rendering and Update Functions
+------------------------------------------- */
+function updateHeaderUI() {
+    document.getElementById('greetingSmall').innerText = App.settings.name ? `Hi, ${App.settings.name}` : 'Welcome';
+    
+    const headerPfp = document.getElementById('headerPfp');
+    const headerLogo = document.getElementById('headerLogo');
+    if (App.settings.avatar) {
+        headerPfp.src = App.settings.avatar;
+        headerPfp.classList.remove('hidden');
+        headerLogo.classList.add('hidden');
+    } else {
+        headerPfp.classList.add('hidden');
+        headerLogo.classList.remove('hidden');
+        headerLogo.textContent = (App.settings.name || 'Q').charAt(0).toUpperCase();
+    }
 }
 
 function updateSettingsPageUI() {
-  document.getElementById('userName').value = App.settings.name || '';
-  var name = App.settings.name || 'U';
-  document.getElementById('avatarPreview').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('themeSelect').value = App.settings.theme;
+    document.getElementById('userName').value = App.settings.name || '';
+    document.getElementById('avatarPreview').src = App.settings.avatar || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    document.getElementById('themeSelect').value = App.settings.theme;
+    document.getElementById('fontSizeRange').value = App.settings.fontSize;
+    
+    document.getElementById('apiKeyInput').value = App.settings.apiKey || '';
+    const useCustom = !App.settings.useDefaultKey;
+    document.getElementById('settingsUseDefault').checked = !useCustom;
+    document.getElementById('settingsUseCustom').checked = useCustom;
+    document.getElementById('settingsCustomApiKeyContainer').style.display = useCustom ? 'block' : 'none';
 }
 
 function refreshHomePage() {
-  var userNameDisplay = document.getElementById('userNameDisplay');
-  if (userNameDisplay) userNameDisplay.textContent = App.settings.name || 'Student';
-  var recentList = document.getElementById('recentList');
-  if (recentList) {
-    recentList.innerHTML = '';
-    if (App.history.length === 0) {
-      recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    if(userNameDisplay) userNameDisplay.textContent = App.settings.name || 'Student';
+
+    const recentList = document.getElementById('recentList');
+    if (recentList) {
+        recentList.innerHTML = '';
+        if (App.history.length === 0) {
+            recentList.innerHTML = `<p class="muted">Your saved conversations will appear here.</p>`;
+            return;
+        }
+        App.history.slice(0, 3).forEach(item => {
+            const title = escapeHtml(item.title.slice(0, 80));
+            recentList.innerHTML += `<div class="question-card">${title}...</div>`;
+        });
     }
-    var item = App.history[0];
-    var title = "<strong>Q:</strong> " + escapeHtml(item.title.slice(0, 80)) + "...";
-    recentList.innerHTML += '<div class="card" style="padding: 12px 16px;"><p>' + title + '</p></div>';
-  }
 }
 
-function renderDetectedQuestions(questions) {
-  var container = document.getElementById('detectedQuestions');
-  if (!container) return;
-  container.innerHTML = '<h3>Detected Questions</h3>';
-  var html = '';
-  for(var i=0; i<questions.length; i++) {
-    var questionHtml = escapeHtml(questions[i]);
-    html += '<div class="card" data-conversation-history="[]"><p><strong>Q:</strong> ' + questionHtml + '</p><div class="ai-answer-container" style="display: none; margin-top: 12px;"></div><div style="margin-top:12px;"><button class="btn" data-action="start-conversation">Solve with AI</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div></div>';
-  }
-  container.innerHTML += html;
+function renderDetectedQuestions(questions, fullText) {
+    const container = document.getElementById('detectedQuestions');
+    container.innerHTML = '<h3>Detected Questions</h3>';
+    if (questions.length === 0 && fullText) {
+        questions = [fullText];
+    }
+    questions.forEach((qText) => {
+        const questionHtml = escapeHtml(qText);
+        container.innerHTML += `
+        <div class="question-card">
+            <p class="question-text">${questionHtml}</p>
+            <div class="ai-answer-container" style="display: none;"></div>
+            <div style="display:flex; gap: 8px; align-items:center; margin-top:10px;">
+                <select class="ai-personality-select" style="flex-grow:0; width: auto;">
+                    <option value="">Default Answer</option>
+                    <option value="\\n\\nPlease explain this simply, like I'm 10 years old.">Explain Simply</option>
+                    <option value="\\n\\nPlease summarize the key points in a bulleted list.">Summarize</option>
+                    <option value="\\n\\nPlease provide a detailed, step-by-step guide.">Step-by-Step</option>
+                </select>
+                <button class="btn" data-action="start-conversation">Find Answer</button>
+            </div>
+            <div class="conversation-controls" style="display:none; margin-top:10px;">
+                <textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up question..."></textarea>
+                <button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button>
+            </div>
+             <div class="save-controls" style="display:none; margin-top:12px;">
+                <input type="text" class="tags-input" placeholder="Add tags, comma separated...">
+                <button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save to History</button>
+            </div>
+        </div>`;
+    });
 }
 
 function refreshHistoryList() {
-    var historyList = document.getElementById('historyList');
+    const historyList = document.getElementById('historyList');
     if (!historyList) return;
-    if (App.history.length === 0) {
-        historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
-    }
-    var html = '';
-    var item = App.history[0];
-    var conversationHtml = item.conversation.map(function(turn) {
-        var text = (turn.parts && turn.parts[0] && turn.parts[0].text) ? turn.parts[0].text : '[empty response]';
-        return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(text) + '</div>';
-    }).join('');
-    html += '<div><h3>' + escapeHtml(item.title) + '</h3><div class="ai-answer-container" style="margin-top:12px;">' + conversationHtml + '</div></div>';
-    historyList.innerHTML = html;
-}
+    historyList.innerHTML = '';
+    const searchTerm = (document.getElementById('historySearch')?.value || '').toLowerCase();
+    const showFavorites = document.getElementById('showFavoritesToggle')?.checked;
 
-function findClosest(elem, selector) {
-    var current = elem;
-    while (current && current !== document.body) {
-        if (typeof current.matches === 'function' && current.matches(selector)) { return current; }
-        current = current.parentNode;
-    }
-    return null;
-}
+    const filteredHistory = App.history.filter(item => {
+        if (showFavorites && !item.isFavorited) return false;
+        
+        const conversationText = item.conversation.map(turn => turn.parts[0].text).join(' ').toLowerCase();
+        const tagsText = (item.tags || []).join(' ').toLowerCase();
+        
+        return conversationText.includes(searchTerm) || tagsText.includes(searchTerm);
+    });
 
-function init() {
-  loadData();
-  applyTheme();
- 
-  var releaseSeen = getCookie('qsolve_release_seen') === 'true';
-
-  if (App.isNewUser && !releaseSeen) {
-    // Brand new user flow: show release notes first.
-    showPage('releaseNotesPage');
-  } else if (App.isNewUser) {
-    // New user who has seen notes: show signup.
-    showPage('welcomeScreen');
-  } else {
-    // Returning user flow: straight to home.
-    showPage('homePage');
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  init();
-  document.body.addEventListener('click', function(e) {
-    var target = e.target;
-    while (target && target !== document.body) {
-        if (target.getAttribute('data-action')) break;
-        target = target.parentNode;
-    }
-    if (!target || !target.getAttribute('data-action')) return;
-   
-    var action = target.getAttribute('data-action');
-    var card = findClosest(target, '.card');
-   
-    if (action === 'navigate') {
-        showPage(target.getAttribute('data-page'));
-    } else if (action === 'accept-welcome') {
-      var setupName = document.getElementById('setupName').value.trim();
-      if (!setupName) {
-        showToast('Please enter your name to continue.', 'error');
+    if (filteredHistory.length === 0) {
+        historyList.innerHTML = `<p class="muted">No conversations found.</p>`;
         return;
+    }
+    filteredHistory.forEach(item => {
+        const tagsHtml = (item.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+        const conversationHtml = item.conversation.map(turn => {
+            const bubbleClass = turn.role === 'user' ? 'user' : 'model';
+            return `<div class="chat-bubble ${bubbleClass}">${formatAIResponse(turn.parts[0].text)}</div>`;
+        }).join('');
+        
+        historyList.innerHTML += `<div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <h4>${escapeHtml(item.title)}</h4>
+                <button class="favorite-btn ${item.isFavorited ? 'favorited' : ''}" data-action="toggle-favorite" data-id="${item.id}">★</button>
+            </div>
+            <div>${tagsHtml}</div>
+            <div class="ai-answer-container" style="display:block; margin-top:12px;">${conversationHtml}</div>
+            <div style="margin-top:10px;">
+                <button class="btn small secondary" data-action="copy-conversation" data-id="${item.id}">Copy</button>
+            </div>
+        </div>`;
+    });
+    if (window.MathJax) MathJax.typesetPromise && MathJax.typesetPromise();
+}
+
+function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        App.settings.avatar = e.target.result;
+        saveAll();
+        updateHeaderUI();
+        updateSettingsPageUI();
+    };
+    reader.readAsDataURL(file);
+}
+
+/* -------------------------------------------
+ Initialization and Event Handling
+------------------------------------------- */
+function init() {
+  loadAll();
+  
+  document.body.addEventListener('click', async (e) => {
+    const target = e.target.closest('[data-action]');
+    if (!target) return;
+    const action = target.dataset.action;
+    const card = target.closest('.card, .question-card');
+    
+    if (action === 'navigate') showPage(target.dataset.page);
+    
+    if (action === 'accept-welcome') {
+      App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
+      const useDefault = document.getElementById('setupUseDefault').checked;
+      App.settings.useDefaultKey = useDefault;
+      if (!useDefault) {
+          App.settings.apiKey = document.getElementById('setupApiKey').value.trim();
+      } else {
+          App.settings.apiKey = '';
       }
-      App.settings.name = setupName;
-      saveData();
+      saveAll();
+      localStorage.setItem(`qsolve_first_time_${App.dataKey.split('_')[2]}`, 'true');
       showPage('homePage');
+    }
 
-    } else if (action === 'continue-from-release') {
-        setCookie('qsolve_release_seen', 'true', 365);
-       
-        // **THE FIX IS HERE.**
-        // After clicking continue, we decide where to go based on user status.
-        if (App.isNewUser) {
-          // If they are new, they need to sign up.
-          showPage('welcomeScreen');
-        } else {
-          // If they are NOT new, they just wanted to see the notes. Send them back home.
-          showPage('homePage');
-        }
+    if (action === 'continue-from-release') {
+        localStorage.setItem(App.releaseKey, 'true');
+        const isFirstTime = localStorage.getItem(`qsolve_first_time_${App.dataKey.split('_')[2]}`) !== 'true';
+        showPage(isFirstTime ? 'welcomeScreen' : 'homePage');
+    }
 
-    } else if (action === 'run-ocr') {
-      var text = document.getElementById('pasteText').value.trim();
-      if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
-      else showToast('Please paste a question first.', 'error');
-    } else if (action === 'start-conversation' || action === 'ask-follow-up') {
+    if (action === 'run-ocr') {
+        const file = document.getElementById('ocrFile')?.files[0];
+        const text = document.getElementById('pasteText')?.value.trim();
+        if (file) runOcr(file);
+        else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
+        else showToast('Please select a file or paste text.', 'error');
+    }
+    
+    if (action === 'start-conversation' || action === 'ask-follow-up') {
         if (!card) return;
-        var answerContainer = card.querySelector('.ai-answer-container');
-        var questionTextElem = card.querySelector('p');
-        var followUpInput = card.querySelector('.follow-up-input');
-        var prompt;
-        var existingHistory = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
+        const answerContainer = card.querySelector('.ai-answer-container');
+        const questionTextElem = card.querySelector('.question-text');
+        const followUpInput = card.querySelector('.follow-up-input');
+        
+        let prompt;
+        let existingHistory = JSON.parse(card.dataset.conversationHistory || '[]');
+
         if (action === 'start-conversation') {
-            prompt = questionTextElem.textContent.replace('Q: ','');
-            answerContainer.innerHTML = '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+            const personalitySelect = card.querySelector('.ai-personality-select');
+            prompt = questionTextElem.innerText + (personalitySelect.value || '');
+            answerContainer.innerHTML = `<div class="chat-bubble user">${formatAIResponse(prompt)}</div>`;
         } else {
             prompt = followUpInput.value.trim();
             if (!prompt) return;
-            answerContainer.innerHTML += '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
+            answerContainer.innerHTML += `<div class="chat-bubble user">${formatAIResponse(prompt)}</div>`;
             followUpInput.value = '';
         }
-        answerContainer.style.display = 'flex'; target.textContent = 'Thinking...'; target.disabled = true;
-       
-        getAIResponse(prompt, existingHistory).then(function(aiResponse) {
-            existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
-            existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
-            card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
-            answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
-           
-            App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
-            saveData();
+        
+        answerContainer.style.display = 'block';
+        target.textContent = 'Thinking...';
+        target.disabled = true;
 
-            if (action === 'start-conversation') {
-                target.style.display = 'none';
-                card.querySelector('.conversation-controls').style.display = 'block';
-            }
-            target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
-            target.disabled = false;
-        });
-    } else if (action === 'save-settings') {
-        App.settings.name = document.getElementById('userName').value.trim();
-        App.settings.theme = document.getElementById('themeSelect').value;
-        saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
-    } else if (action === 'reset-app') {
-        var resetButton = document.getElementById('resetAppBtn');
-        if (resetButton.getAttribute('data-confirming') === 'true') {
-            clearData();
-            App.history = [];
-            App.settings = { name: 'Student', theme:'default' };
-            App.isNewUser = true; // After reset, they are a new user.
-            resetButton.removeAttribute('data-confirming');
-            resetButton.textContent = 'Reset App';
-            applyTheme(); 
-            showPage('welcomeScreen');
-            showToast('App has been reset.');
+        const aiResponse = await getAIResponse(prompt, existingHistory);
+        
+        existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
+        existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
+        card.dataset.conversationHistory = JSON.stringify(existingHistory);
+
+        answerContainer.innerHTML += `<div class="chat-bubble model">${formatAIResponse(aiResponse)}</div>`;
+        if (window.MathJax) MathJax.typesetPromise?.([answerContainer]);
+
+        if (action === 'start-conversation') {
+            target.parentElement.style.display = 'none';
+            card.querySelector('.conversation-controls').style.display = 'block';
+            card.querySelector('.save-controls').style.display = 'block';
+        }
+        target.textContent = action === 'start-conversation' ? 'Find Answer' : 'Send';
+        target.disabled = false;
+    }
+    
+    if (action === 'save-conversation') {
+        if (!card) return;
+        const history = JSON.parse(card.dataset.conversationHistory || '[]');
+        if (history.length === 0) return;
+
+        const tagsInput = card.querySelector('.tags-input');
+        const tags = tagsInput.value.split(',').map(t => t.trim()).filter(Boolean);
+
+        const historyItem = {
+            id: 'q-' + Date.now(),
+            title: history[0].parts[0].text.slice(0, 100),
+            isFavorited: false,
+            tags: tags,
+            createdAt: new Date().toISOString(),
+            conversation: history
+        };
+
+        App.history.unshift(historyItem);
+        saveAll();
+        
+        target.textContent = 'Saved ✓';
+        target.disabled = true;
+        showToast('Conversation saved to history!');
+    }
+
+    if (action === 'toggle-favorite') {
+        const itemId = target.dataset.id;
+        const item = App.history.find(i => i.id === itemId);
+        if (item) {
+            item.isFavorited = !item.isFavorited;
+            saveAll();
+            refreshHistoryList();
+        }
+    }
+
+    if (action === 'copy-conversation') {
+        const itemId = target.dataset.id;
+        const item = App.history.find(i => i.id === itemId);
+        if (item) {
+            const textToCopy = item.conversation.map(turn => `${turn.role.toUpperCase()}: ${turn.parts[0].text}`).join('\n\n');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('Conversation copied!');
+            }, () => {
+                showToast('Failed to copy.', 'error');
+            });
+        }
+    }
+    
+    if (action === 'save-settings') {
+      App.settings.name = document.getElementById('userName').value.trim();
+      const useDefault = document.getElementById('settingsUseDefault').checked;
+      App.settings.useDefaultKey = useDefault;
+       if (!useDefault) {
+          App.settings.apiKey = document.getElementById('apiKeyInput').value.trim();
+      } else {
+          App.settings.apiKey = '';
+      }
+      saveAll();
+      updateHeaderUI();
+      showToast("Settings saved!");
+    }
+    
+    if (action === 'reset-app') {
+        if (confirm('This will permanently delete all your data. Are you sure?')) {
+            localStorage.clear();
+            window.location.reload();
+        }
+    }
+
+    if (action === 'export-data') {
+        const data = { settings: App.settings, history: App.history };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `qsolve_backup_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Data exported!');
+    }
+
+    if (action === 'share') {
+        if (navigator.share) {
+            navigator.share({ title: 'Q Solve', text: 'Check out this homework helper!', url: window.location.href });
         } else {
-            resetButton.setAttribute('data-confirming', 'true');
-            resetButton.textContent = 'Are you sure? Click again';
-            setTimeout(function() {
-                if (resetButton.getAttribute('data-confirming') === 'true') {
-                    resetButton.removeAttribute('data-confirming');
-                    resetButton.textContent = 'Reset App';
-                }
-            }, 4000);
+            showToast('Web Share not supported on this browser.');
         }
     }
   });
-});
-})();
+  
+  document.body.addEventListener('change', e => {
+    const target = e.target;
+    if (target.id === 'avatarUpload') handleAvatarUpload(e);
+    if (target.id === 'importDataInput') {
+        const file = target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.settings && data.history) {
+                    App.settings = data.settings;
+                    App.history = data.history;
+                    saveAll();
+                    loadAll(); 
+                    showPage('settingsPage');
+                    showToast('Data imported successfully!');
+                } else {
+                    showToast('Invalid backup file format.', 'error');
+                }
+            } catch (err) {
+                showToast('Failed to parse backup file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+    }
+    if (target.id === 'themeSelect') {
+        App.settings.theme = target.value;
+        applyTheme();
+        saveAll();
+    }
+    
+    if (target.name === 'apiKeyChoiceSetup' || target.name === 'apiKeyChoiceSettings') {
+        const isSetup = target.name === 'apiKeyChoiceSetup';
+        const containerId = isSetup ? 'setupCustomApiKeyContainer' : 'settingsCustomApiKeyContainer';
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.style.display = target.value === 'custom' ? 'block' : 'none';
+        }
+    }
+  });
+
+  document.body.addEventListener('input', e => {
+      if (e.target.id === 'fontSizeRange') {
+        App.settings.fontSize = e.target.value;
+        document.documentElement.style.fontSize = App.settings.fontSize + 'px';
+        saveAll();
+      }
+      if (e.target.id === 'historySearch' || e.target.id === 'showFavoritesToggle') {
+        refreshHistoryList();
+      }
+  });
+
+  const isFirstTime = localStorage.getItem(`qsolve_first_time_${App.dataKey.split('_')[2]}`) !== 'true';
+  const releaseSeen = localStorage.getItem(App.releaseKey) === 'true';
+
+  if (isFirstTime && !releaseSeen) {
+      showPage('releaseNotesPage');
+  } else if (isFirstTime) {
+      showPage('welcomeScreen');
+  } else {
+      showPage('homePage');
+  }
+}
+
+init();
 </script>
+
+<template id="welcomeScreenTemplate">
+  <h2>Welcome to Q Solve</h2>
+  <p class="muted">Your personal homework helper. To get started, please set your name and choose an API key option.</p>
+  <div style="margin-top:20px;">
+    <label>Your Name</label>
+    <input id="setupName" placeholder="e.g., Alex" />
+  </div>
+  
+  <div class="info-box" style="margin-top:16px;">
+    <p><strong>AI Features require a Gemini API Key.</strong></p>
+    <div id="setupApiKeyOptions" style="margin-top:8px;">
+        <input type="radio" id="setupUseDefault" name="apiKeyChoiceSetup" value="default" checked>
+        <label for="setupUseDefault" class="muted">Use the default shared API key</label>
+        <br>
+        <input type="radio" id="setupUseCustom" name="apiKeyChoiceSetup" value="custom" style="margin-top:5px;">
+        <label for="setupUseCustom" class="muted">Use my own Gemini API key</label>
+    </div>
+    <div id="setupCustomApiKeyContainer" style="display:none; margin-top:10px;">
+        <p class="muted" style="margin-bottom:5px;">Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+        <input type="password" id="setupApiKey" placeholder="Paste your key here">
+    </div>
+  </div>
+
+  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%;">Start Solving</button>
+</template>
+
+<template id="homePageTemplate">
+  <div class="card">
+    <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2>
+    <p class="muted">Ready to solve some problems? Get started below.</p>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
+      <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Recent Conversations</h3>
+    <div id="recentList"></div>
+  </div>
+  <div class="card">
+    <h3>What's New</h3>
+    <p>We've updated the app with a new look and new features. See what's changed!</p>
+    <button class="btn secondary" data-action="navigate" data-page="releaseNotesPage" style="margin-top:12px;">View Release Notes</button>
+  </div>
+</template>
+
+<template id="solvePageTemplate">
+  <div class="card">
+    <h2>Solve a Question</h2>
+    <p class="muted">Upload an image of a worksheet or paste text directly to begin.</p>
+    <input type="file" id="ocrFile" accept="image/*,application/pdf">
+    <textarea id="pasteText" rows="4" placeholder="Or paste question text here..." style="margin-top:8px;"></textarea>
+    <button class="btn" data-action="run-ocr" style="margin-top:12px; width: 100%;">Extract Questions</button>
+    <div id="detectedQuestions" style="margin-top:16px;"></div>
+  </div>
+</template>
+
+<template id="historyPageTemplate">
+  <div class="card">
+      <h2>Conversation History</h2>
+      <p class="muted">All your saved conversations and their AI-generated answers.</p>
+      <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="checkbox" id="showFavoritesToggle" style="width: auto; margin:0;">
+        <label for="showFavoritesToggle" class="muted">Show Favorites Only</label>
+      </div>
+      <div id="historyList" style="margin-top:12px;"></div>
+  </div>
+</template>
+
+<template id="settingsPageTemplate">
+  <div class="row">
+    <div class="col card">
+      <h2>Profile</h2>
+      <div style="display:flex; gap:16px; align-items:center;">
+        <img src="" alt="avatar" id="avatarPreview" class="avatar-preview">
+        <div style="flex:1;">
+          <label>Your Name</label>
+          <input type="text" id="userName" placeholder="Your name">
+          <label for="avatarUpload" class="btn secondary" style="margin-top:8px; text-align:center; display:block;">Change Avatar</label>
+          <input type="file" id="avatarUpload" accept="image/*" class="hidden">
+        </div>
+      </div>
+    </div>
+    <div class="col card">
+      <h2>AI Settings</h2>
+      <div id="settingsApiKeyOptions">
+          <input type="radio" id="settingsUseDefault" name="apiKeyChoiceSettings" value="default">
+          <label for="settingsUseDefault">Use the default shared API key</label>
+          <br>
+          <input type="radio" id="settingsUseCustom" name="apiKeyChoiceSettings" value="custom" style="margin-top:5px;">
+          <label for="settingsUseCustom">Use my own Gemini API key</label>
+      </div>
+      <div id="settingsCustomApiKeyContainer" style="display:none; margin-top:10px;">
+          <p class="muted" style="margin-bottom:5px;">Get a free key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
+          <input type="password" id="apiKeyInput" placeholder="Paste your key here">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col card">
+      <h2>Preferences</h2>
+      <label>Theme</label>
+      <select id="themeSelect">
+        <option value="default">Light Blue (Default)</option>
+        <option value="dark">Dark</option>
+      </select>
+      <label style="margin-top:12px; display:block;">Font size</label>
+      <input id="fontSizeRange" type="range" min="12" max="20" step="1">
+    </div>
+    <div class="col card">
+      <h2>Data Management</h2>
+      <p class="muted">Backup or restore your data, or reset the app completely.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn small" data-action="export-data">Export Data</button>
+        <label for="importDataInput" class="btn small secondary">Import Data</label>
+        <input type="file" id="importDataInput" accept=".json" class="hidden">
+        <button class="btn small" data-action="reset-app" style="background:var(--danger);">Reset App</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="text-align:center;">
+      <button class="btn" data-action="save-settings" style="width:100%;">Save All Settings</button>
+  </div>
+</template>
+
+<template id="releaseNotesPageTemplate">
+    <div class="card">
+        <h2>A Letter to Our Community</h2>
+        <p><strong>Release Date:</strong> September 26, 2025</p>
+        <hr style="margin: 16px 0; border-color: rgba(0,0,0,0.05);">
+        <blockquote>
+            <p>To our incredible Q Solve community,</p>
+            <p>This isn't just a product update; it's the culmination of years of dreaming, building, failing, and learning, evolving from a simple experiment into something we believe will <strong>fundamentally change the way you learn.</strong></p>
+        </blockquote>
+        <h3>Our Journey to Today</h3>
+        <p>From a clunky prototype to a public web app, your feedback has been crucial. You showed us the need for a mobile-first experience, which led us to this complete, ground-up rebuild designed to be the ultimate learning companion.</p>
+    </div>
+    <div class="card">
+        <h2>✨ What's New in This Version</h2>
+        <h3>🧠 AI-Powered Question Answering</h3>
+        <p>At the heart of Q Solve is Google's advanced Gemini model. Ask it to "explain quantum entanglement like I'm ten years old." It’s the patient, brilliant tutor we always wished we had.</p>
+
+        <h3>💬 Conversational Context</h3>
+        <p>Our AI remembers the context of your conversation, allowing for a natural, flowing dialogue. It’s the difference between shouting questions into a void and collaborating with a partner who is actively listening.</p>
+        
+        <h3>📖 Enhanced Conversation History</h3>
+        <p>Your conversations are now saved locally. You can search your history, tag important chats, and mark your favorites for quick access.</p>
+
+        <h3>🎨 Full Personalization</h3>
+        <p>Set your name and avatar, and choose your theme. We designed a crisp <strong>Light Blue Theme</strong> and a beautiful, eye-saving <strong>Dark Theme</strong> for those late-night study sessions.</p>
+    </div>
+    <div class="card">
+        <h2>🚀 The Future & My Other Projects</h2>
+        <p>This is just the starting line. While we build new features, feel free to check out my other work:</p>
+        <ul>
+            <li><a href="https://whatsapp.com/channel/0029VbB4DCr9Gv7Qj7NgCX2t" target="_blank"><strong>WhatsApp Channel</strong></a> - Get updates and join the community.</li>
+            <li><a href="https://www.youtube.com/@KabirInvents" target="_blank"><strong>YouTube (@KabirInvents)</strong></a> - Watch tutorials and project showcases.</li>
+            <li><a href="https://play.google.com/store/apps/developer?id=Kabir+Gagneja+Invents" target="_blank"><strong>Google Play Store</strong></a> - Discover all my published apps.</li>
+            <li><a href="https://kabirgagnejayt-lang.github.io/Qsolve_Mobile_App/" target="_blank"><strong>Q Solve Official Website</strong></a> - The landing page for the mobile experience.</li>
+            <li><a href="https://play.google.com/store/apps/details?id=appinventor.ai_kabirgagnejayt.GradeWithAI" target="_blank"><strong>GradeWithAI App</strong></a> - Another one of my helpful tools for students.</li>
+        </ul>
+        <p style="margin-top:16px;">With sincere gratitude,</p>
+        <p><strong>The Q Solve Team</strong></p>
+        
+        <button class="btn" data-action="continue-from-release" style="margin-top:24px; width:100%; padding:12px;">Continue to App</button>
+    </div>
+</template>
 
 </body>
 </html>
