@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Homework Helper (Cookie-Only)</title>
+<title>Q Solve — Homework Helper (Final Optimized)</title>
 
 <style>
   :root {
@@ -21,17 +21,18 @@
     background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
   }
   header {
-    padding:14px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between;
+    padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
     background:var(--card); box-shadow:var(--shadow);
     position: fixed; bottom: 0; left: 0; right: 0;
     z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
   }
-  .brand { display:flex; align-items:center; gap:12px; }
+  .brand { display:flex; align-items:center; gap:10px; min-width: 0; }
+  .brand-text { display: flex; flex-direction: column; min-width: 0; }
   .logo {
     width:44px; height:44px; border-radius:10px; background:var(--accent-grad); display:flex;
     align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
   }
-  .title { font-weight:700; font-size:1rem; }
+  .title { font-weight:700; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .header-avatar {
     width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(0,0,0,0.05);
     flex-shrink: 0;
@@ -44,7 +45,7 @@
   .card { background:var(--card); border-radius:var(--radius); box-shadow: 0 6px 20px rgba(15,23,42,0.08); padding:14px; margin-bottom:14px; }
   .row { display:flex; gap:12px; flex-wrap:wrap; }
   p { color:var(--muted); line-height:1.45; }
-  .muted { color:var(--muted); font-size:0.95rem; }
+  .muted { color:var(--muted); font-size:0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   input,textarea,select,button { font-size:0.95rem; }
   input,select,textarea { width:100%; box-sizing:border-box; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; color:var(--text); }
   .btn { background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
@@ -65,14 +66,18 @@
   .chat-bubble.user { background: #eef2ff; color: #4338ca; margin-left: auto; }
   .chat-bubble.model { background: rgba(79,70,229,0.05); }
 
+  /* --- UI FIX FOR MOBILE --- */
   @media (max-width: 768px) {
-    header { flex-wrap: wrap; gap: 10px; }
-    nav { width: 100%; order: -1; overflow-x: auto; padding-bottom: 5px; justify-content: space-around; }
-    .brand { width: auto; } .title, .muted { display: none; }
-    .btn[data-action="share"] { display: none; }
+    header { flex-wrap: nowrap; gap: 8px; }
+    nav { flex-shrink: 0; } /* Nav buttons will not shrink */
+    .brand { flex-shrink: 1; } /* Brand info will shrink if needed */
+    .title { font-size: 0.9rem; } /* Slightly smaller title */
     .row { flex-direction: column; gap: 0; }
     .container { margin: 12px auto; padding: 0 10px; }
     #toast { bottom: 120px; width: 90%; box-sizing: border-box; }
+  }
+  @media (max-width: 420px) {
+    .title { display: none; } /* On very narrow screens, hide the title but keep greeting */
   }
 </style>
 
@@ -87,7 +92,10 @@
   <div class="brand">
     <div id="headerLogo" class="logo">QS</div>
     <img id="headerPfp" alt="avatar" class="header-avatar hidden">
-    <div> <div class="title">Q Solve</div> <div class="muted" id="greetingSmall">Welcome</div> </div>
+    <div class="brand-text">
+        <div class="title">Q Solve</div>
+        <div class="muted" id="greetingSmall">Welcome</div>
+    </div>
   </div>
   <nav id="mainNav">
     <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
@@ -191,11 +199,10 @@ window.onerror = function(message, source, lineno) {
     return true;
 };
 
-// --- API Key is now set to your specific key ---
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v11', userKey: 'qsolve_user_v11', history: [],
+  dataKey: 'qsolve_data_v12', userKey: 'qsolve_user_v12', history: [],
   settings: { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true },
 };
 
@@ -231,9 +238,7 @@ function eraseCookie(name) {
     document.cookie = name+'=; Max-Age=-99999999; path=/;';
 }
 
-// --- Data functions now use Cookies exclusively ---
 function saveData() {
-    // Save settings and only the LATEST 1 conversation to stay under 4KB limit
     var historyToSave = App.history.length > 0 ? [App.history[0]] : [];
     setCookie(App.dataKey, historyToSave, 365);
     setCookie(App.userKey, App.settings, 365);
@@ -242,7 +247,6 @@ function saveData() {
 function loadData() {
   var loadedHistory = getCookie(App.dataKey);
   var loadedSettings = getCookie(App.userKey);
-
   try {
     if (loadedHistory) App.history = loadedHistory;
     if (loadedSettings) {
@@ -255,22 +259,18 @@ function loadData() {
         App.settings = defaultSettings;
     }
   } catch (e) {
-    showToast("Error loading saved data.", "error");
-    App.history = [];
+    showToast("Error loading saved data.", "error"); App.history = [];
   }
 }
 
 function clearData() {
-    eraseCookie(App.dataKey);
-    eraseCookie(App.userKey);
+    eraseCookie(App.dataKey); eraseCookie(App.userKey);
     eraseCookie('qsolve_first_time_' + App.dataKey.split('_')[2]);
 }
 
-// --- Core App Logic (largely unchanged) ---
 function showPage(id) {
-  var pages = App.pages;
-  for(var i=0; i < pages.length; i++) {
-    var el = document.getElementById(pages[i]);
+  for(var i=0; i < App.pages.length; i++) {
+    var el = document.getElementById(App.pages[i]);
     if (el) el.style.display = 'none';
   }
   var page = document.getElementById(id);
@@ -308,47 +308,53 @@ function showToast(message, type) {
   toast.textContent = message;
   toast.className = 'show';
   if (type === 'error') toast.classList.add('error');
-  setTimeout(function() {
-    toast.className = toast.className.replace('show', '');
-  }, 5000);
+  setTimeout(function() { toast.className = toast.className.replace('show', ''); }, 5000);
 }
 
-function escapeHtml(s) {
-  if (s === null || s === undefined) return '';
-  var el = document.createElement('div');
-  el.textContent = s;
-  return el.innerHTML;
-}
-
-function formatAIResponse(text) {
-  return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
+// --- AI FIX: Wait for the library to be ready ---
+function whenReady(checkFn, callback, timeout) {
+    var startTime = Date.now();
+    timeout = timeout || 5000; // 5 second timeout
+    var interval = setInterval(function() {
+        if (checkFn()) {
+            clearInterval(interval);
+            callback();
+        } else if (Date.now() - startTime > timeout) {
+            clearInterval(interval);
+            callback(new Error("Timeout: Library failed to load."));
+        }
+    }, 100); // Check every 100ms
 }
 
 function getAIResponse(prompt, history) {
   return new Promise(function(resolve) {
-    var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
-    if (!apiKey) {
-      showToast('API Key is not set in Settings.', 'error');
-      return resolve("Error: API Key is required.");
-    }
-    try {
-      var genAI = new self.GoogleGenerativeAI(apiKey);
-      var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      var chat = model.startChat({ history: history });
-      chat.sendMessage(prompt).then(function(result) {
-        return result.response;
-      }).then(function(response) {
-        resolve(response.text());
-      }).catch(function(error) {
-        var detailedError = error.message || 'Unknown network error.';
-        showToast('AI Error: ' + detailedError.slice(0, 100), 'error');
-        resolve('AI Error: Could not get a response.');
-      });
-    } catch (error) {
-      var detailedError = error.message || 'Unknown initialization error.';
-      showToast('AI Init Error: ' + detailedError.slice(0, 100), 'error');
-      resolve('AI Init Error: Could not start AI model.');
-    }
+    whenReady(function() { return self.GoogleGenerativeAI; }, function(err) {
+      if (err) {
+        showToast("AI library failed to load. Check network.", "error");
+        return resolve("AI Error: Library not loaded.");
+      }
+      var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
+      if (!apiKey) {
+        showToast('API Key is not set in Settings.', 'error');
+        return resolve("Error: API Key is required.");
+      }
+      try {
+        var genAI = new self.GoogleGenerativeAI(apiKey);
+        var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        var chat = model.startChat({ history: history });
+        chat.sendMessage(prompt).then(function(result) {
+          return result.response;
+        }).then(function(response) {
+          resolve(response.text());
+        }).catch(function(error) {
+          showToast('AI Error: ' + (error.message || 'Unknown network error.'), 'error');
+          resolve('AI Error: Could not get a response.');
+        });
+      } catch (error) {
+        showToast('AI Init Error: ' + (error.message || 'Could not start AI model.'), 'error');
+        resolve('AI Init Error: Could not start AI model.');
+      }
+    });
   });
 }
 
@@ -399,7 +405,7 @@ function refreshHomePage() {
     if (App.history.length === 0) {
       recentList.innerHTML = '<p class="muted">Your most recent conversation will appear here.</p>'; return;
     }
-    var item = App.history[0]; // Always show the first item
+    var item = App.history[0];
     var title = escapeHtml(item.title.slice(0, 80));
     recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
   }
@@ -412,8 +418,7 @@ function renderDetectedQuestions(questions, fullText) {
   if (questions.length === 0 && fullText) questions = [fullText];
   var html = '';
   for(var i=0; i<questions.length; i++) {
-    var qText = questions[i];
-    var questionHtml = escapeHtml(qText);
+    var questionHtml = escapeHtml(questions[i]);
     html += '<div class="question-card" data-conversation-history="[]"><p class="question-text">' + questionHtml + '</p><div class="ai-answer-container" style="display: none;"></div><div style="display:flex; gap: 8px; align-items:center; margin-top:10px;"><select class="ai-personality-select" style="flex-grow:0; width: auto;"><option value="">Default Answer</option><option value="\\n\\nPlease explain this simply.">Explain Simply</option><option value="\\n\\nPlease summarize in a list.">Summarize</option><option value="\\n\\nPlease provide a step-by-step guide.">Step-by-Step</option></select><button class="btn" data-action="start-conversation">Find Answer</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div><div class="save-controls" style="display:none; margin-top:12px;"><input type="text" class="tags-input" placeholder="Add tags..."><button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save</button></div></div>';
   }
   container.innerHTML += html;
@@ -442,10 +447,9 @@ function refreshHistoryList() {
     var html = '';
     for(var j=0; j < filteredHistory.length; j++) {
         var item = filteredHistory[j];
-        var tagsHtml = (item.tags || []).map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('');
+        var tagsHtml = item.tags.map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('');
         var conversationHtml = item.conversation.map(function(turn) {
-            var bubbleClass = turn.role === 'user' ? 'user' : 'model';
-            return '<div class="chat-bubble ' + bubbleClass + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
+            return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
         }).join('');
         html += '<div class="question-card"><div style="display:flex; justify-content:space-between; align-items:start;"><h4>' + escapeHtml(item.title) + '</h4><button class="favorite-btn ' + (item.isFavorited ? 'favorited' : '') + '" data-action="toggle-favorite" data-id="' + item.id + '">★</button></div><div>' + tagsHtml + '</div><div class="ai-answer-container" style="display:block; margin-top:12px;">' + conversationHtml + '</div><div style="margin-top:10px;"><button class="btn small secondary" data-action="copy-conversation" data-id="' + item.id + '">Copy</button></div></div>';
     }
@@ -454,8 +458,7 @@ function refreshHistoryList() {
 }
 
 function handleAvatarUpload(event) {
-  var file = event.target.files[0];
-  if (!file) return;
+  var file = event.target.files[0]; if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) { App.settings.avatar = e.target.result; saveData(); updateHeaderUI(); updateSettingsPageUI(); };
   reader.readAsDataURL(file);
@@ -500,6 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!target || !target.getAttribute('data-action')) return;
     
     var action = target.getAttribute('data-action');
+    var card = findClosest(target, '.question-card');
     
     if (action === 'navigate') {
         showPage(target.getAttribute('data-page'));
@@ -518,7 +522,6 @@ document.addEventListener('DOMContentLoaded', function() {
       else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
       else showToast('Please select a file or paste text.', 'error');
     } else if (action === 'start-conversation' || action === 'ask-follow-up') {
-        var card = findClosest(target, '.question-card');
         if (!card) return;
         var answerContainer = card.querySelector('.ai-answer-container');
         var questionTextElem = card.querySelector('.question-text');
@@ -551,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function() {
             target.disabled = false;
         });
     } else if (action === 'save-conversation') {
-        var card = findClosest(target, '.question-card');
         if (!card) return;
         var history = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
         if (history.length === 0) return;
@@ -568,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var itemId = target.getAttribute('data-id');
         for (var i = 0; i < App.history.length; i++) {
             if (App.history[i].id === itemId) {
-                var textToCopy = App.history[i].conversation.map(function(turn) { return turn.role.toUpperCase() + ': ' + turn.parts[0].text; }).join('\n\n');
+                var textToCopy = item.conversation.map(function(turn) { return turn.role.toUpperCase() + ': ' + turn.parts[0].text; }).join('\n\n');
                 copyTextToClipboard(textToCopy); break;
             }
         }
