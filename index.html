@@ -499,20 +499,28 @@ function findClosest(elem, selector) {
 }
 
 function init() {
-  // Load any existing data first. This is crucial.
+  // **FIX:** Load data from cookies FIRST. This is crucial for all subsequent logic.
   loadData();
   applyTheme();
   
   var version = App.dataKey.split('_')[2];
   var releaseSeen = getCookie('qsolve_seen_' + version + '_release') === 'true';
+  var setupComplete = getCookie('qsolve_first_time_' + version) === 'true';
 
-  // If they haven't seen this version's release notes, show them.
+  // SCENARIO 1: User has NOT seen the current release notes.
+  // This applies to brand new users AND users updating from an old version.
   if (!releaseSeen) {
     showPage('releaseNotesPage');
-  } else {
-    // Otherwise, proceed with the normal flow.
-    var firstTime = getCookie('qsolve_first_time_' + version) !== 'true';
-    showPage(firstTime ? 'welcomeScreen' : 'homePage');
+  } 
+  // SCENARIO 2: User HAS seen the release notes but has NOT completed setup.
+  // This is a new user who has clicked "Continue" from the release page.
+  else if (!setupComplete) {
+    showPage('welcomeScreen');
+  }
+  // SCENARIO 3: User is fully set up and has seen the notes.
+  // This is a returning user.
+  else {
+    showPage('homePage');
   }
 }
 
@@ -532,6 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (action === 'navigate') {
         showPage(target.getAttribute('data-page'));
     } else if (action === 'accept-welcome') {
+      // Logic for when a new user completes the setup screen.
       var setupName = document.getElementById('setupName').value.trim();
       if (!setupName) {
         showToast('Please enter your name to continue.', 'error');
@@ -540,8 +549,23 @@ document.addEventListener('DOMContentLoaded', function() {
       App.settings.name = setupName;
       saveData();
       var version = App.dataKey.split('_')[2];
+      // Mark setup as complete.
       setCookie('qsolve_first_time_' + version, 'true', 365);
       showPage('homePage');
+
+    } else if (action === 'continue-from-release') {
+        // Logic for when a user clicks "Continue" on the release page.
+        var version = App.dataKey.split('_')[2];
+        // Mark the release notes as seen.
+        setCookie('qsolve_seen_' + version + '_release', 'true', 365);
+        
+        // This is the key logic:
+        // Check if the user has ALREADY completed setup in a previous version.
+        var setupComplete = getCookie('qsolve_first_time_' + version) === 'true';
+        
+        // If they have, go to home. If not, go to the welcome/setup screen.
+        showPage(setupComplete ? 'homePage' : 'welcomeScreen');
+
     } else if (action === 'run-ocr') {
       var text = document.getElementById('pasteText').value.trim();
       if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
@@ -593,6 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resetButton.removeAttribute('data-confirming');
             resetButton.textContent = 'Reset App';
             applyTheme(); 
+            // After a full reset, they are a "new user" again.
             showPage('welcomeScreen');
             showToast('App has been reset.');
         } else {
@@ -605,15 +630,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 4000);
         }
-    } else if (action === 'continue-from-release') {
-        var version = App.dataKey.split('_')[2];
-        setCookie('qsolve_seen_' + version + '_release', 'true', 365);
-        
-        // This is the key logic:
-        // Check if the user has a real name saved, not the default one.
-        var isReturningUser = App.settings.name && App.settings.name !== 'Student';
-        
-        showPage(isReturningUser ? 'homePage' : 'welcomeScreen');
     }
   });
 });
