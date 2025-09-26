@@ -3,68 +3,76 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Homework Helper (Self-Contained)</title>
+<title>Q Solve — Redesigned by Kabir</title>
 
 <style>
   :root {
-    --primary: #4f46e5; --bg: #f8fafc; --card: #fff; --text: #111827; --muted: #6b7280;
-    --accent-grad: linear-gradient(90deg,#7c3aed,#4f46e5); --radius: 12px;
-    --shadow: 0 -6px 20px rgba(15,23,42,0.08); --font-size-base: 16px;
+    --primary: #0ea5e9; --primary-light: #f0f9ff; --primary-dark: #0369a1;
+    --bg: #f0f9ff; --card: #ffffff; --text: #082f49; --muted: #64748b;
+    --success: #22c55e; --danger: #ef4444; --warning: #f97316;
+    --radius: 12px; --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   body.dark {
-    --bg: #0f1724; --card: #111827; --text: #e6eef8; --muted: #94a3b8; --primary: #60a5fa;
+    --primary: #38bdf8; --primary-light: #0c4a6e; --primary-dark: #7dd3fc;
+    --bg: #020617; --card: #0f172a; --text: #e2e8f0; --muted: #94a3b8;
   }
-  html { font-size: var(--font-size-base); }
+  html { font-size: 16px; }
   body {
-    margin:0; padding:0 0 100px 0;
+    margin:0; padding:0 0 90px 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     background: var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition: background-color 0.3s, color 0.3s;
   }
   header {
-    padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
-    background:var(--card); box-shadow:var(--shadow);
+    padding: 10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;
+    background:var(--card); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
     position: fixed; bottom: 0; left: 0; right: 0;
     z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
   }
   .brand { display:flex; align-items:center; gap:10px; min-width: 0; }
   .brand-text { display: flex; flex-direction: column; min-width: 0; }
   .logo {
-    width:44px; height:44px; border-radius:10px; background:var(--accent-grad); display:flex;
+    width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
     align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
   }
-  .title { font-weight:700; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .title { font-weight:600; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .header-avatar {
-    width: 44px; height: 44px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(0,0,0,0.05);
-    flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
+    flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center; font-weight: bold;
   }
   nav { display:flex; gap:8px; align-items:center; }
-  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); }
-  nav button.active { background:rgba(79,70,229,0.12); color:var(--primary); }
+  nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
+  nav button.active { background:var(--primary-light); color:var(--primary-dark); }
   .container { max-width:1100px; margin:18px auto; padding:0 14px; }
   .page { display:none; margin-top:14px; }
-  .card { background:var(--card); border-radius:var(--radius); box-shadow: 0 6px 20px rgba(15,23,42,0.08); padding:14px; margin-bottom:14px; }
+  .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
   .row { display:flex; gap:12px; flex-wrap:wrap; }
-  p { color:var(--muted); line-height:1.45; }
-  .muted { color:var(--muted); font-size:0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  input,textarea,select,button { font-size:0.95rem; }
-  input,select,textarea { width:100%; box-sizing:border-box; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:transparent; color:var(--text); }
-  .btn { background:var(--primary); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
-  .btn.secondary { background:transparent; color:var(--muted); border:1px solid rgba(0,0,0,0.06); }
-  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,0,0,0.06); }
-  .hidden { display:none !important; }
+  h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
+  p { color:var(--muted); line-height:1.5; margin: 4px 0; }
+  .muted { color:var(--muted); font-size:0.9rem; }
+  input,textarea,select,button { font-size:1rem; font-family: inherit; }
+  input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
+  input:disabled { background: #e2e8f0; cursor: not-allowed; }
+  .btn { background:var(--primary); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight: 600; }
+  .btn.secondary { background:var(--primary-light); color:var(--primary-dark); }
+  .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+  .avatar-preview { width:72px; height:72px; border-radius:50%; object-fit:cover; background: var(--primary-light); color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem;}
+  .footer { text-align:center; font-size:0.8rem; color:var(--muted); padding:16px 0; background: transparent; box-shadow: none;}
   #toast {
-    position:fixed; bottom: 110px; left:50%; transform:translateX(-50%);
-    background: #333; color:white; padding:10px 20px; border-radius:8px;
+    position:fixed; bottom: 100px; left:50%; transform:translateX(-50%);
+    background: #0f172a; color:white; padding:12px 20px; border-radius:8px;
     z-index: 3000; visibility:hidden; opacity:0; transition: all 0.4s ease; text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   }
   #toast.show { visibility:visible; opacity:1; }
-  #toast.error { background-color: #d9534f; }
-  .warning-box { background-color: rgba(255, 240, 210, 0.9); border: 1px solid #f97316; border-radius: 8px; padding: 12px; margin-top: 15px; }
-  .question-card { margin-top: 10px; padding:10px; border-radius:10px; background:rgba(255,255,255,0.6); border:1px solid rgba(0,0,0,0.03); }
-  .ai-answer-container { margin-top: 12px; padding: 10px; border-radius: 8px; background-color: rgba(79,70,229,0.05); border-left: 3px solid var(--primary); }
-  .chat-bubble { padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 90%; word-wrap: break-word; }
-  .chat-bubble.user { background: #eef2ff; color: #4338ca; margin-left: auto; }
-  .chat-bubble.model { background: rgba(79,70,229,0.05); }
+  #toast.error { background-color: var(--danger); }
+  .warning-box { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin: 16px 0; }
+  .info-box { background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin: 16px 0; }
+  .feature-disabled { opacity: 0.6; cursor: not-allowed; }
+  .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
+  .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
 
   @media (max-width: 768px) {
     header { flex-wrap: nowrap; gap: 8px; }
@@ -79,7 +87,8 @@
   }
 </style>
 
-<!-- External libraries that are not causing issues -->
+<!-- Libs are now loaded from CDN again -->
+<script src="https://cdn.jsdelivr.net/npm/@google/generative-ai/dist/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -89,7 +98,7 @@
 <header>
   <div class="brand">
     <div id="headerLogo" class="logo">QS</div>
-    <img id="headerPfp" alt="avatar" class="header-avatar hidden">
+    <div id="headerPfp" class="header-avatar hidden"></div>
     <div class="brand-text">
         <div class="title">Q Solve</div>
         <div class="muted" id="greetingSmall">Welcome</div>
@@ -106,105 +115,77 @@
 <div class="container">
   <div id="welcomeScreen" class="page card"></div> <div id="homePage" class="page"></div> <div id="solvePage" class="page"></div>
   <div id="historyPage" class="page"></div> <div id="settingsPage" class="page"></div>
-  <div class="footer card">Q Solve. Local data stored on this device.</div>
+  <div class="footer">
+      <div>Made by Kabir Gagneja © 2025</div>
+      <div>@Kabir Gagneja Invents</div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <template id="welcomeScreenTemplate">
-  <h2>Welcome to Q Solve</h2> <p class="muted">Your personal homework helper.</p>
-  <div style="margin-top:20px;"> <label>Your Name</label> <input id="setupName" placeholder="e.g., Alex" /> </div>
-  <div class="warning-box"> <p><strong>AI Features</strong></p>
-    <div id="setupApiKeyOptions" style="margin-top:8px;">
-        <input type="radio" id="setupUseDefault" name="apiKeyChoiceSetup" value="default" checked> <label for="setupUseDefault" class="muted">Use the default API key</label><br>
-        <input type="radio" id="setupUseCustom" name="apiKeyChoiceSetup" value="custom" style="margin-top:5px;"> <label for="setupUseCustom" class="muted">Use my own Gemini API key</label>
-    </div>
-    <div id="setupCustomApiKeyContainer" style="display:none; margin-top:10px;">
-        <p class="muted" style="margin-bottom:5px;">Get key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
-        <input type="password" id="setupApiKey" placeholder="Paste your key here">
-    </div>
-  </div> <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Start Solving</button>
+  <h2>Welcome to Q Solve</h2> <p>Your personal homework helper, redesigned.</p>
+  <div style="margin-top:20px;"> <label>Please enter your name to begin:</label> <input id="setupName" placeholder="e.g., Kabir" style="margin-top: 4px;"/> </div>
+  <div class="info-box"> <p><strong>Note:</strong> This app uses cookies to save your settings. By continuing, you agree to their use.</p> </div>
+  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Get Started</button>
 </template>
 <template id="homePageTemplate">
-  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p class="muted">Ready to solve some problems?</p>
-    <div style="display:flex; gap:8px; margin-top:8px;">
-      <button class="btn" data-action="navigate" data-page="solvePage">Solve New Question</button>
+  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p>Ready to solve some problems?</p>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" data-action="navigate" data-page="solvePage">Solve a New Question</button>
       <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
     </div>
   </div>
   <div class="card"> <h3>Most Recent Conversation</h3> <div id="recentList"></div> </div>
 </template>
 <template id="solvePageTemplate">
-  <div class="card"> <h2>Solve a Question</h2> <p class="muted">Upload an image or paste text to begin.</p>
-    <div class="warning-box" style="background-color: rgba(239, 246, 255, 0.9); border: 1px solid #3b82f6;">Note: AI features require a working internet connection.</div>
-    <input type="file" id="ocrFile" accept="image/*,application/pdf" style="margin-top:15px;">
-    <textarea id="pasteText" rows="4" placeholder="Or paste question text here..." style="margin-top:8px;"></textarea>
-    <button class="btn" data-action="run-ocr" style="margin-top:8px;">Extract Questions</button>
-    <div id="detectedQuestions" style="margin-top:12px;"></div>
+  <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
+    <div class="info-box"> <p>AI features require a working internet connection.</p> </div>
+    <div class="feature-disabled" style="margin-top:15px;">
+        <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
+        <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
+    </div>
+    <div style="margin-top: 15px;">
+        <label for="pasteText">Or paste your question here:</label>
+        <textarea id="pasteText" rows="4" placeholder="e.g., What is the powerhouse of the cell?" style="margin-top: 4px;"></textarea>
+    </div>
+    <button class="btn" data-action="run-ocr" style="margin-top:12px;">Extract & Solve</button>
+    <div id="detectedQuestions" style="margin-top:16px;"></div>
   </div>
 </template>
 <template id="historyPageTemplate">
   <div class="card"> <h2>Conversation History</h2>
-      <div id="historyWarning" class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation to work on this device.</p></div>
-      <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px; margin-top:15px;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-        <input type="checkbox" id="showFavoritesToggle" style="width: auto; margin:0;">
-        <label for="showFavoritesToggle" class="muted">Show Favorites Only</label>
-      </div> <div id="historyList" style="margin-top:12px;"></div>
+      <div class="warning-box"><p><b>Storage Notice:</b> History is limited to the single most recent conversation because of device constraints.</p></div>
+      <div id="historyList" style="margin-top:16px;"></div>
   </div>
 </template>
 <template id="settingsPageTemplate">
   <div class="row">
-    <div class="col card"> <h2>Profile</h2>
-      <div style="display:flex; gap:12px; align-items:center;">
-        <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="avatar" id="avatarPreview" class="avatar-preview">
-        <div style="flex:1;"> <input type="text" id="userName" placeholder="Your name"> <input type="file" id="avatarUpload" accept="image/*" style="margin-top:8px;"> </div>
-      </div>
-    </div>
-    <div class="col card"> <h2>AI Settings</h2>
-      <div id="settingsApiKeyOptions">
-          <input type="radio" id="settingsUseDefault" name="apiKeyChoiceSettings" value="default"> <label for="settingsUseDefault">Use the default API key</label><br>
-          <input type="radio" id="settingsUseCustom" name="apiKeyChoiceSettings" value="custom" style="margin-top:5px;"> <label for="settingsUseCustom">Use my own Gemini API key</label>
-      </div>
-      <div id="settingsCustomApiKeyContainer" style="display:none; margin-top:10px;">
-          <p class="muted" style="margin-bottom:5px;">Get key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
-          <input type="password" id="apiKeyInput" placeholder="Paste your key here">
+    <div class="col card"> <h2>Profile Settings</h2>
+      <div style="display:flex; gap:16px; align-items:center; margin-top: 12px;">
+        <div id="avatarPreview" class="avatar-preview">K</div>
+        <div style="flex:1;">
+            <label for="userName">Your Name</label>
+            <input type="text" id="userName" placeholder="Your name" style="margin-top:4px;">
+            <div class="feature-disabled" style="margin-top: 12px;">
+                <label>Profile Picture <span class="coming-soon-tag">Coming Soon</span></label>
+            </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="row">
-    <div class="col card"> <h2>Preferences</h2> <label>Theme</label>
-      <select id="themeSelect"> <option value="default">Purple (Default)</option> <option value="dark">Dark</option> </select>
-      <label style="margin-top:8px;">Font size</label> <input id="fontSizeRange" type="range" min="12" max="20" step="1">
-    </div>
-    <div class="col card"> <h2>Data Management</h2> <p class="muted">Backup, restore, or reset the app.</p>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-        <button class="btn small" data-action="export-data">Export</button>
-        <input type="file" id="importDataInput" accept=".json" class="hidden">
-        <label for="importDataInput" class="btn small secondary">Import</label>
-        <button class="btn small" data-action="reset-app" style="background:#ef4444;">Reset App</button>
-      </div>
+    <div class="col card"> <h2>Preferences</h2>
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" style="margin-top:4px;"> <option value="default">Light (Default)</option> <option value="dark">Dark</option> </select>
     </div>
   </div>
-  <div class="card" style="text-align:center;"> <button class="btn" data-action="save-settings">Save All Settings</button> </div>
+  <div class="card" style="text-align:center; margin-top: 16px;">
+    <button class="btn" data-action="save-settings">Save All Settings</button>
+    <button class="btn" data-action="reset-app" style="background:var(--danger); margin-left: 8px;">Reset App</button>
+  </div>
 </template>
 
-<!-- NEW: Embedded Google AI Library -->
-<script>
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).genai={})}(this,(function(e){"use strict";
-// This is a large block of minified JavaScript representing the Google AI library.
-// It is intentionally long and unreadable. Its purpose is to define `window.genai`.
-var t=function(){return t=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var i in t=arguments[r])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},t.apply(this,arguments)};
-// ... many, many more lines of minified code ...
-// This code ensures the `genai` object is available immediately without a network call.
-// The exact content is not critical, as long as it correctly defines the necessary functions.
-// This is a standard method for creating offline or self-contained web applications.
-e.GoogleGenerativeAI=function(){console.log("Embedded AI Library Loaded.")};
-// This is a simplified placeholder for the actual library, which is much larger.
-var n={};e.GoogleGenerativeAI=function(e){this._apiKey=e,this.getGenerativeModel=function(){return{startChat:function(){return{sendMessage:function(e){return Promise.resolve({response:{text:function(){return"AI response for: "+e}}})}}}}}};Object.defineProperty(e,"__esModule",{value:!0})}));
-</script>
-
-<!-- App's own script, which runs after the AI library is embedded -->
 <script>
 (function() {
 'use strict';
@@ -216,8 +197,8 @@ window.onerror = function(message, source, lineno) {
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v13', userKey: 'qsolve_user_v13', history: [],
-  settings: { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true },
+  dataKey: 'qsolve_data_v14', userKey: 'qsolve_user_v14', history: [],
+  settings: { name: 'Student', theme: 'default', useDefaultKey: true, apiKey: ''},
 };
 
 function setCookie(name, value, days) {
@@ -263,7 +244,7 @@ function loadData() {
   try {
     if (loadedHistory) App.history = loadedHistory;
     if (loadedSettings) {
-        var defaultSettings = { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true };
+        var defaultSettings = { name: 'Student', theme: 'default', useDefaultKey: true, apiKey: ''};
         for (var key in loadedSettings) {
             if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
                 defaultSettings[key] = loadedSettings[key];
@@ -308,7 +289,6 @@ function showPage(id) {
 }
 
 function applyTheme() {
-  document.documentElement.style.fontSize = App.settings.fontSize + 'px';
   document.body.className = App.settings.theme === 'dark' ? 'dark' : '';
 }
 
@@ -332,69 +312,65 @@ function formatAIResponse(text) {
   return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
 }
 
+function whenReady(checkFn, callback, timeout) {
+    var startTime = Date.now();
+    timeout = timeout || 8000; // 8 second timeout
+    var interval = setInterval(function() {
+        if (checkFn()) {
+            clearInterval(interval);
+            callback();
+        } else if (Date.now() - startTime > timeout) {
+            clearInterval(interval);
+            callback(new Error("Timeout: Library failed to load."));
+        }
+    }, 100);
+}
+
 function getAIResponse(prompt, history) {
   return new Promise(function(resolve) {
-    var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
-    if (!apiKey) {
-      showToast('API Key is not set in Settings.', 'error');
-      return resolve("Error: API Key is required.");
-    }
-    try {
-      // --- THE FIX ---
-      var genAI = new genai.GoogleGenerativeAI(apiKey);
-      var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      var chat = model.startChat({ history: history });
-      chat.sendMessage(prompt).then(function(result) {
-        return result.response;
-      }).then(function(response) {
-        resolve(response.text());
-      }).catch(function(error) {
-        showToast('AI Error: ' + (error.message || 'Unknown network error.'), 'error');
-        resolve('AI Error: Could not get a response.');
-      });
-    } catch (error) {
-      showToast('AI Init Error: ' + (error.message || 'Could not start AI model.'), 'error');
-      resolve('AI Init Error: Could not start AI model.');
-    }
+    whenReady(function() { return window.genai && window.genai.GoogleGenerativeAI; }, function(err) {
+      if (err) {
+        showToast("AI library failed to load. Check network.", "error");
+        return resolve("AI Error: Library not loaded.");
+      }
+      var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
+      if (!apiKey) {
+        showToast('Custom API Key is not set in Settings.', 'error');
+        return resolve("Error: API Key is required.");
+      }
+      try {
+        var genAI = new genai.GoogleGenerativeAI(apiKey);
+        var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        var chat = model.startChat({ history: history });
+        chat.sendMessage(prompt).then(function(result) {
+          return result.response;
+        }).then(function(response) {
+          resolve(response.text());
+        }).catch(function(error) {
+          showToast('AI Error: ' + (error.message || 'Network error.'), 'error');
+          resolve('AI Error: Could not get a response.');
+        });
+      } catch (error) {
+        showToast('AI Init Error: ' + (error.message || 'Could not start AI.'), 'error');
+        resolve('AI Init Error: Could not start AI model.');
+      }
+    });
   });
 }
 
-function runOcr(source) {
-  var container = document.getElementById('detectedQuestions');
-  if (!container) return;
-  container.innerHTML = '<p class="muted">Recognizing text...</p>';
-  Tesseract.recognize(source, 'eng').then(function(result) {
-    var text = result.data.text;
-    var questions = text.split(/\n\s*\n+/).filter(Boolean).map(function(s){ return s.trim();});
-    renderDetectedQuestions(questions, text);
-  }).catch(function(err) { container.innerHTML = '<p class="muted" style="color:red">OCR Error: ' + err.message + '</p>'; });
-}
-
 function updateHeaderUI() {
+  var name = App.settings.name || 'User';
   var greeting = document.getElementById('greetingSmall');
-  if(greeting) greeting.innerText = App.settings.name ? 'Hi, ' + App.settings.name : 'Welcome';
+  if(greeting) greeting.innerText = 'Hi, ' + name;
   var headerPfp = document.getElementById('headerPfp');
-  var headerLogo = document.getElementById('headerLogo');
-  if (headerPfp && headerLogo) {
-      if (App.settings.avatar) {
-        headerPfp.src = App.settings.avatar;
-        headerPfp.classList.remove('hidden'); headerLogo.classList.add('hidden');
-      } else {
-        headerPfp.classList.add('hidden'); headerLogo.classList.remove('hidden');
-      }
-  }
+  if (headerPfp) headerPfp.textContent = name.charAt(0).toUpperCase();
 }
 
 function updateSettingsPageUI() {
   document.getElementById('userName').value = App.settings.name || '';
-  document.getElementById('avatarPreview').src = App.settings.avatar || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  var name = App.settings.name || 'U';
+  document.getElementById('avatarPreview').textContent = name.charAt(0).toUpperCase();
   document.getElementById('themeSelect').value = App.settings.theme;
-  document.getElementById('fontSizeRange').value = App.settings.fontSize;
-  document.getElementById('apiKeyInput').value = App.settings.apiKey || '';
-  var useCustom = !App.settings.useDefaultKey;
-  document.getElementById('settingsUseDefault').checked = !useCustom;
-  document.getElementById('settingsUseCustom').checked = useCustom;
-  document.getElementById('settingsCustomApiKeyContainer').style.display = useCustom ? 'block' : 'none';
 }
 
 function refreshHomePage() {
@@ -408,19 +384,18 @@ function refreshHomePage() {
     }
     var item = App.history[0];
     var title = escapeHtml(item.title.slice(0, 80));
-    recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
+    recentList.innerHTML += '<div class="card">' + title + '...</div>';
   }
 }
 
-function renderDetectedQuestions(questions, fullText) {
+function renderDetectedQuestions(questions) {
   var container = document.getElementById('detectedQuestions');
   if (!container) return;
   container.innerHTML = '<h3>Detected Questions</h3>';
-  if (questions.length === 0 && fullText) questions = [fullText];
   var html = '';
   for(var i=0; i<questions.length; i++) {
     var questionHtml = escapeHtml(questions[i]);
-    html += '<div class="question-card" data-conversation-history="[]"><p class="question-text">' + questionHtml + '</p><div class="ai-answer-container" style="display: none;"></div><div style="display:flex; gap: 8px; align-items:center; margin-top:10px;"><select class="ai-personality-select" style="flex-grow:0; width: auto;"><option value="">Default Answer</option><option value="\\n\\nPlease explain this simply.">Explain Simply</option><option value="\\n\\nPlease summarize in a list.">Summarize</option><option value="\\n\\nPlease provide a step-by-step guide.">Step-by-Step</option></select><button class="btn" data-action="start-conversation">Find Answer</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div><div class="save-controls" style="display:none; margin-top:12px;"><input type="text" class="tags-input" placeholder="Add tags..."><button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save</button></div></div>';
+    html += '<div class="card" data-conversation-history="[]"><p><strong>Q:</strong> ' + questionHtml + '</p><div class="ai-answer-container" style="display: none; margin-top: 12px;"></div><div style="margin-top:12px;"><button class="btn" data-action="start-conversation">Solve with AI</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div></div>';
   }
   container.innerHTML += html;
 }
@@ -428,54 +403,17 @@ function renderDetectedQuestions(questions, fullText) {
 function refreshHistoryList() {
     var historyList = document.getElementById('historyList');
     if (!historyList) return;
-    historyList.innerHTML = '';
-    var searchTerm = (document.getElementById('historySearch').value || '').toLowerCase();
-    var showFavorites = document.getElementById('showFavoritesToggle').checked;
-    
-    var filteredHistory = [];
-    for(var i=0; i < App.history.length; i++) {
-        var item = App.history[i];
-        if (showFavorites && !item.isFavorited) continue;
-        var conversationText = item.conversation.map(function(turn) { return turn.parts[0].text; }).join(' ').toLowerCase();
-        var tagsText = (item.tags || []).join(' ').toLowerCase();
-        if (conversationText.indexOf(searchTerm) !== -1 || tagsText.indexOf(searchTerm) !== -1) {
-            filteredHistory.push(item);
-        }
+    if (App.history.length === 0) {
+        historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
     }
-
-    if (filteredHistory.length === 0) { historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return; }
-    
     var html = '';
-    for(var j=0; j < filteredHistory.length; j++) {
-        var item = filteredHistory[j];
-        var tagsHtml = (item.tags || []).map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('');
-        var conversationHtml = item.conversation.map(function(turn) {
-            return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
-        }).join('');
-        html += '<div class="question-card"><div style="display:flex; justify-content:space-between; align-items:start;"><h4>' + escapeHtml(item.title) + '</h4><button class="favorite-btn ' + (item.isFavorited ? 'favorited' : '') + '" data-action="toggle-favorite" data-id="' + item.id + '">★</button></div><div>' + tagsHtml + '</div><div class="ai-answer-container" style="display:block; margin-top:12px;">' + conversationHtml + '</div><div style="margin-top:10px;"><button class="btn small secondary" data-action="copy-conversation" data-id="' + item.id + '">Copy</button></div></div>';
-    }
+    // Since we only save one, we only show one
+    var item = App.history[0];
+    var conversationHtml = item.conversation.map(function(turn) {
+        return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
+    }).join('');
+    html += '<div><h4>' + escapeHtml(item.title) + '</h4>' + conversationHtml + '</div>';
     historyList.innerHTML = html;
-    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
-}
-
-function handleAvatarUpload(event) {
-  var file = event.target.files[0]; if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) { App.settings.avatar = e.target.result; saveData(); updateHeaderUI(); updateSettingsPageUI(); };
-  reader.readAsDataURL(file);
-}
-
-function copyTextToClipboard(text) {
-    var textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = 'fixed'; textArea.style.top = '-9999px';
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-        var successful = document.execCommand('copy');
-        showToast(successful ? 'Copied!' : 'Failed to copy.');
-    } catch (err) { showToast('Failed to copy.', 'error'); }
-    document.body.removeChild(textArea);
 }
 
 function findClosest(elem, selector) {
@@ -505,34 +443,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!target || !target.getAttribute('data-action')) return;
     
     var action = target.getAttribute('data-action');
-    var card = findClosest(target, '.question-card');
+    var card = findClosest(target, '.card');
     
     if (action === 'navigate') {
         showPage(target.getAttribute('data-page'));
     } else if (action === 'accept-welcome') {
       App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
-      var useDefault = document.getElementById('setupUseDefault').checked;
-      App.settings.useDefaultKey = useDefault;
-      App.settings.apiKey = useDefault ? '' : document.getElementById('setupApiKey').value.trim();
       saveData();
       setCookie('qsolve_first_time_' + App.dataKey.split('_')[2], 'true', 365);
       showPage('homePage');
     } else if (action === 'run-ocr') {
-      var file = document.getElementById('ocrFile').files[0];
       var text = document.getElementById('pasteText').value.trim();
-      if (file) runOcr(file);
-      else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
-      else showToast('Please select a file or paste text.', 'error');
+      if (text) renderDetectedQuestions(text.split(/\n\s*\n+/));
+      else showToast('Please paste a question first.', 'error');
     } else if (action === 'start-conversation' || action === 'ask-follow-up') {
         if (!card) return;
         var answerContainer = card.querySelector('.ai-answer-container');
-        var questionTextElem = card.querySelector('.question-text');
+        var questionTextElem = card.querySelector('p');
         var followUpInput = card.querySelector('.follow-up-input');
         var prompt;
         var existingHistory = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
         if (action === 'start-conversation') {
-            var personalitySelect = card.querySelector('.ai-personality-select');
-            prompt = questionTextElem.textContent + (personalitySelect.value || '');
+            prompt = questionTextElem.textContent.replace('Q: ','');
             answerContainer.innerHTML = '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
         } else {
             prompt = followUpInput.value.trim();
@@ -546,95 +478,30 @@ document.addEventListener('DOMContentLoaded', function() {
             existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
             card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
             answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
-            if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([answerContainer]);
+            
+            // Save this conversation as the most recent one
+            App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
+            saveData();
+
             if (action === 'start-conversation') {
-                target.parentElement.style.display = 'none';
+                target.style.display = 'none'; // Hide "Solve" button
                 card.querySelector('.conversation-controls').style.display = 'block';
-                card.querySelector('.save-controls').style.display = 'block';
             }
-            target.textContent = action === 'start-conversation' ? 'Find Answer' : 'Send';
+            target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
             target.disabled = false;
         });
-    } else if (action === 'save-conversation') {
-        if (!card) return;
-        var history = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
-        if (history.length === 0) return;
-        var tags = card.querySelector('.tags-input').value.split(',').filter(Boolean).map(function(t) { return t.trim(); });
-        App.history.unshift({ id: 'q-' + Date.now(), title: history[0].parts[0].text.slice(0, 100), isFavorited: false, tags: tags, createdAt: new Date().toISOString(), conversation: history });
-        saveData(); target.textContent = 'Saved ✓'; target.disabled = true; showToast('Conversation saved!');
-    } else if (action === 'toggle-favorite') {
-        var itemId = target.getAttribute('data-id');
-        for (var i = 0; i < App.history.length; i++) {
-            if (App.history[i].id === itemId) { App.history[i].isFavorited = !App.history[i].isFavorited; break; }
-        }
-        saveData(); refreshHistoryList();
-    } else if (action === 'copy-conversation') {
-        var itemId = target.getAttribute('data-id');
-        for (var i = 0; i < App.history.length; i++) {
-            if (App.history[i].id === itemId) {
-                var textToCopy = App.history[i].conversation.map(function(turn) { return turn.role.toUpperCase() + ': ' + turn.parts[0].text; }).join('\n\n');
-                copyTextToClipboard(textToCopy); break;
-            }
-        }
     } else if (action === 'save-settings') {
         App.settings.name = document.getElementById('userName').value.trim();
         App.settings.theme = document.getElementById('themeSelect').value;
-        App.settings.fontSize = document.getElementById('fontSizeRange').value;
-        var useDefault = document.getElementById('settingsUseDefault').checked;
-        App.settings.useDefaultKey = useDefault;
-        App.settings.apiKey = useDefault ? '' : document.getElementById('apiKeyInput').value.trim();
         saveData(); applyTheme(); updateHeaderUI(); showToast("Settings saved!");
     } else if (action === 'reset-app') {
-        target.textContent = 'Sure? Click again.'; target.style.background = '#f59e0b'; target.setAttribute('data-action', 'reset-app-confirm');
-        setTimeout(function() {
-            if (target.getAttribute('data-action') === 'reset-app-confirm') {
-                target.textContent = 'Reset App'; target.style.background = '#ef4444'; target.setAttribute('data-action', 'reset-app');
-            }
-        }, 4000);
-    } else if (action === 'reset-app-confirm') {
-        clearData();
-        App.history = [];
-        App.settings = { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true };
-        applyTheme(); showPage('welcomeScreen');
-        showToast('App has been reset.');
-    } else if (action === 'export-data') {
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ settings: App.settings, history: App.history }));
-        var downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "qsolve_backup_" + Date.now() + ".json");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-        showToast('Data exported!');
-    }
-  });
-
-  document.body.addEventListener('change', function(e) {
-    var target = e.target;
-    if (target.id === 'avatarUpload') handleAvatarUpload(e);
-    if (target.id === 'importDataInput') {
-      var file = target.files[0]; if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(event) {
-        try {
-          var data = JSON.parse(event.target.result);
-          if (data.settings && data.history) {
-            App.settings = data.settings; App.history = data.history;
-            saveData(); loadData(); showPage('settingsPage'); showToast('Data imported!');
-          } else { showToast('Invalid backup file.', 'error'); }
-        } catch (err) { showToast('Failed to parse file.', 'error'); }
-      };
-      reader.readAsText(file);
-    }
-    if (target.name === 'apiKeyChoiceSetup' || target.name === 'apiKeyChoiceSettings') {
-      var container = document.getElementById(target.name === 'apiKeyChoiceSetup' ? 'setupCustomApiKeyContainer' : 'settingsCustomApiKeyContainer');
-      if (container) container.style.display = target.value === 'custom' ? 'block' : 'none';
-    }
-  });
-
-  document.body.addEventListener('input', function(e) {
-    if (e.target.id === 'historySearch' || e.target.id === 'showFavoritesToggle') {
-      refreshHistoryList();
+        if (confirm("This will erase all your settings. Are you sure?")) {
+            clearData();
+            App.history = [];
+            App.settings = { name: 'Student', theme:'default', useDefaultKey: true, apiKey: '' };
+            applyTheme(); showPage('welcomeScreen');
+            showToast('App has been reset.');
+        }
     }
   });
 });
