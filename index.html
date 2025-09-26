@@ -249,12 +249,10 @@ window.onerror = function(message, source, lineno) {
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage', 'releaseNotesPage'],
-  // **THE FIX: Universal cookie keys without versioning.**
   dataKey: 'qsolve_data', 
   userKey: 'qsolve_user', 
   history: [],
   settings: { name: 'Student', theme: 'default' },
-  // A flag to know if the user is brand new.
   isNewUser: true 
 };
 
@@ -318,7 +316,7 @@ function loadData() {
 function clearData() {
     eraseCookie(App.dataKey);
     eraseCookie(App.userKey);
-    eraseCookie('qsolve_release_seen'); // Clear the release seen flag too
+    eraseCookie('qsolve_release_seen');
 }
 
 function showPage(id) {
@@ -509,10 +507,13 @@ function init() {
   var releaseSeen = getCookie('qsolve_release_seen') === 'true';
 
   if (App.isNewUser && !releaseSeen) {
-    // Brand new user flow
+    // Brand new user flow: show release notes first.
     showPage('releaseNotesPage');
+  } else if (App.isNewUser) {
+    // New user who has seen notes: show signup.
+    showPage('welcomeScreen');
   } else {
-    // Returning user flow
+    // Returning user flow: straight to home.
     showPage('homePage');
   }
 }
@@ -544,9 +545,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     } else if (action === 'continue-from-release') {
         setCookie('qsolve_release_seen', 'true', 365);
-        // After seeing the release, a new user must sign up.
-        // A returning user's data would have already been loaded, so they'd skip this.
-        showPage('welcomeScreen');
+        
+        // **THE FIX IS HERE.**
+        // After clicking continue, we decide where to go based on user status.
+        if (App.isNewUser) {
+          // If they are new, they need to sign up.
+          showPage('welcomeScreen');
+        } else {
+          // If they are NOT new, they just wanted to see the notes. Send them back home.
+          showPage('homePage');
+        }
 
     } else if (action === 'run-ocr') {
       var text = document.getElementById('pasteText').value.trim();
@@ -596,6 +604,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearData();
             App.history = [];
             App.settings = { name: 'Student', theme:'default' };
+            App.isNewUser = true; // After reset, they are a new user.
             resetButton.removeAttribute('data-confirming');
             resetButton.textContent = 'Reset App';
             applyTheme(); 
