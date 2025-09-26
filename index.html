@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Redesigned by Kabir</title>
+<title>Q Solve — Direct API Version</title>
 
 <style>
   :root {
@@ -29,8 +29,9 @@
     position: fixed; bottom: 0; left: 0; right: 0;
     z-index: 50; border-top: 1px solid rgba(0,0,0,0.05);
   }
-  .brand { display:flex; align-items:center; gap:10px; min-width: 0; }
+  .brand { display:flex; align-items:center; gap:10px; min-width: 0; flex-grow: 1; flex-shrink: 1; overflow: hidden; }
   .brand-text { display: flex; flex-direction: column; min-width: 0; }
+  nav { display:flex; gap:8px; align-items:center; flex-shrink: 0; }
   .logo {
     width:40px; height:40px; border-radius:10px; background:var(--primary); display:flex;
     align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink: 0;
@@ -41,16 +42,14 @@
     flex-shrink: 0; background: #e0f2fe; color: var(--primary-dark);
     display: flex; align-items: center; justify-content: center; font-weight: bold;
   }
-  nav { display:flex; gap:8px; align-items:center; }
   nav button { background:transparent; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted); font-weight: 500;}
   nav button.active { background:var(--primary-light); color:var(--primary-dark); }
   .container { max-width:1100px; margin:18px auto; padding:0 14px; }
   .page { display:none; margin-top:14px; }
   .card { background:var(--card); border-radius:var(--radius); box-shadow: var(--shadow); padding:16px; margin-bottom:16px; }
-  .row { display:flex; gap:12px; flex-wrap:wrap; }
   h2 { font-size: 1.75rem; font-weight: 700; color: var(--text); margin: 0 0 8px 0; }
   p { color:var(--muted); line-height:1.5; margin: 4px 0; }
-  .muted { color:var(--muted); font-size:0.9rem; }
+  .muted { color:var(--muted); font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   input,textarea,select,button { font-size:1rem; font-family: inherit; }
   input,select,textarea { width:100%; box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; background:var(--bg); color:var(--text); }
   input:disabled { background: #e2e8f0; cursor: not-allowed; }
@@ -74,21 +73,11 @@
   .feature-disabled label { display: flex; justify-content: space-between; align-items: center; }
   .coming-soon-tag { font-size: 0.75rem; background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 600;}
 
-  @media (max-width: 768px) {
-    header { flex-wrap: nowrap; gap: 8px; }
-    nav { flex-shrink: 0; } .brand { flex-shrink: 1; }
-    .title { font-size: 0.9rem; }
-    .row { flex-direction: column; gap: 0; }
-    .container { margin: 12px auto; padding: 0 10px; }
-    #toast { bottom: 120px; width: 90%; box-sizing: border-box; }
-  }
   @media (max-width: 420px) {
     .title { display: none; }
   }
 </style>
 
-<!-- Libs are now loaded from CDN again -->
-<script src="https://cdn.jsdelivr.net/npm/@google/generative-ai/dist/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -140,7 +129,7 @@
 </template>
 <template id="solvePageTemplate">
   <div class="card"> <h2>Solve a Question</h2> <p>Paste text directly to get an AI-powered answer.</p>
-    <div class="info-box"> <p>AI features require a working internet connection.</p> </div>
+    <div class="info-box"> <p>AI features require a working internet connection to contact Google's servers.</p> </div>
     <div class="feature-disabled" style="margin-top:15px;">
         <label for="ocrFile">Upload Image (OCR) <span class="coming-soon-tag">Coming Soon</span></label>
         <input type="file" id="ocrFile" disabled style="margin-top: 4px;">
@@ -186,6 +175,7 @@
   </div>
 </template>
 
+<!-- MAIN APP SCRIPT -->
 <script>
 (function() {
 'use strict';
@@ -197,8 +187,8 @@ window.onerror = function(message, source, lineno) {
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v14', userKey: 'qsolve_user_v14', history: [],
-  settings: { name: 'Student', theme: 'default', useDefaultKey: true, apiKey: ''},
+  dataKey: 'qsolve_data_v17', userKey: 'qsolve_user_v17', history: [],
+  settings: { name: 'Student', theme: 'default' },
 };
 
 function setCookie(name, value, days) {
@@ -244,7 +234,7 @@ function loadData() {
   try {
     if (loadedHistory) App.history = loadedHistory;
     if (loadedSettings) {
-        var defaultSettings = { name: 'Student', theme: 'default', useDefaultKey: true, apiKey: ''};
+        var defaultSettings = { name: 'Student', theme: 'default' };
         for (var key in loadedSettings) {
             if (Object.prototype.hasOwnProperty.call(loadedSettings, key)) {
                 defaultSettings[key] = loadedSettings[key];
@@ -312,48 +302,70 @@ function formatAIResponse(text) {
   return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
 }
 
-function whenReady(checkFn, callback, timeout) {
-    var startTime = Date.now();
-    timeout = timeout || 8000; // 8 second timeout
-    var interval = setInterval(function() {
-        if (checkFn()) {
-            clearInterval(interval);
-            callback();
-        } else if (Date.now() - startTime > timeout) {
-            clearInterval(interval);
-            callback(new Error("Timeout: Library failed to load."));
+function cleanHistory(history) {
+    var sanitizedHistory = [];
+    if (Object.prototype.toString.call(history) !== '[object Array]') {
+        return [];
+    }
+    for (var i = 0; i < history.length; i++) {
+        var turn = history[i];
+        if (turn && turn.role && turn.parts && typeof turn.parts.length !== 'undefined') {
+            sanitizedHistory.push(turn);
         }
-    }, 100);
+    }
+    return sanitizedHistory;
 }
 
+// --- NEW: Direct API call using fetch ---
 function getAIResponse(prompt, history) {
   return new Promise(function(resolve) {
-    whenReady(function() { return window.genai && window.genai.GoogleGenerativeAI; }, function(err) {
-      if (err) {
-        showToast("AI library failed to load. Check network.", "error");
-        return resolve("AI Error: Library not loaded.");
-      }
-      var apiKey = App.settings.useDefaultKey ? DEFAULT_API_KEY : App.settings.apiKey;
-      if (!apiKey) {
-        showToast('Custom API Key is not set in Settings.', 'error');
-        return resolve("Error: API Key is required.");
-      }
-      try {
-        var genAI = new genai.GoogleGenerativeAI(apiKey);
-        var model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        var chat = model.startChat({ history: history });
-        chat.sendMessage(prompt).then(function(result) {
-          return result.response;
-        }).then(function(response) {
-          resolve(response.text());
-        }).catch(function(error) {
-          showToast('AI Error: ' + (error.message || 'Network error.'), 'error');
-          resolve('AI Error: Could not get a response.');
+    var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + DEFAULT_API_KEY;
+    
+    var sanitizedHistory = cleanHistory(history);
+    var requestBody = {
+      contents: sanitizedHistory.concat([
+        {
+          "parts": [
+            { "text": prompt }
+          ]
+        }
+      ])
+    };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(function(response) {
+      if (!response.ok) {
+        // Try to get more detailed error from the API response body
+        return response.json().then(function(errorBody) {
+          var message = (errorBody.error && errorBody.error.message) ? errorBody.error.message : 'HTTP error! status: ' + response.status;
+          throw new Error(message);
+        }).catch(function() {
+          throw new Error('HTTP error! status: ' + response.status);
         });
-      } catch (error) {
-        showToast('AI Init Error: ' + (error.message || 'Could not start AI.'), 'error');
-        resolve('AI Init Error: Could not start AI model.');
       }
+      return response.json();
+    })
+    .then(function(data) {
+      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+        resolve(data.candidates[0].content.parts[0].text);
+      } else {
+        // Handle cases where the response is successful but empty, e.g., safety block
+        if(data.promptFeedback && data.promptFeedback.blockReason){
+             resolve("Response blocked due to: " + data.promptFeedback.blockReason);
+        } else {
+             resolve("AI returned an empty response.");
+        }
+      }
+    })
+    .catch(function(error) {
+      showToast('AI Error: ' + error.message, 'error');
+      resolve('AI Error: Could not get a response.');
     });
   });
 }
@@ -363,7 +375,12 @@ function updateHeaderUI() {
   var greeting = document.getElementById('greetingSmall');
   if(greeting) greeting.innerText = 'Hi, ' + name;
   var headerPfp = document.getElementById('headerPfp');
-  if (headerPfp) headerPfp.textContent = name.charAt(0).toUpperCase();
+  var headerLogo = document.getElementById('headerLogo');
+  if(headerPfp && headerLogo){
+      headerPfp.textContent = name.charAt(0).toUpperCase();
+      headerLogo.classList.add('hidden');
+      headerPfp.classList.remove('hidden');
+  }
 }
 
 function updateSettingsPageUI() {
@@ -391,7 +408,7 @@ function refreshHomePage() {
 function renderDetectedQuestions(questions) {
   var container = document.getElementById('detectedQuestions');
   if (!container) return;
-  container.innerHTML = '<h3>Detected Questions</h3>';
+  container.innerHTML = '';
   var html = '';
   for(var i=0; i<questions.length; i++) {
     var questionHtml = escapeHtml(questions[i]);
@@ -407,7 +424,6 @@ function refreshHistoryList() {
         historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return;
     }
     var html = '';
-    // Since we only save one, we only show one
     var item = App.history[0];
     var conversationHtml = item.conversation.map(function(turn) {
         return '<div class="chat-bubble ' + (turn.role === 'user' ? 'user' : 'model') + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
@@ -479,12 +495,11 @@ document.addEventListener('DOMContentLoaded', function() {
             card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
             answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
             
-            // Save this conversation as the most recent one
             App.history[0] = { id: 'q-' + Date.now(), title: prompt.slice(0, 100), conversation: existingHistory };
             saveData();
 
             if (action === 'start-conversation') {
-                target.style.display = 'none'; // Hide "Solve" button
+                target.style.display = 'none';
                 card.querySelector('.conversation-controls').style.display = 'block';
             }
             target.textContent = action === 'start-conversation' ? 'Solve with AI' : 'Send';
@@ -498,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm("This will erase all your settings. Are you sure?")) {
             clearData();
             App.history = [];
-            App.settings = { name: 'Student', theme:'default', useDefaultKey: true, apiKey: '' };
+            App.settings = { name: 'Student', theme:'default' };
             applyTheme(); showPage('welcomeScreen');
             showToast('App has been reset.');
         }
