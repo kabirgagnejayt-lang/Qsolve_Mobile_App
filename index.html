@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf--8" />
+<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Q Solve — Homework Helper (Emulator Stable)</title>
+<title>Q Solve — Homework Helper (Ultra Compatible)</title>
 
 <style>
   :root {
@@ -67,29 +67,21 @@
     border: 1px solid rgba(255, 193, 7, 0.6);
     border-radius: 8px; padding: 12px; margin-top: 15px;
   }
-  .warning-box p { margin: 5px 0; }
   .question-card { margin-top: 10px; padding:10px; border-radius:10px; background:rgba(255,255,255,0.6); border:1px solid rgba(0,0,0,0.03); }
-  .ai-answer-container {
-    margin-top: 12px; padding: 10px; border-radius: 8px;
-    background-color: rgba(79,70,229,0.05); border-left: 3px solid var(--primary);
-  }
+  .ai-answer-container { margin-top: 12px; padding: 10px; border-radius: 8px; background-color: rgba(79,70,229,0.05); border-left: 3px solid var(--primary); }
   .chat-bubble { padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; max-width: 90%; word-wrap: break-word; }
   .chat-bubble.user { background: #eef2ff; color: #4338ca; margin-left: auto; }
   .chat-bubble.model { background: rgba(79,70,229,0.05); }
   .tag { background: rgba(0,0,0,0.05); color: var(--muted); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; display: inline-block; margin-right: 5px; }
   .favorite-btn { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; padding: 0 5px; opacity: 0.6; }
   .favorite-btn.favorited { opacity: 1; color: #facc15; }
-  /* --- NEW: On-screen Debugger Styles --- */
   #debug-log {
     display: none; position: fixed; bottom: 100px; left: 5px; right: 5px;
     max-height: 100px; overflow-y: auto; background: rgba(255, 235, 238, 0.95);
     border: 1px solid #ef4444; border-radius: 8px; padding: 8px;
     font-family: monospace; font-size: 10px; color: #b91c1c; z-index: 9999;
   }
-  #debug-log button {
-    font-size: 10px; padding: 2px 5px; float: right; border: 1px solid;
-    background: #f87171; color: white;
-  }
+  #debug-log button { font-size: 10px; padding: 2px 5px; float: right; border: 1px solid; background: #f87171; color: white; }
 
   @media (max-width: 768px) {
     header { flex-wrap: wrap; gap: 10px; }
@@ -99,8 +91,6 @@
     .btn[data-action="share"] { display: none; }
     .row { flex-direction: column; gap: 0; }
     .container { margin: 12px auto; padding: 0 10px; }
-    h2 { font-size: 1.5rem; }
-    .btn, input, select, textarea { padding-top: 12px; padding-bottom: 12px; }
     #toast { bottom: 120px; width: 90%; box-sizing: border-box; }
     #debug-log { bottom: 110px; }
   }
@@ -117,10 +107,7 @@
   <div class="brand">
     <div id="headerLogo" class="logo">QS</div>
     <img id="headerPfp" alt="avatar" class="header-avatar hidden">
-    <div>
-      <div class="title">Q Solve</div>
-      <div class="muted" id="greetingSmall">Welcome</div>
-    </div>
+    <div> <div class="title">Q Solve</div> <div class="muted" id="greetingSmall">Welcome</div> </div>
   </div>
   <nav id="mainNav">
     <button class="nav-btn" data-action="navigate" data-page="homePage">Home</button>
@@ -141,22 +128,15 @@
 </div>
 
 <div id="toast"></div>
-<!-- NEW: On-screen debugger element -->
 <div id="debug-log">
   <button onclick="document.getElementById('debug-log').style.display='none';">Clear</button>
   <strong>Debug Log:</strong><br>
 </div>
 
-
 <template id="welcomeScreenTemplate">
-  <h2>Welcome to Q Solve</h2>
-  <p class="muted">Your personal homework helper.</p>
-  <div style="margin-top:20px;">
-    <label>Your Name</label>
-    <input id="setupName" placeholder="e.g., Alex" />
-  </div>
-  <div class="warning-box">
-    <p><strong>AI Features</strong></p>
+  <h2>Welcome to Q Solve</h2> <p class="muted">Your personal homework helper.</p>
+  <div style="margin-top:20px;"> <label>Your Name</label> <input id="setupName" placeholder="e.g., Alex" /> </div>
+  <div class="warning-box"> <p><strong>AI Features</strong></p>
     <div id="setupApiKeyOptions" style="margin-top:8px;">
         <input type="radio" id="setupUseDefault" name="apiKeyChoiceSetup" value="default" checked>
         <label for="setupUseDefault" class="muted">Use the default API key</label><br>
@@ -167,27 +147,19 @@
         <p class="muted" style="margin-bottom:5px;">Get key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a>.</p>
         <input type="password" id="setupApiKey" placeholder="Paste your key here">
     </div>
-  </div>
-  <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Start Solving</button>
+  </div> <button class="btn" data-action="accept-welcome" style="margin-top:15px; width:100%; padding: 12px;">Start Solving</button>
 </template>
 <template id="homePageTemplate">
-  <div class="card">
-    <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2>
-    <p class="muted">Ready to solve some problems?</p>
+  <div class="card"> <h2>Hello, <span id="userNameDisplay">Student</span> 👋</h2> <p class="muted">Ready to solve some problems?</p>
     <div style="display:flex; gap:8px; margin-top:8px;">
       <button class="btn" data-action="navigate" data-page="solvePage">Solve New Question</button>
       <button class="btn secondary" data-action="navigate" data-page="historyPage">View History</button>
     </div>
   </div>
-  <div class="card">
-    <h3>Recent Conversations</h3>
-    <div id="recentList"></div>
-  </div>
+  <div class="card"> <h3>Recent Conversations</h3> <div id="recentList"></div> </div>
 </template>
 <template id="solvePageTemplate">
-  <div class="card">
-    <h2>Solve a Question</h2>
-    <p class="muted">Upload an image or paste text to begin.</p>
+  <div class="card"> <h2>Solve a Question</h2> <p class="muted">Upload an image or paste text to begin.</p>
     <input type="file" id="ocrFile" accept="image/*,application/pdf">
     <textarea id="pasteText" rows="4" placeholder="Or paste question text here..." style="margin-top:8px;"></textarea>
     <button class="btn" data-action="run-ocr" style="margin-top:8px;">Extract Questions</button>
@@ -195,31 +167,23 @@
   </div>
 </template>
 <template id="historyPageTemplate">
-  <div class="card">
-      <h2>Conversation History</h2>
-      <p class="muted">All your saved conversations.</p>
+  <div class="card"> <h2>Conversation History</h2> <p class="muted">All your saved conversations.</p>
       <input type="search" id="historySearch" placeholder="Search conversations..." style="margin-bottom:10px;">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <input type="checkbox" id="showFavoritesToggle" style="width: auto; margin:0;">
         <label for="showFavoritesToggle" class="muted">Show Favorites Only</label>
-      </div>
-      <div id="historyList" style="margin-top:12px;"></div>
+      </div> <div id="historyList" style="margin-top:12px;"></div>
   </div>
 </template>
 <template id="settingsPageTemplate">
   <div class="row">
-    <div class="col card">
-      <h2>Profile</h2>
+    <div class="col card"> <h2>Profile</h2>
       <div style="display:flex; gap:12px; align-items:center;">
         <img src="" alt="avatar" id="avatarPreview" class="avatar-preview">
-        <div style="flex:1;">
-          <input type="text" id="userName" placeholder="Your name">
-          <input type="file" id="avatarUpload" accept="image/*" style="margin-top:8px;">
-        </div>
+        <div style="flex:1;"> <input type="text" id="userName" placeholder="Your name"> <input type="file" id="avatarUpload" accept="image/*" style="margin-top:8px;"> </div>
       </div>
     </div>
-    <div class="col card">
-      <h2>AI Settings</h2>
+    <div class="col card"> <h2>AI Settings</h2>
       <div id="settingsApiKeyOptions">
           <input type="radio" id="settingsUseDefault" name="apiKeyChoiceSettings" value="default">
           <label for="settingsUseDefault">Use the default API key</label><br>
@@ -233,19 +197,11 @@
     </div>
   </div>
   <div class="row">
-    <div class="col card">
-      <h2>Preferences</h2>
-      <label>Theme</label>
-      <select id="themeSelect">
-        <option value="default">Purple (Default)</option>
-        <option value="dark">Dark</option>
-      </select>
-      <label style="margin-top:8px;">Font size</label>
-      <input id="fontSizeRange" type="range" min="12" max="20" step="1">
+    <div class="col card"> <h2>Preferences</h2> <label>Theme</label>
+      <select id="themeSelect"> <option value="default">Purple (Default)</option> <option value="dark">Dark</option> </select>
+      <label style="margin-top:8px;">Font size</label> <input id="fontSizeRange" type="range" min="12" max="20" step="1">
     </div>
-    <div class="col card">
-      <h2>Data Management</h2>
-      <p class="muted">Backup, restore, or reset the app.</p>
+    <div class="col card"> <h2>Data Management</h2> <p class="muted">Backup, restore, or reset the app.</p>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
         <button class="btn small" data-action="export-data">Export</button>
         <input type="file" id="importDataInput" accept=".json" class="hidden">
@@ -254,49 +210,63 @@
       </div>
     </div>
   </div>
-  <div class="card" style="text-align:center;">
-      <button class="btn" data-action="save-settings">Save All Settings</button>
-  </div>
+  <div class="card" style="text-align:center;"> <button class="btn" data-action="save-settings">Save All Settings</button> </div>
 </template>
 
 <script>
+// --- VITAL: Error handler is the very first thing to run ---
+window.onerror = function(message, source, lineno, colno, error) {
+    var debugLog = document.getElementById('debug-log');
+    if (debugLog) {
+        debugLog.style.display = 'block';
+        var errorText = 'ERROR: ' + message + ' (Line: ' + lineno + ')';
+        debugLog.innerHTML += errorText + '<br>';
+        console.error("Global Error:", message, "at", source, lineno, colno, error);
+    }
+    // We show our own toast, so prevent the default browser error alert
+    return true;
+};
+
+(function() {
 'use strict';
 var DEFAULT_API_KEY = 'AIzaSyDFkqehdCYrwxkwR8TSicSLHZrMnAJ3XXY';
 var App = {
   pages: ['welcomeScreen', 'homePage', 'solvePage', 'historyPage', 'settingsPage'],
-  dataKey: 'qsolve_data_v6', userKey: 'qsolve_user_v6', history: [],
+  dataKey: 'qsolve_data_v7', userKey: 'qsolve_user_v7', history: [],
   settings: { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true },
 };
 
-// --- NEW: Enhanced global error handler ---
-window.onerror = function(message, source, lineno, colno, error) {
-    console.error('Global Error:', message, 'at', source, lineno, colno, error);
-    var debugLog = document.getElementById('debug-log');
-    if (debugLog) {
-        debugLog.style.display = 'block';
-        debugLog.innerHTML += 'ERROR: ' + message + ' (Line: ' + lineno + ')<br>';
-    }
-    showToast('An unexpected error occurred.', 'error');
-    return true;
-};
-
-// --- NEW: Compatibility function to replace .closest() ---
 function findClosest(elem, selector) {
     while (elem && elem !== document) {
-        if (elem.matches(selector)) return elem;
+        // Use a basic way to check for class/tag, avoiding .matches()
+        if ((elem.nodeName.toLowerCase() === selector) || (elem.classList && elem.classList.contains(selector.substring(1)))) {
+             if (selector.charAt(0) === '.') { // basic class check
+                if ((' ' + elem.className + ' ').indexOf(' ' + selector.substring(1) + ' ') > -1) return elem;
+             }
+        }
+        if (elem.getAttribute('data-action')) {
+             if (('[data-action]').indexOf(selector) > -1) return elem;
+        }
         elem = elem.parentNode;
     }
     return null;
+}
+
+// Manual object merge to replace Object.assign
+function mergeObjects(target, source) {
+    for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+        }
+    }
+    return target;
 }
 
 function saveAll() {
   try {
     localStorage.setItem(App.dataKey, JSON.stringify(App.history));
     localStorage.setItem(App.userKey, JSON.stringify(App.settings));
-  } catch (e) {
-    console.error("Failed to save data:", e);
-    showToast("Could not save data.", "error");
-  }
+  } catch (e) { showToast("Could not save data.", "error"); }
 }
 
 function loadAll() {
@@ -305,27 +275,22 @@ function loadAll() {
     var u = localStorage.getItem(App.userKey);
     var defaultSettings = { name: 'Student', avatar: '', theme: 'default', fontSize: 16, apiKey: '', useDefaultKey: true };
     if (h) App.history = JSON.parse(h);
-    if (u) App.settings = Object.assign({}, defaultSettings, JSON.parse(u));
+    if (u) App.settings = mergeObjects(defaultSettings, JSON.parse(u));
   } catch(e) {
-    console.error("Failed to load data:", e);
     showToast("Error loading data. Resetting.", "error");
     App.history = [];
-    App.settings = defaultSettings;
     try { localStorage.clear(); } catch(err){}
   }
   applyTheme();
 }
 
 function showPage(id) {
-  App.pages.forEach(function(p) {
-    var el = document.getElementById(p);
+  for(var i=0; i < App.pages.length; i++) {
+    var el = document.getElementById(App.pages[i]);
     if (el) el.style.display = 'none';
-  });
-  var page = document.getElementById(id);
-  if (!page) {
-      console.error("Page not found:", id);
-      return;
   }
+  var page = document.getElementById(id);
+  if (!page) return;
   var template = document.getElementById(id + "Template");
   if (template) page.innerHTML = template.innerHTML;
   page.style.display = 'block';
@@ -334,10 +299,10 @@ function showPage(id) {
   if (header) {
       header.style.display = (id === 'welcomeScreen') ? 'none' : 'flex';
   }
-
-  document.querySelectorAll('.nav-btn').forEach(function(btn) {
-    btn.classList.remove('active');
-  });
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for(var j=0; j < navBtns.length; j++) {
+    navBtns[j].classList.remove('active');
+  }
   var activeBtn = document.querySelector('.nav-btn[data-page="' + id + '"]');
   if (activeBtn) activeBtn.classList.add('active');
 
@@ -353,7 +318,6 @@ function applyTheme() {
 }
 
 function showToast(message, type) {
-  type = type || 'info';
   var toast = document.getElementById('toast');
   if (!toast) return;
   toast.textContent = message;
@@ -390,16 +354,8 @@ function getAIResponse(prompt, history) {
         return result.response;
       }).then(function(response) {
         resolve(response.text());
-      }).catch(function(error) {
-        console.error("Gemini API Error:", error);
-        showToast('AI Error: ' + error.message, 'error');
-        resolve('AI Error: Could not get a response.');
-      });
-    } catch (error) {
-      console.error("Gemini Init Error:", error);
-      showToast('AI Init Error: ' + error.message, 'error');
-      resolve('AI Init Error: Could not start AI model.');
-    }
+      }).catch(function(error) { showToast('AI Error: ' + error.message, 'error'); resolve('AI Error: Could not get a response.'); });
+    } catch (error) { showToast('AI Init Error: ' + error.message, 'error'); resolve('AI Init Error: Could not start AI model.'); }
   });
 }
 
@@ -415,10 +371,7 @@ function runOcr(source) {
       questions = text.split(/\n\s*\n+/).map(function(s) { return s.trim(); }).filter(Boolean);
     }
     renderDetectedQuestions(questions, text);
-  }).catch(function(err) {
-    console.error("OCR Error:", err);
-    container.innerHTML = '<p class="muted" style="color:red">OCR Error: ' + err.message + '</p>';
-  });
+  }).catch(function(err) { container.innerHTML = '<p class="muted" style="color:red">OCR Error: ' + err.message + '</p>'; });
 }
 
 function updateHeaderUI() {
@@ -429,33 +382,23 @@ function updateHeaderUI() {
   if (headerPfp && headerLogo) {
       if (App.settings.avatar) {
         headerPfp.src = App.settings.avatar;
-        headerPfp.classList.remove('hidden');
-        headerLogo.classList.add('hidden');
+        headerPfp.classList.remove('hidden'); headerLogo.classList.add('hidden');
       } else {
-        headerPfp.classList.add('hidden');
-        headerLogo.classList.remove('hidden');
+        headerPfp.classList.add('hidden'); headerLogo.classList.remove('hidden');
       }
   }
 }
 
 function updateSettingsPageUI() {
-  var userName = document.getElementById('userName');
-  if(userName) userName.value = App.settings.name || '';
-  var avatarPreview = document.getElementById('avatarPreview');
-  if(avatarPreview) avatarPreview.src = App.settings.avatar || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
-  var themeSelect = document.getElementById('themeSelect');
-  if(themeSelect) themeSelect.value = App.settings.theme;
-  var fontSizeRange = document.getElementById('fontSizeRange');
-  if(fontSizeRange) fontSizeRange.value = App.settings.fontSize;
-  var apiKeyInput = document.getElementById('apiKeyInput');
-  if(apiKeyInput) apiKeyInput.value = App.settings.apiKey || '';
+  document.getElementById('userName').value = App.settings.name || '';
+  document.getElementById('avatarPreview').src = App.settings.avatar || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+  document.getElementById('themeSelect').value = App.settings.theme;
+  document.getElementById('fontSizeRange').value = App.settings.fontSize;
+  document.getElementById('apiKeyInput').value = App.settings.apiKey || '';
   var useCustom = !App.settings.useDefaultKey;
-  var settingsUseDefault = document.getElementById('settingsUseDefault');
-  if(settingsUseDefault) settingsUseDefault.checked = !useCustom;
-  var settingsUseCustom = document.getElementById('settingsUseCustom');
-  if(settingsUseCustom) settingsUseCustom.checked = useCustom;
-  var customContainer = document.getElementById('settingsCustomApiKeyContainer');
-  if(customContainer) customContainer.style.display = useCustom ? 'block' : 'none';
+  document.getElementById('settingsUseDefault').checked = !useCustom;
+  document.getElementById('settingsUseCustom').checked = useCustom;
+  document.getElementById('settingsCustomApiKeyContainer').style.display = useCustom ? 'block' : 'none';
 }
 
 function refreshHomePage() {
@@ -465,13 +408,13 @@ function refreshHomePage() {
   if (recentList) {
     recentList.innerHTML = '';
     if (App.history.length === 0) {
-      recentList.innerHTML = '<p class="muted">Saved conversations appear here.</p>';
-      return;
+      recentList.innerHTML = '<p class="muted">Saved conversations appear here.</p>'; return;
     }
-    App.history.slice(0, 3).forEach(function(item) {
+    for(var i=0; i<App.history.slice(0, 3).length; i++) {
+      var item = App.history[i];
       var title = escapeHtml(item.title.slice(0, 80));
       recentList.innerHTML += '<div class="question-card">' + title + '...</div>';
-    });
+    }
   }
 }
 
@@ -479,43 +422,43 @@ function renderDetectedQuestions(questions, fullText) {
   var container = document.getElementById('detectedQuestions');
   if (!container) return;
   container.innerHTML = '<h3>Detected Questions</h3>';
-  if (questions.length === 0 && fullText) {
-    questions = [fullText];
-  }
-  questions.forEach(function(qText) {
+  if (questions.length === 0 && fullText) questions = [fullText];
+  for(var i=0; i<questions.length; i++) {
+    var qText = questions[i];
     var questionHtml = escapeHtml(qText);
-    container.innerHTML += '<div class="question-card"><p class="question-text">' + questionHtml + '</p><div class="ai-answer-container" style="display: none;"></div><div style="display:flex; gap: 8px; align-items:center; margin-top:10px;"><select class="ai-personality-select" style="flex-grow:0; width: auto;"><option value="">Default Answer</option><option value="\\n\\nPlease explain this simply, like I\'m 10 years old.">Explain Simply</option><option value="\\n\\nPlease summarize the key points in a bulleted list.">Summarize</option><option value="\\n\\nPlease provide a detailed, step-by-step guide.">Step-by-Step</option></select><button class="btn" data-action="start-conversation">Find Answer</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up question..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div><div class="save-controls" style="display:none; margin-top:12px;"><input type="text" class="tags-input" placeholder="Add tags, comma separated..."><button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save</button></div></div>';
-  });
+    container.innerHTML += '<div class="question-card"><p class="question-text">' + questionHtml + '</p><div class="ai-answer-container" style="display: none;"></div><div style="display:flex; gap: 8px; align-items:center; margin-top:10px;"><select class="ai-personality-select" style="flex-grow:0; width: auto;"><option value="">Default Answer</option><option value="\\n\\nPlease explain this simply.">Explain Simply</option><option value="\\n\\nPlease summarize in a list.">Summarize</option><option value="\\n\\nPlease provide a step-by-step guide.">Step-by-Step</option></select><button class="btn" data-action="start-conversation">Find Answer</button></div><div class="conversation-controls" style="display:none; margin-top:10px;"><textarea class="follow-up-input" rows="2" placeholder="Ask a follow-up..."></textarea><button class="btn" data-action="ask-follow-up" style="margin-top:5px;">Send</button></div><div class="save-controls" style="display:none; margin-top:12px;"><input type="text" class="tags-input" placeholder="Add tags..."><button class="btn small secondary" data-action="save-conversation" style="margin-top:5px;">Save</button></div></div>';
+  }
 }
 
 function refreshHistoryList() {
     var historyList = document.getElementById('historyList');
     if (!historyList) return;
     historyList.innerHTML = '';
-    var searchInput = document.getElementById('historySearch');
-    var searchTerm = (searchInput ? searchInput.value : '').toLowerCase();
-    var favsToggle = document.getElementById('showFavoritesToggle');
-    var showFavorites = favsToggle ? favsToggle.checked : false;
-
-    var filteredHistory = App.history.filter(function(item) {
-        if (showFavorites && !item.isFavorited) return false;
+    var searchTerm = (document.getElementById('historySearch').value || '').toLowerCase();
+    var showFavorites = document.getElementById('showFavoritesToggle').checked;
+    
+    var filteredHistory = [];
+    for(var i=0; i < App.history.length; i++) {
+        var item = App.history[i];
+        if (showFavorites && !item.isFavorited) continue;
         var conversationText = item.conversation.map(function(turn) { return turn.parts[0].text; }).join(' ').toLowerCase();
         var tagsText = (item.tags || []).join(' ').toLowerCase();
-        return conversationText.indexOf(searchTerm) !== -1 || tagsText.indexOf(searchTerm) !== -1;
-    });
-
-    if (filteredHistory.length === 0) {
-        historyList.innerHTML = '<p class="muted">No conversations found.</p>';
-        return;
+        if (conversationText.indexOf(searchTerm) !== -1 || tagsText.indexOf(searchTerm) !== -1) {
+            filteredHistory.push(item);
+        }
     }
-    filteredHistory.forEach(function(item) {
+
+    if (filteredHistory.length === 0) { historyList.innerHTML = '<p class="muted">No conversations found.</p>'; return; }
+    
+    for(var j=0; j < filteredHistory.length; j++) {
+        var item = filteredHistory[j];
         var tagsHtml = (item.tags || []).map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('');
         var conversationHtml = item.conversation.map(function(turn) {
             var bubbleClass = turn.role === 'user' ? 'user' : 'model';
             return '<div class="chat-bubble ' + bubbleClass + '">' + formatAIResponse(turn.parts[0].text) + '</div>';
         }).join('');
         historyList.innerHTML += '<div class="question-card"><div style="display:flex; justify-content:space-between; align-items:start;"><h4>' + escapeHtml(item.title) + '</h4><button class="favorite-btn ' + (item.isFavorited ? 'favorited' : '') + '" data-action="toggle-favorite" data-id="' + item.id + '">★</button></div><div>' + tagsHtml + '</div><div class="ai-answer-container" style="display:block; margin-top:12px;">' + conversationHtml + '</div><div style="margin-top:10px;"><button class="btn small secondary" data-action="copy-conversation" data-id="' + item.id + '">Copy</button></div></div>';
-    });
+    }
     if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
 }
 
@@ -523,12 +466,7 @@ function handleAvatarUpload(event) {
   var file = event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
-  reader.onload = function(e) {
-    App.settings.avatar = e.target.result;
-    saveAll();
-    updateHeaderUI();
-    updateSettingsPageUI();
-  };
+  reader.onload = function(e) { App.settings.avatar = e.target.result; saveAll(); updateHeaderUI(); updateSettingsPageUI(); };
   reader.readAsDataURL(file);
 }
 
@@ -545,17 +483,29 @@ function copyTextToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function init() {
   loadAll();
-  
+  var firstTime = localStorage.getItem('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
+  showPage(firstTime ? 'welcomeScreen' : 'homePage');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  init();
   document.body.addEventListener('click', function(e) {
-    var target = findClosest(e.target, '[data-action]');
-    if (!target) return;
-    var action = target.dataset.action;
+    var target = e.target; // Start with the actual clicked element
+    // Loop up the DOM tree to find an element with data-action
+    while (target && target !== document.body) {
+        if (target.getAttribute('data-action')) {
+            break; // Found it
+        }
+        target = target.parentNode; // Go up one level
+    }
+    if (!target || !target.getAttribute('data-action')) return; // No action found
+    
+    var action = target.getAttribute('data-action');
     var card = findClosest(target, '.question-card');
     
-    if (action === 'navigate') showPage(target.dataset.page);
-    
+    if (action === 'navigate') showPage(target.getAttribute('data-page'));
     if (action === 'accept-welcome') {
       App.settings.name = document.getElementById('setupName').value.trim() || 'Student';
       var useDefault = document.getElementById('setupUseDefault').checked;
@@ -565,25 +515,20 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.setItem('qsolve_first_time_' + App.dataKey.split('_')[2], 'true');
       showPage('homePage');
     }
-
     if (action === 'run-ocr') {
-      var fileInput = document.getElementById('ocrFile');
-      var textInput = document.getElementById('pasteText');
-      var file = fileInput ? fileInput.files[0] : null;
-      var text = textInput ? textInput.value.trim() : null;
+      var file = document.getElementById('ocrFile').files[0];
+      var text = document.getElementById('pasteText').value.trim();
       if (file) runOcr(file);
       else if (text) renderDetectedQuestions(text.split(/\n\s*\n+/), text);
       else showToast('Please select a file or paste text.', 'error');
     }
-    
     if (action === 'start-conversation' || action === 'ask-follow-up') {
       if (!card) return;
       var answerContainer = card.querySelector('.ai-answer-container');
       var questionTextElem = card.querySelector('.question-text');
       var followUpInput = card.querySelector('.follow-up-input');
       var prompt;
-      var existingHistory = JSON.parse(card.dataset.conversationHistory || '[]');
-
+      var existingHistory = JSON.parse(target.getAttribute('data-conversation-history') || card.getAttribute('data-conversation-history') || '[]');
       if (action === 'start-conversation') {
         var personalitySelect = card.querySelector('.ai-personality-select');
         prompt = questionTextElem.innerText + (personalitySelect.value || '');
@@ -594,15 +539,11 @@ document.addEventListener('DOMContentLoaded', function() {
         answerContainer.innerHTML += '<div class="chat-bubble user">' + formatAIResponse(prompt) + '</div>';
         followUpInput.value = '';
       }
-      
-      answerContainer.style.display = 'block';
-      target.textContent = 'Thinking...';
-      target.disabled = true;
-
+      answerContainer.style.display = 'block'; target.textContent = 'Thinking...'; target.disabled = true;
       getAIResponse(prompt, existingHistory).then(function(aiResponse) {
         existingHistory.push({ role: 'user', parts: [{ text: prompt }] });
         existingHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
-        card.dataset.conversationHistory = JSON.stringify(existingHistory);
+        card.setAttribute('data-conversation-history', JSON.stringify(existingHistory));
         answerContainer.innerHTML += '<div class="chat-bubble model">' + formatAIResponse(aiResponse) + '</div>';
         if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([answerContainer]);
         if (action === 'start-conversation') {
@@ -614,127 +555,88 @@ document.addEventListener('DOMContentLoaded', function() {
         target.disabled = false;
       });
     }
-    
     if (action === 'save-conversation') {
       if (!card) return;
-      var history = JSON.parse(card.dataset.conversationHistory || '[]');
+      var history = JSON.parse(card.getAttribute('data-conversation-history') || '[]');
       if (history.length === 0) return;
-      var tagsInput = card.querySelector('.tags-input');
-      var tags = tagsInput.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
-      App.history.unshift({
-        id: 'q-' + Date.now(), title: history[0].parts[0].text.slice(0, 100),
-        isFavorited: false, tags: tags, createdAt: new Date().toISOString(), conversation: history
-      });
-      saveAll();
-      target.textContent = 'Saved ✓';
-      target.disabled = true;
-      showToast('Conversation saved!');
+      var tags = card.querySelector('.tags-input').value.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+      App.history.unshift({ id: 'q-' + Date.now(), title: history[0].parts[0].text.slice(0, 100), isFavorited: false, tags: tags, createdAt: new Date().toISOString(), conversation: history });
+      saveAll(); target.textContent = 'Saved ✓'; target.disabled = true; showToast('Conversation saved!');
     }
-
     if (action === 'toggle-favorite') {
-      var itemId = target.dataset.id;
+      var itemId = target.getAttribute('data-id');
       for (var i = 0; i < App.history.length; i++) {
-        if (App.history[i].id === itemId) {
-          App.history[i].isFavorited = !App.history[i].isFavorited;
-          break;
-        }
+        if (App.history[i].id === itemId) { App.history[i].isFavorited = !App.history[i].isFavorited; break; }
       }
-      saveAll();
-      refreshHistoryList();
+      saveAll(); refreshHistoryList();
     }
-
     if (action === 'copy-conversation') {
-      var itemId = target.dataset.id;
+      var itemId = target.getAttribute('data-id');
       for (var i = 0; i < App.history.length; i++) {
         if (App.history[i].id === itemId) {
-          var textToCopy = App.history[i].conversation.map(function(turn) {
-            return turn.role.toUpperCase() + ': ' + turn.parts[0].text;
-          }).join('\n\n');
-          copyTextToClipboard(textToCopy);
-          break;
+          var textToCopy = App.history[i].conversation.map(function(turn) { return turn.role.toUpperCase() + ': ' + turn.parts[0].text; }).join('\n\n');
+          copyTextToClipboard(textToCopy); break;
         }
       }
     }
-    
     if (action === 'save-settings') {
       App.settings.name = document.getElementById('userName').value.trim();
       var useDefault = document.getElementById('settingsUseDefault').checked;
       App.settings.useDefaultKey = useDefault;
       App.settings.apiKey = useDefault ? '' : document.getElementById('apiKeyInput').value.trim();
-      saveAll();
-      updateHeaderUI();
-      showToast("Settings saved!");
+      saveAll(); updateHeaderUI(); showToast("Settings saved!");
     }
-    
     if (action === 'reset-app') {
-      target.textContent = 'Sure? Click again.';
-      target.style.background = '#f59e0b';
-      target.dataset.action = 'reset-app-confirm';
+      target.textContent = 'Sure? Click again.'; target.style.background = '#f59e0b'; target.setAttribute('data-action', 'reset-app-confirm');
       setTimeout(function() {
-        if (target.dataset.action === 'reset-app-confirm') {
-          target.textContent = 'Reset App';
-          target.style.background = '#ef4444';
-          target.dataset.action = 'reset-app';
+        if (target.getAttribute('data-action') === 'reset-app-confirm') {
+          target.textContent = 'Reset App'; target.style.background = '#ef4444'; target.setAttribute('data-action', 'reset-app');
         }
       }, 4000);
     } else if (action === 'reset-app-confirm') {
       localStorage.clear();
       App.history = [];
       App.settings = { name: 'Student', avatar:'', theme:'default', fontSize:16, apiKey: '', useDefaultKey: true };
-      applyTheme();
-      updateHeaderUI(); 
-      showPage('welcomeScreen');
+      applyTheme(); updateHeaderUI(); showPage('welcomeScreen');
       showToast('App has been reset.');
     }
-
     if (action === 'export-data') {
-      var data = { settings: App.settings, history: App.history };
-      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = 'qsolve_backup_' + Date.now() + '.json';
-      a.click();
-      URL.revokeObjectURL(url);
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ settings: App.settings, history: App.history }, null, 2));
+      var downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "qsolve_backup_" + Date.now() + ".json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
       showToast('Data exported!');
     }
-
     if (action === 'share' && navigator.share) {
       navigator.share({ title: 'Q Solve', text: 'Check out this homework helper!', url: window.location.href });
     }
   });
-  
   document.body.addEventListener('change', function(e) {
     var target = e.target;
     if (target.id === 'avatarUpload') handleAvatarUpload(e);
     if (target.id === 'importDataInput') {
-      var file = target.files[0];
-      if (!file) return;
+      var file = target.files[0]; if (!file) return;
       var reader = new FileReader();
       reader.onload = function(event) {
         try {
           var data = JSON.parse(event.target.result);
           if (data.settings && data.history) {
-            App.settings = data.settings;
-            App.history = data.history;
-            saveAll(); loadAll(); 
-            showPage('settingsPage');
-            showToast('Data imported!');
+            App.settings = data.settings; App.history = data.history;
+            saveAll(); loadAll(); showPage('settingsPage'); showToast('Data imported!');
           } else { showToast('Invalid backup file.', 'error'); }
         } catch (err) { showToast('Failed to parse file.', 'error'); }
       };
       reader.readAsText(file);
     }
-    if (target.id === 'themeSelect') {
-      App.settings.theme = target.value;
-      applyTheme(); saveAll();
-    }
+    if (target.id === 'themeSelect') { App.settings.theme = target.value; applyTheme(); saveAll(); }
     if (target.name === 'apiKeyChoiceSetup' || target.name === 'apiKeyChoiceSettings') {
       var container = document.getElementById(target.name === 'apiKeyChoiceSetup' ? 'setupCustomApiKeyContainer' : 'settingsCustomApiKeyContainer');
       if (container) container.style.display = target.value === 'custom' ? 'block' : 'none';
     }
   });
-
   document.body.addEventListener('input', function(e) {
     if (e.target.id === 'fontSizeRange') {
       App.settings.fontSize = e.target.value;
@@ -745,10 +647,8 @@ document.addEventListener('DOMContentLoaded', function() {
       refreshHistoryList();
     }
   });
-
-  var firstTime = localStorage.getItem('qsolve_first_time_' + App.dataKey.split('_')[2]) !== 'true';
-  showPage(firstTime ? 'welcomeScreen' : 'homePage');
 });
+})();
 </script>
 
 </body>
